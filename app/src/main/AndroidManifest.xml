@@ -15,9 +15,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Login"></activity>
-        <activity android:name=".Register"></activity>
-        <activity android:name=".MapChat"></activity>
+        <activity
+            android:name=".friendList"
+            android:label="@string/title_activity_friend_list" >
+        </activity>
     </application>
 
 </manifest>
