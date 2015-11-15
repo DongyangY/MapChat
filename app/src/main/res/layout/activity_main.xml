@@ -13,9 +13,10 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
+        android:text="hello"
         android:id="@+id/textView"
         android:layout_below="@+id/textView2"
-        android:layout_toEndOf="@+id/textView2"
-        android:layout_marginTop="102dp" />
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="82dp" />
+
 </RelativeLayout>
