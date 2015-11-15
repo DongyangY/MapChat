@@ -18,6 +18,7 @@
         <activity android:name=".Login"></activity>
         <activity android:name=".Register"></activity>
         <activity android:name=".MapChat"></activity>
+        <activity android:name=".TestDialog"></activity>
     </application>
 
 </manifest>
