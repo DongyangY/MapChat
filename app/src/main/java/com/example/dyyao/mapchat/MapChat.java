@@ -1,7 +1,7 @@
 package com.example.dyyao.mapchat;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.FragmentActivity;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -12,10 +12,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 /**
  * Created by luluzhao on 11/15/15.
  */
-public class MapChat extends AppCompatActivity {
+public class MapChat extends FragmentActivity implements OnMapReadyCallback {
 
     Button bSend;
     EditText Inputchat;
@@ -23,6 +30,7 @@ public class MapChat extends AppCompatActivity {
     ViewFlipper page;
     Animation animFlipInForeward;
     Animation animFlipInBackward;
+    private GoogleMap mMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +53,10 @@ public class MapChat extends AppCompatActivity {
         page = (ViewFlipper)findViewById(R.id.flipper);
         animFlipInForeward = AnimationUtils.loadAnimation(this, R.anim.flipin);
         animFlipInBackward = AnimationUtils.loadAnimation(this, R.anim.flipin_reverse);
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
 
     }
 
@@ -87,6 +99,17 @@ public class MapChat extends AppCompatActivity {
 
     GestureDetector gestureDetector
             = new GestureDetector(simpleOnGestureListener);
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        // Add a marker in Sydney and move the camera
+        LatLng sydney = new LatLng(-34, 151);
+        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+    }
 }
 
 
