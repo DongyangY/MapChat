@@ -19,8 +19,8 @@
         android:layout_height="wrap_content"
         android:text="try"
         android:id="@+id/btn_try"
-        android:layout_marginTop="191dp"
+        android:layout_marginTop="189dp"
         android:layout_below="@+id/textView"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>
