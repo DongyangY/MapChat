@@ -14,7 +14,6 @@ import android.widget.ViewFlipper;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -38,7 +37,7 @@ public class MapChat extends FragmentActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
     final String[] values = new String[] { "a", "b", "c" };
 
-    public static List<myFriend> friendInfo;
+    List<myFriend> friendInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,9 +53,8 @@ public class MapChat extends FragmentActivity implements OnMapReadyCallback {
             public void onClick(View view) {
                 //String sentence = Inputchat.getText().toString() + "\n";
                 //chatlog.append(sentence);
-                LatLng l = new LatLng(40.498720, -74.446229);
+                LatLng l = new LatLng(40.513817,-74.464844);
                 changeLocation("a", l);
-                updateMarker();
             }
 
         });
@@ -65,17 +63,19 @@ public class MapChat extends FragmentActivity implements OnMapReadyCallback {
         animFlipInForeward = AnimationUtils.loadAnimation(this, R.anim.flipin);
         animFlipInBackward = AnimationUtils.loadAnimation(this, R.anim.flipin_reverse);
 
-        mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
 
-        mMap.moveCamera(CameraUpdateFactory.zoomTo(12));
-        mMap.getUiSettings().setMyLocationButtonEnabled(true);
-        mMap.getUiSettings().setZoomControlsEnabled(true);
-        mMap.getUiSettings().setCompassEnabled(true);
-        mMap.setMyLocationEnabled(true);
         //Set up Map friend list
+        for( int i = 0; i < fNames.length; i++){
+            friendInfo.add(new myFriend(fNames[i]));
+        }
         initialFriend();
 
-        //updateMarker();
+        updateMarker();
+
+
+
 
     }
 
@@ -122,6 +122,11 @@ public class MapChat extends FragmentActivity implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        mMap.moveCamera(CameraUpdateFactory.zoomTo(12));
+        mMap.getUiSettings().setMyLocationButtonEnabled(true);
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.getUiSettings().setCompassEnabled(true);
+        mMap.setMyLocationEnabled(true);
 /*
         Marker high = mMap.addMarker(new MarkerOptions().position(new LatLng(40.513817,-74.464844)).title("HighPoint Solutions Stadium"));
         Marker bcc = mMap.addMarker(new MarkerOptions().position(new LatLng(40.523128, -74.458797)).title("Busch Campus Center"));
@@ -137,10 +142,12 @@ public class MapChat extends FragmentActivity implements OnMapReadyCallback {
                     new MarkerOptions().position(new LatLng(40.513817, -74.464844)).title(values[i]));
             m.setVisible(false);
             friendInfo.add(new myFriend(values[i], m));
+        for( int i = 0; i < fNames.length; i++){
+            friendInfo.add(new myFriend(fNames[i]));
         }
     }
 
-    public static void changeLocation(String name, LatLng latLng){
+    private void changeLocation(String name, LatLng latLng){
         for( int i = 0; i < friendInfo.size(); i++){
             if(friendInfo.get(i).getName().equals(name)){
                 friendInfo.get(i).setLocation(latLng);
