@@ -151,7 +151,7 @@ public class ClientTaskWR extends AsyncTask<Void, String, Void> {
                 Log.d(TAG, "create_group response received");
                 if (status.equals("yes")){
                     Log.d(TAG, "Create Group Succeed");
-                    Intent friendlistIntent = new Intent(friendlist, friendList.class);
+                    Intent friendlistIntent = new Intent(friendlist, MapChat.class);
                     friendlistIntent.putExtra("friendNames", sResponses);
                     friendlist.startActivity(friendlistIntent);
                     //friendlist.startActivity(new Intent(friendlist, MapChat.class));
