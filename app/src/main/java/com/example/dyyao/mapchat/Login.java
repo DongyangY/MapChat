@@ -42,7 +42,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
         mLogCommandBuffer = new LinkedList<>();
 
-        ClientTaskWR mClientTaskWR = new ClientTaskWR(mLogCommandBuffer, this, null, null);
+        ClientTaskWR mClientTaskWR = new ClientTaskWR(mLogCommandBuffer, this);
         mClientTaskWR.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         ClientTaskR mClientTaskR = new ClientTaskR();
         mClientTaskR.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);

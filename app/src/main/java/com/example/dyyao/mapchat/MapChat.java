@@ -20,6 +20,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -45,6 +46,7 @@ public class MapChat extends FragmentActivity implements OnMapReadyCallback {
         Inputchat = (EditText) findViewById(R.id.et_input);
         chatlog = (TextView) findViewById(R.id.tv_chatlogview);
         bSend = (Button) findViewById(R.id.btn_send);
+        friendInfo = new ArrayList<>();
 
         bSend.setOnClickListener(new View.OnClickListener() {
             @Override
