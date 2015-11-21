@@ -13,8 +13,6 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.Queue;
 
 /**
@@ -40,25 +38,30 @@ public class ClientTaskWR extends AsyncTask<Void, String, Void> {
             e.printStackTrace();
         }
         while (true) {
+            //Log.d(TAG, "before isEmpty()");
             if (!mCommandBuffer.isEmpty()){
                 Log.d(TAG, "enter isEmpty()");
                 mCommand = mCommandBuffer.remove();
+                Log.d(TAG,"mCommand is: " + mCommand);
                 try{
                     OutputStream mOutStream = mSocket.getOutputStream();
                     mPrintWriterOut = new PrintWriter(mOutStream, true);
+                    Log.d(TAG, mCommand);
                     mPrintWriterOut.println(mCommand);
 
                     InputStream mInputStream = mSocket.getInputStream();
                     BufferedReader mBufferedReader = new BufferedReader(new InputStreamReader(mInputStream));
 
-                    String line;
                     Log.d(TAG, "execute line");
-                    while ((line = mBufferedReader.readLine()) != null) {
-                        Log.d(TAG, line);
-                        serverResponse += line;
-                    }
+                    serverResponse = mBufferedReader.readLine();
                     Log.d(TAG, serverResponse);
-                    publishProgress(serverResponse);
+                    /*
+                    if (line.equals("no") && mSocket != null){
+                        mSocket.close();
+                    }
+                    */
+                    //Log.d(TAG, serverResponse);
+                    //publishProgress(serverResponse);
                 } catch (UnknownHostException e){
                     e.printStackTrace();
                     serverResponse = "UnknownHostException: " + e.toString();
@@ -76,6 +79,6 @@ public class ClientTaskWR extends AsyncTask<Void, String, Void> {
 
     protected void onProgressUpdate(String... result){
         super.onProgressUpdate(result);
-        Log.d(TAG, result[0]);
+        //Log.d(TAG, result[0]);
     }
 }
