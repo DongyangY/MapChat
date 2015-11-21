@@ -17,10 +17,10 @@
             <fragment xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
-                android:layout_height="520dp"
+                android:layout_height="400dp"
                 android:id="@+id/map"
-                tools:context="com.example.dyyao.mapchat.MapsActivity"
-                android:name="com.google.android.gms.maps.SupportMapFragment" />
+                tools:context="com.example.dyyao.mapchat.MapChat"
+                android:name="com.google.android.gms.maps.MapFragment" />
 
 
 
@@ -39,6 +39,14 @@
                 android:layout_toLeftOf="@+id/et_input"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="show"
+                android:id="@+id/btn_show"
+                android:layout_above="@+id/btn_send"
+                android:layout_alignEnd="@+id/btn_send" />
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="200dp"
