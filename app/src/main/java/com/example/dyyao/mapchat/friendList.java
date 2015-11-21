@@ -1,27 +1,27 @@
 package com.example.dyyao.mapchat;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.SparseBooleanArray;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 public class friendList extends AppCompatActivity {
     private Button addF;
     private Button addG;
+    private Button test;
     private ListView friendlist;
-    private TextView textView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,45 +29,36 @@ public class friendList extends AppCompatActivity {
 
         addF = (Button) findViewById(R.id.addFriendButton);
         addG = (Button) findViewById(R.id.addGroupButton);
+        test = (Button) findViewById(R.id.testButton);
 
-        textView = (TextView) findViewById(R.id.textView);
-
-        final String[] values = new String[] { "a", "b", "c", "d", "e", "f", "g",
+        final ArrayList<String> friends = new ArrayList<>();
+        String[] values = getIntent().getStringArrayExtra("friendNames");
+        String[] fNames = Arrays.copyOfRange(values, 2, values.length);
+        /*String[] values = new String[] { "a", "b", "c", "d", "e", "f", "g",
                 "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s",
                 "t", "u", "w", "x", "y", "z" };
-        final ArrayList<String> selectedItems = new ArrayList<>();
-
-
-        //final ArrayAdapter<myFriend> adapter = new myFriendAdapter(this, getModel());
-
-        final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice, values);
+        */
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_list_item_multiple_choice, fNames);
 
         friendlist = (ListView) findViewById(R.id.listView);
+
         friendlist.setAdapter(adapter);
-        friendlist.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
-
-        friendlist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        friendlist.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getApplicationContext(), "Click ListItem Number " + values[position], Toast.LENGTH_LONG)
-                        .show();
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
-/*
-        SparseBooleanArray checked = friendlist.getCheckedItemPositions();
-        for (int i = 0; i < checked.size(); i++) {
-            int position = checked.keyAt(i);
-            if (checked.valueAt(i))
-                selectedItems.add(adapter.getItem(position));
-        }
-
-*/
 
         addG.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                open();
                 startActivity(new Intent(friendList.this, MapChat.class));
 
 
@@ -77,20 +68,42 @@ public class friendList extends AppCompatActivity {
         addF.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SparseBooleanArray checked = friendlist.getCheckedItemPositions();
-                for (int i = 0; i < checked.size(); i++) {
-                    int position = checked.keyAt(i);
-                    if (checked.valueAt(i)){
-                        selectedItems.add(adapter.getItem(position));
-                        textView.append(selectedItems.get(i));
-                    }
-                }
+                Intent afIntent = new Intent(friendList.this, AddFriend.class);
+                startActivityForResult(afIntent, 1);
 
+                //startActivity(new Intent(friendList.this, AddFriend.class));
+
+            }
+        });
+
+        test.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //startActivity(new Intent(friendList.this, TestDialog.class));
+                open();
 
             }
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == 1) {
+            if(resultCode == Activity.RESULT_OK){
+                String[] result = data.getStringArrayExtra("result");
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                        android.R.layout.simple_list_item_multiple_choice, result);
+
+                friendlist = (ListView) findViewById(R.id.listView);
+
+                friendlist.setAdapter(adapter);
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+        }
+    }//onActivityResult
     public void open(){
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
@@ -112,31 +125,6 @@ public class friendList extends AppCompatActivity {
 
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
-    }
-
-    private List<myFriend> getModel() {
-        List<myFriend> list = new ArrayList<>();
-        list.add(get("A"));
-        list.add(get("B"));
-        list.add(get("Suse"));
-        list.add(get("Eclipse"));
-        list.add(get("Ubuntu"));
-        list.add(get("Solaris"));
-        list.add(get("Android"));
-        list.add(get("iPhone"));
-        list.add(get("C"));
-        list.add(get("X"));
-        list.add(get("M"));
-        list.add(get("W"));
-        list.add(get("Z"));
-        // Initially select one of the items
-        list.get(0).setSelected(true);
-        return list;
-    }
-
-
-    private myFriend get(String s) {
-        return new myFriend(s);
     }
 
 
