@@ -22,14 +22,6 @@
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/addFriendButton" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Test"
-        android:id="@+id/testButton"
-        android:layout_alignBottom="@+id/addGroupButton"
-        android:layout_toEndOf="@+id/addGroupButton" />
-
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -37,5 +29,14 @@
         android:layout_below="@+id/addFriendButton"
         android:layout_alignParentStart="true"
         android:choiceMode="multipleChoice" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Medium Text"
+        android:id="@+id/textView"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/addGroupButton" />
 
 </RelativeLayout>
