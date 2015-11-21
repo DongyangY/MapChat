@@ -14,6 +14,7 @@ import android.widget.ViewFlipper;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -53,8 +54,9 @@ public class MapChat extends FragmentActivity implements OnMapReadyCallback {
             public void onClick(View view) {
                 //String sentence = Inputchat.getText().toString() + "\n";
                 //chatlog.append(sentence);
-                LatLng l = new LatLng(40.513817,-74.464844);
+                LatLng l = new LatLng(40.513817, -74.464844);
                 changeLocation("a", l);
+                updateMarker();
             }
 
         });
@@ -63,18 +65,16 @@ public class MapChat extends FragmentActivity implements OnMapReadyCallback {
         animFlipInForeward = AnimationUtils.loadAnimation(this, R.anim.flipin);
         animFlipInBackward = AnimationUtils.loadAnimation(this, R.anim.flipin_reverse);
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 
+        mMap.moveCamera(CameraUpdateFactory.zoomTo(10));
+        mMap.getUiSettings().setMyLocationButtonEnabled(true);
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.getUiSettings().setCompassEnabled(true);
+        mMap.setMyLocationEnabled(true);
         //Set up Map friend list
-        for( int i = 0; i < fNames.length; i++){
-            friendInfo.add(new myFriend(fNames[i]));
-        }
+
         initialFriend();
-
-        updateMarker();
-
-
 
 
     }
@@ -137,13 +137,11 @@ public class MapChat extends FragmentActivity implements OnMapReadyCallback {
     }
 
     private void initialFriend(){
-        for( int i = 0; i < values.length; i++){
+        for( int i = 0; i < values.length; i++) {
             Marker m = mMap.addMarker(
-                    new MarkerOptions().position(new LatLng(40.513817, -74.464844)).title(values[i]));
+                    new MarkerOptions().position(new LatLng(40.502661,-74.451771)).title(values[i]));
             m.setVisible(false);
             friendInfo.add(new myFriend(values[i], m));
-        for( int i = 0; i < fNames.length; i++){
-            friendInfo.add(new myFriend(fNames[i]));
         }
     }
 
