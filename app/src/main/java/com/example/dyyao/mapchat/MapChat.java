@@ -40,7 +40,7 @@ public class MapChat extends FragmentActivity implements OnMapReadyCallback {
     String[] values;
     String[] fNames;
 
-    List<myFriend> friendInfo;
+    public static List<myFriend> friendInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,7 +150,7 @@ public class MapChat extends FragmentActivity implements OnMapReadyCallback {
         }
     }
 
-    private void changeLocation(String name, LatLng latLng){
+    public static void changeLocation(String name, LatLng latLng){
         for( int i = 0; i < friendInfo.size(); i++){
             if(friendInfo.get(i).getName().equals(name)){
                 friendInfo.get(i).setLocation(latLng);
