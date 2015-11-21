@@ -21,6 +21,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -35,7 +36,8 @@ public class MapChat extends FragmentActivity implements OnMapReadyCallback {
     Animation animFlipInForeward;
     Animation animFlipInBackward;
     private GoogleMap mMap;
-    final String[] values = new String[] { "a", "b", "c" };
+    String[] values = getIntent().getStringArrayExtra("friendNames");
+    final String[] fNames = Arrays.copyOfRange(values, 2, values.length);
 
     List<myFriend> friendInfo;
 
@@ -67,8 +69,8 @@ public class MapChat extends FragmentActivity implements OnMapReadyCallback {
         mapFragment.getMapAsync(this);
 
         //Set up Map friend list
-        for( int i = 0; i < values.length; i++){
-            friendInfo.add(new myFriend(values[i]));
+        for( int i = 0; i < fNames.length; i++){
+            friendInfo.add(new myFriend(fNames[i]));
         }
 
         updateMarker();
@@ -136,8 +138,8 @@ public class MapChat extends FragmentActivity implements OnMapReadyCallback {
     }
 
     private void initialFriend(){
-        for( int i = 0; i < values.length; i++){
-            friendInfo.add(new myFriend(values[i]));
+        for( int i = 0; i < fNames.length; i++){
+            friendInfo.add(new myFriend(fNames[i]));
         }
     }
 

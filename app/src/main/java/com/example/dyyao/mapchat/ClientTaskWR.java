@@ -123,7 +123,9 @@ public class ClientTaskWR extends AsyncTask<Void, String, Void> {
                 Log.d(TAG, "register response received");
                 if (status.equals("yes")){
                     Log.d(TAG, "Register Succeed!");
-                    register.startActivity(new Intent(register, friendList.class));
+                    Intent registerIntent = new Intent(register, friendList.class);
+                    registerIntent.putExtra("friendNames", sResponses);
+                    register.startActivity(registerIntent);
                 } else {
                     Log.d(TAG, "Register Failed!");
                     Toast.makeText(register,"Register Failed!", Toast.LENGTH_SHORT).show();
@@ -149,7 +151,10 @@ public class ClientTaskWR extends AsyncTask<Void, String, Void> {
                 Log.d(TAG, "create_group response received");
                 if (status.equals("yes")){
                     Log.d(TAG, "Create Group Succeed");
-                    friendlist.startActivity(new Intent(friendlist, MapChat.class));
+                    Intent friendlistIntent = new Intent(friendlist, friendList.class);
+                    friendlistIntent.putExtra("friendNames", sResponses);
+                    friendlist.startActivity(friendlistIntent);
+                    //friendlist.startActivity(new Intent(friendlist, MapChat.class));
                 }else{
                     Log.d(TAG, "Create Group Failed");
                     //Toast.makeText()
