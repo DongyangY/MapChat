@@ -22,6 +22,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -36,7 +37,8 @@ public class MapChat extends FragmentActivity implements OnMapReadyCallback {
     Animation animFlipInForeward;
     Animation animFlipInBackward;
     private GoogleMap mMap;
-    final String[] values = new String[] { "a", "b", "c" };
+    String[] values;
+    String[] fNames;
 
     List<myFriend> friendInfo;
 
@@ -48,6 +50,9 @@ public class MapChat extends FragmentActivity implements OnMapReadyCallback {
         chatlog = (TextView) findViewById(R.id.tv_chatlogview);
         bSend = (Button) findViewById(R.id.btn_send);
         friendInfo = new ArrayList<>();
+
+        values = getIntent().getStringArrayExtra("friendNames");
+        fNames = Arrays.copyOfRange(values, 2, values.length);
 
         bSend.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,11 +142,11 @@ public class MapChat extends FragmentActivity implements OnMapReadyCallback {
     }
 
     private void initialFriend(){
-        for( int i = 0; i < values.length; i++) {
+        for( int i = 0; i < fNames.length; i++) {
             Marker m = mMap.addMarker(
-                    new MarkerOptions().position(new LatLng(40.502661,-74.451771)).title(values[i]));
+                    new MarkerOptions().position(new LatLng(40.502661,-74.451771)).title(fNames[i]));
             m.setVisible(false);
-            friendInfo.add(new myFriend(values[i], m));
+            friendInfo.add(new myFriend(fNames[i], m));
         }
     }
 
@@ -160,5 +165,4 @@ public class MapChat extends FragmentActivity implements OnMapReadyCallback {
         }
     }
 }
-
 
