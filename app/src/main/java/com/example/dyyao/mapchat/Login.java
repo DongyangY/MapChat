@@ -1,6 +1,7 @@
 package com.example.dyyao.mapchat;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -19,11 +20,11 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     Button bLogin;
     EditText etUsername, etPassword;
     TextView tvRegisterLink;
-    public static final String SERVER_IP_ADDRESS = "192.168.1.111";
+    public static final String SERVER_IP_ADDRESS = "192.168.1.220";
     public static final int SERVER_PORT_WR = 4444;
     public static final int SERVER_PORT_R = 5555;
-    public Queue<String> mCommandBuffer;
-    private static final String TAG = "Debug";
+    public static  Queue<String> mLogCommandBuffer;
+    private static final String TAG = "Login";
 
 
 
@@ -39,14 +40,13 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         bLogin.setOnClickListener(this);
         tvRegisterLink.setOnClickListener(this);
 
-        mCommandBuffer = new LinkedList<>();
+        mLogCommandBuffer = new LinkedList<>();
 
-        ClientTaskWR mClientTaskWR = new ClientTaskWR(mCommandBuffer);
-        //ClientTaskR mClientTaskR = new ClientTaskR();
-        mClientTaskWR.execute();
-        Log.d(TAG, "R connected");
-        //mClientTaskR.execute();
-        //Log.d(TAG, "WR connected");
+        ClientTaskWR mClientTaskWR = new ClientTaskWR(mLogCommandBuffer, this, null, null);
+        mClientTaskWR.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        ClientTaskR mClientTaskR = new ClientTaskR();
+        mClientTaskR.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        Log.d(TAG, "WR connected");
 
     }
 
@@ -54,9 +54,10 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.b_Login:
-                mCommandBuffer.add("login\n" + etUsername.getText().toString() + "\n" + etPassword.getText().toString());
+                Log.d(TAG, "at");
+                mLogCommandBuffer.add("login:" + etUsername.getText().toString() + ":" + etPassword.getText().toString());
+                Log.d(TAG, "buffer size " + String.valueOf(mLogCommandBuffer.size()));
                 //startActivity(new Intent(this, friendList.class));
-
                 break;
 
             case R.id.tv_RegisterLink:

@@ -1,10 +1,12 @@
 package com.example.dyyao.mapchat;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -13,6 +15,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class friendList extends AppCompatActivity {
     private Button addF;
@@ -29,12 +32,14 @@ public class friendList extends AppCompatActivity {
         test = (Button) findViewById(R.id.testButton);
 
         final ArrayList<String> friends = new ArrayList<>();
-        String[] values = new String[] { "a", "b", "c", "d", "e", "f", "g",
+        String[] values = getIntent().getStringArrayExtra("friendNames");
+        String[] fNames = Arrays.copyOfRange(values, 2, values.length);
+        /*String[] values = new String[] { "a", "b", "c", "d", "e", "f", "g",
                 "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s",
                 "t", "u", "w", "x", "y", "z" };
-
+        */
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_multiple_choice, values);
+                android.R.layout.simple_list_item_multiple_choice, fNames);
 
         friendlist = (ListView) findViewById(R.id.listView);
 
@@ -63,7 +68,10 @@ public class friendList extends AppCompatActivity {
         addF.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(friendList.this, AddFriend.class));
+                Intent afIntent = new Intent(friendList.this, AddFriend.class);
+                startActivityForResult(afIntent, 1);
+
+                //startActivity(new Intent(friendList.this, AddFriend.class));
 
             }
         });
@@ -76,9 +84,26 @@ public class friendList extends AppCompatActivity {
 
             }
         });
-
-
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == 1) {
+            if(resultCode == Activity.RESULT_OK){
+                String[] result = data.getStringArrayExtra("result");
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                        android.R.layout.simple_list_item_multiple_choice, result);
+
+                friendlist = (ListView) findViewById(R.id.listView);
+
+                friendlist.setAdapter(adapter);
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+        }
+    }//onActivityResult
     public void open(){
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 

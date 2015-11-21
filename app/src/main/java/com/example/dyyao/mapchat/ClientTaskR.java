@@ -33,9 +33,12 @@ public class ClientTaskR extends AsyncTask<Void, String, Void>{
             mSocket = new Socket(Login.SERVER_IP_ADDRESS, Login.SERVER_PORT_R);
             InputStream mInputStream = mSocket.getInputStream();
             BufferedReader mBufferedReader = new BufferedReader(new InputStreamReader(mInputStream));
-            serverResponse = mBufferedReader.readLine();
-            publishProgress(serverResponse);
-            Log.d(TAG, serverResponse);
+
+            while (true) {
+                serverResponse = mBufferedReader.readLine();
+                publishProgress(serverResponse);
+            }
+
         } catch (UnknownHostException e){
             e.printStackTrace();
             serverResponse = "UnknownHostException: " + e.toString();
