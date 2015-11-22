@@ -182,12 +182,10 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
                 mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
-                        if(!marker.getTitle().equals(null)) {
                             if (marker.getTitle().equals(pinName)) {
                                 open(marker);
                                 isExist = false;
                             }
-                        }
                         return false;
                     }
                 });
@@ -214,6 +212,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         Marker marker = mMap.addMarker(new MarkerOptions()
                 .position(new LatLng(40.502661, -74.451771))
                 .icon(BitmapDescriptorFactory.fromBitmap(drawBmp))
+                .title(peopleUserID)
                 .anchor(0.5f, 1));
         marker.setVisible(false);
 
