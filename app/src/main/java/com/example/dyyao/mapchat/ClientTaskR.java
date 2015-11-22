@@ -25,7 +25,7 @@ public class ClientTaskR extends AsyncTask<Void, String, Void>{
     private Socket mSocket;
     private String serverResponse;
     private static final String TAG = "ClientTaskR";
-    private friendList fl;
+    public static friendList fl;
 
     public ClientTaskR() {
 
@@ -67,7 +67,7 @@ public class ClientTaskR extends AsyncTask<Void, String, Void>{
         switch (cmds[0]) {
             case "create_group":
                 Intent intent = new Intent(fl, MapChat.class);
-                intent.putExtra("group_info", Arrays.copyOfRange(cmds, 2, cmds.length));
+                intent.putExtra("friendNames", Arrays.copyOfRange(cmds, 2, cmds.length));
                 fl.startActivity(intent);
                 break;
             case "update_location":

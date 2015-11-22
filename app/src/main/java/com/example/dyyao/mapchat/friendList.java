@@ -32,6 +32,7 @@ public class friendList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend_list);
         ClientTaskWR.friendlist = this;
+        ClientTaskR.fl = this;
 
         addF = (Button) findViewById(R.id.addFriendButton);
         addG = (Button) findViewById(R.id.addGroupButton);

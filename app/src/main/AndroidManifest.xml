@@ -22,11 +22,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Login" />
-        <activity android:name=".Register" />
-        <activity android:name=".MapChat" />
-        <activity android:name=".friendList" />
-        <activity android:name=".AddFriend" />
+        <activity android:name=".Login" android:screenOrientation="portrait" />
+        <activity android:name=".Register" android:screenOrientation="portrait" />
+        <activity android:name=".MapChat" android:screenOrientation="portrait" />
+        <activity android:name=".friendList" android:screenOrientation="portrait" />
+        <activity android:name=".AddFriend" android:screenOrientation="portrait" />
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
