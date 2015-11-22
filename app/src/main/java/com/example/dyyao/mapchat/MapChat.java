@@ -43,7 +43,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         LocationListener{
     Button bSend, bshow;
     EditText Inputchat;
-    TextView chatlog;
+    static TextView chatlog;
     ViewFlipper page;
     Animation animFlipInForeward;
     Animation animFlipInBackward;
@@ -54,17 +54,20 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
 
     public static List<myFriend> friendInfo;
     private Marker mMarker;
+    private Marker mPin = null;
     private final String[] colors = { "blue", "red", "green", "yellow", "black"};
     private String groupName;
     private String userName;
+    private final String pinName = "MyPin";
     public static final String TAG = "MapChat";
 
     private boolean initialLocation = false;
-    private boolean isTested = false;
+    private boolean isExist = false;
 
     private Location currentLocation = null;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
+
 
 
     @Override
@@ -84,8 +87,9 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
             public void onClick(View view) {
                 //String sentence = Inputchat.getText().toString() + "\n";
                 //chatlog.append(sentence);
-                isTested = true;
-                mMarker.setPosition(new LatLng(40, -80));
+                //mMarker.setPosition(new LatLng(40, -80));
+                Login.mLogCommandBuffer.add("send_message:" + groupName + ":" + userName + ":" + Inputchat.getText().toString());
+
             }
 
         });
@@ -132,8 +136,8 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         intialSelf();
 
 
-        LatLng sydney = new LatLng(40, -80);
-        icon = BitmapDescriptorFactory.fromResource(R.drawable.simpleapple);
+        //LatLng sydney = new LatLng(40, -80);
+        //icon = BitmapDescriptorFactory.fromResource(R.drawable.simpleapple);
         //markerOptions = new MarkerOptions().position(sydney).title("Current Location").snippet("Thinking of finding some thing....").icon(icon);
         //move = mMap.addMarker(markerOptions);
 
@@ -141,7 +145,6 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         bshow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                isTested = true;
                 mMarker.setPosition(new LatLng(40, -80));
 
                 Login.mLogCommandBuffer.add("update_location:" + groupName + ":" + userName + ":" + "40" + ":" + "-80");
@@ -155,17 +158,26 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
                 MarkerOptions markerOptions = new MarkerOptions();
                 //setting the position for the marker
                 markerOptions.position(latLng);
-
                 //setting the title for the marker.
                 //this will be displayed on taping the marker
-                markerOptions.title(latLng.latitude + " : " + latLng.longitude);
-
+                markerOptions.title(pinName);
                 mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-                mMap.addMarker(markerOptions);
+
+                if(!isExist) {
+                    mPin = mMap.addMarker(markerOptions);
+                    isExist = true;
+                }else {
+                    mPin.setPosition(latLng);
+                }
+                Login.mLogCommandBuffer.add("change_pin:" + groupName + ":" + userName + ":" + latLng.latitude + ":" + latLng.longitude);
+                Log.e(TAG, "login_commandBuffer_change_mPin");
                 mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
-                        open(marker);
+                        if(marker.getTitle().equals(pinName)) {
+                            open(marker);
+                            isExist = false;
+                        }
                         return false;
                     }
                 });
@@ -247,6 +259,8 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
             public void onClick(DialogInterface dialogInterface, int i) {
                 Toast.makeText(MapChat.this, "You clicked yes button", Toast.LENGTH_LONG).show();
                 marker.remove();
+                Login.mLogCommandBuffer.add("change_pin:" + groupName + ":" + userName + ":" + 0 + ":" + 0);
+                Log.e(TAG, "login_commandBuffer_delete_mPin");
             }
         });
 
@@ -266,7 +280,10 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
                 Marker m = mMap.addMarker(
                         new MarkerOptions().position(new LatLng(40.502661, -74.451771)).title(fNames[i]));
                 m.setVisible(false);
-                friendInfo.add(new myFriend(fNames[i], m, colors[i]));
+                Marker p = mMap.addMarker(
+                        new MarkerOptions().position(new LatLng(40.502661, -74.451771)).title(fNames[i]));
+                p.setVisible(false);
+                friendInfo.add(new myFriend(fNames[i], m, colors[i], p));
                 Log.e(TAG, fNames[i]);
             }
         }
@@ -275,18 +292,21 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
     public static void changeLocation(String name, LatLng latLng){
         Log.e(TAG,"!!!!!!!!!!!!!!!!!!!!!!!!!!!!"+name + "/" + latLng.toString());
         for( int i = 0; i < friendInfo.size(); i++){
-            Log.e(TAG,"!!!!!!!!!!!!!!!!!!!!!!!!!!!!"+friendInfo.get(i).getName());
             if(friendInfo.get(i).getName().equals(name)){
-                Log.e(TAG,"!!!!!!!!!!!!!!!!!!!!!!!!!!!!"+name + "get!!!!!!!");
+                Log.e(TAG, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + name + "get!!!!!!!");
                 friendInfo.get(i).setLocation(latLng);
             }
         }
-
     }
 
-    private void updateMarker(){
+    public static void changeUserPin(String name, LatLng latLng){
+        Log.e(TAG,"!!!!!!!!!!!!!!pin!!!!!!!!!!!!!!"+name + "/" + latLng.toString());
         for( int i = 0; i < friendInfo.size(); i++){
-            friendInfo.get(i).getMarker().setVisible(true);
+            if(friendInfo.get(i).getName().equals(name)){
+                Log.e(TAG, "!!!!!!!!!!!!pin!!!!!!!!!!!!!!!!" + name + "get!!!!!!!");
+                friendInfo.get(i).getUserPin().setVisible(true);
+                friendInfo.get(i).setPin(latLng);
+            }
         }
     }
 
@@ -319,10 +339,11 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         currentLocation = location;
         LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
         Log.v(TAG, latLng.latitude + " " + latLng.longitude);
-        if (!isTested){
-            mMarker.setPosition(latLng);
-            mMarker.setVisible(true);
-        }
+        double lat = latLng.latitude;
+        double lng = latLng.longitude;
+        Login.mLogCommandBuffer.add("update_location:" + groupName + ":" + userName + ":" + lat + ":" + lng);
+
+        Log.e(TAG,"login_commandBuffer_update_location");
         if (!initialLocation) {
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
             for (myFriend f : friendInfo) {
@@ -332,5 +353,15 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
             initialLocation = true;
         };
     }
+
+    public static void setText(String name, String text){
+        for( int i = 0; i < friendInfo.size(); i++){
+            if(friendInfo.get(i).getName().equals(name)){
+                friendInfo.get(i).getMarker().setSnippet(text);
+                chatlog.append(text + "\n");
+            }
+        }
+    }
+
 }
 

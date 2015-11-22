@@ -69,6 +69,12 @@ public class ClientTaskR extends AsyncTask<Void, String, Void>{
             case "update_location":
                 MapChat.changeLocation(cmds[2], new LatLng(Double.valueOf(cmds[3]), Double.valueOf(cmds[4])));
                 break;
+            case "send_message":
+                MapChat.setText(cmds[2], cmds[3]);
+                break;
+            case "change_pin":
+                MapChat.changeLocation(cmds[2], new LatLng(Double.valueOf(cmds[3]), Double.valueOf(cmds[4])));
+                break;
         }
     }
 }

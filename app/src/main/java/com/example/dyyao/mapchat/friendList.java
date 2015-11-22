@@ -16,7 +16,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,7 +29,7 @@ public class friendList extends AppCompatActivity {
     private static String TAG = "friendList";
     ArrayList<String> selectedItems;
     String selectedNames;
-    String groupName;
+    public static String groupName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

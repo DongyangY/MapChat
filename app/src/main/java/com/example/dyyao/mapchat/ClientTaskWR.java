@@ -147,6 +147,11 @@ public class ClientTaskWR extends AsyncTask<Void, String, Void> {
             }
             case  "update_location":{
                 Log.d(TAG, "update_location response received");
+                break;
+            }
+            case "change_pin":{
+                Log.d(TAG,"change pin response received");
+                break;
             }
         }
 
