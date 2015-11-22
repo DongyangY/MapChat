@@ -143,8 +143,11 @@ public class ClientTaskWR extends AsyncTask<Void, String, Void> {
                     Log.d(TAG, "Create Group Failed");
                     Toast.makeText(friendlist, "Create Group Failed!", Toast.LENGTH_SHORT).show();
                 }
+                break;
             }
-
+            case  "update_location":{
+                Log.d(TAG, "update_location response received");
+            }
         }
 
         //Log.d(TAG, result[0]);

@@ -16,6 +16,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -34,7 +37,7 @@ import java.util.List;
 /**
  * Created by luluzhao on 11/15/15.
  */
-public class MapChat extends FragmentActivity implements OnMapReadyCallback {
+public class MapChat extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     Button bSend, bshow;
     EditText Inputchat;
@@ -51,6 +54,8 @@ public class MapChat extends FragmentActivity implements OnMapReadyCallback {
     String[] fNames;
 
     public static List<myFriend> friendInfo;
+
+    private GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +80,7 @@ public class MapChat extends FragmentActivity implements OnMapReadyCallback {
             }
 
         });
-        
+
         userId = Login.UserID;
 
         page = (ViewFlipper) findViewById(R.id.flipper);
@@ -139,10 +144,22 @@ public class MapChat extends FragmentActivity implements OnMapReadyCallback {
 
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
-            public boolean onMarkerClick (Marker marker){
+            public boolean onMarkerClick(Marker marker) {
                 return false;
             }
         });
+
+        buildGoogleApiClient();
+    }
+
+    protected synchronized void buildGoogleApiClient() {
+        Log.i("Map: ", "build google play service");
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
     }
 
     private void SwipeRight(){
@@ -247,6 +264,21 @@ public class MapChat extends FragmentActivity implements OnMapReadyCallback {
         for( int i = 0; i < friendInfo.size(); i++){
             friendInfo.get(i).getMarker().setVisible(true);
         }
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        Log.i("Map: ", "google play service connected");
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.i("Map: ", "google play service suspended");
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Log.i("Map: ", "google play service failed");
     }
 }
 
