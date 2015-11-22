@@ -34,16 +34,15 @@ public class ClientTaskWR extends AsyncTask<Void, String, Void> {
     private String serverResponse = "";
     private PrintWriter mPrintWriterOut;
     private Login login;
-    private Register register;
     public static AddFriend addFriend;
+    public static friendList friendlist;
+    public static Register register;
     //Queue<String> sResponseBuffer = new LinkedList<>();
     private static final String TAG = "ClientTaskWR";
 
-    public ClientTaskWR(Queue<String> c, Login l, Register r, AddFriend af) {
+    public ClientTaskWR(Queue<String> c, Login l) {
         mCommandBuffer = c;
         login = l;
-        register = r;
-        addFriend = af;
     }
 
     protected Void doInBackground(Void... arg0){
@@ -124,7 +123,9 @@ public class ClientTaskWR extends AsyncTask<Void, String, Void> {
                 Log.d(TAG, "register response received");
                 if (status.equals("yes")){
                     Log.d(TAG, "Register Succeed!");
-                    register.startActivity(new Intent(register, friendList.class));
+                    Intent registerIntent = new Intent(register, friendList.class);
+                    registerIntent.putExtra("friendNames", sResponses);
+                    register.startActivity(registerIntent);
                 } else {
                     Log.d(TAG, "Register Failed!");
                     Toast.makeText(register,"Register Failed!", Toast.LENGTH_SHORT).show();
@@ -134,14 +135,29 @@ public class ClientTaskWR extends AsyncTask<Void, String, Void> {
             case "add_friend":{
                 Log.d(TAG, "add_friend response received");
                 if(status.equals("yes")){
+                    Log.d(TAG, "Add Friend Succeed");
                     String[] fNames = Arrays.copyOfRange(sResponses, 2, sResponses.length);
                     Intent returnIntent = new Intent();
                     returnIntent.putExtra("result",fNames);
-                    addFriend.setResult(Activity.RESULT_OK,returnIntent);
+                    addFriend.setResult(Activity.RESULT_OK, returnIntent);
                     addFriend.finish();
                 } else {
                     Log.d(TAG, "Add_Friend Failed!");
                     Toast.makeText(addFriend, "Add Friend Failed!", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            }
+            case "create_group":{
+                Log.d(TAG, "create_group response received");
+                if (status.equals("yes")){
+                    Log.d(TAG, "Create Group Succeed");
+                    Intent friendlistIntent = new Intent(friendlist, MapChat.class);
+                    friendlistIntent.putExtra("friendNames", sResponses);
+                    friendlist.startActivity(friendlistIntent);
+                    //friendlist.startActivity(new Intent(friendlist, MapChat.class));
+                }else{
+                    Log.d(TAG, "Create Group Failed");
+                    //Toast.makeText()
                 }
             }
 

@@ -11,12 +11,12 @@ public class myFriend {
 
     private String userName;
     private boolean selected;
-    private Marker marker;
+    private Marker userMarker;
 
-    public myFriend (String name){
+    public myFriend (String name, Marker marker){
         userName = name;
         selected = false;
-        //marker.setTitle(name);
+        userMarker = marker;
     }
 
     public String getName() {
@@ -36,10 +36,11 @@ public class myFriend {
     }
 
     public void setLocation(LatLng latLng){
-        marker.setPosition(latLng);
+        userMarker.setPosition(latLng);
     }
 
     public Marker getMarker(){
-        return marker;
+        return userMarker;
     }
+
 }

@@ -20,7 +20,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     Button bLogin;
     EditText etUsername, etPassword;
     TextView tvRegisterLink;
-    public static final String SERVER_IP_ADDRESS = "192.168.1.220";
+    public static final String SERVER_IP_ADDRESS = "192.168.1.39";
     public static final int SERVER_PORT_WR = 4444;
     public static final int SERVER_PORT_R = 5555;
     public static  Queue<String> mLogCommandBuffer;
@@ -42,7 +42,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
         mLogCommandBuffer = new LinkedList<>();
 
-        ClientTaskWR mClientTaskWR = new ClientTaskWR(mLogCommandBuffer, this, null, null);
+        ClientTaskWR mClientTaskWR = new ClientTaskWR(mLogCommandBuffer, this);
         mClientTaskWR.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         ClientTaskR mClientTaskR = new ClientTaskR();
         mClientTaskR.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);

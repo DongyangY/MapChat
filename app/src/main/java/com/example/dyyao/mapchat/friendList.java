@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -22,23 +23,30 @@ public class friendList extends AppCompatActivity {
     private Button addG;
     private Button test;
     private ListView friendlist;
+    private static String TAG = "friendList";
+    ArrayList<String> selectedItems;
+    String selectedNames;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend_list);
+        ClientTaskWR.friendlist = this;
+        ClientTaskR.fl = this;
 
         addF = (Button) findViewById(R.id.addFriendButton);
         addG = (Button) findViewById(R.id.addGroupButton);
-        test = (Button) findViewById(R.id.testButton);
+        //test = (Button) findViewById(R.id.testButton);
 
         final ArrayList<String> friends = new ArrayList<>();
         String[] values = getIntent().getStringArrayExtra("friendNames");
-        String[] fNames = Arrays.copyOfRange(values, 2, values.length);
+        final String[] fNames = Arrays.copyOfRange(values, 2, values.length);
+        selectedItems = new ArrayList<>();
         /*String[] values = new String[] { "a", "b", "c", "d", "e", "f", "g",
                 "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s",
                 "t", "u", "w", "x", "y", "z" };
         */
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+        final ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_multiple_choice, fNames);
 
         friendlist = (ListView) findViewById(R.id.listView);
@@ -52,16 +60,31 @@ public class friendList extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
             }
         });
 
         addG.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(friendList.this, MapChat.class));
+                Log.d(TAG, "add group");
+                SparseBooleanArray checked = friendlist.getCheckedItemPositions();
+                Log.d(TAG, String.valueOf(checked.size()));
+                selectedNames = "";
+                for (int i = 0; i < checked.size(); i++) {
+                    int position = checked.keyAt(i);
+                    Log.d(TAG, String.valueOf(position));
 
+                    if (checked.valueAt(i)){
+                        Log.d(TAG, String.valueOf(adapter.getItem(position)));
+                        selectedItems.add(adapter.getItem(position));
+                        selectedNames +=":";
+                        selectedNames += selectedItems.get(i);
+                    }
 
+                }
+                Log.d(TAG, "group member " + selectedNames);
+                Login.mLogCommandBuffer.add("create_group:" + "new" + selectedNames);
+                //startActivity(new Intent(friendList.this, MapChat.class));
             }
         });
 
@@ -75,7 +98,7 @@ public class friendList extends AppCompatActivity {
 
             }
         });
-
+        /*
         test.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -84,6 +107,7 @@ public class friendList extends AppCompatActivity {
 
             }
         });
+        */
     }
 
     @Override

@@ -29,6 +29,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        ClientTaskWR.register = this;
         Log.d(TAG, "Enter Register");
         etFirstName = (EditText) findViewById(R.id.et_firstname);
         etLastName = (EditText) findViewById(R.id.et_lastname);
