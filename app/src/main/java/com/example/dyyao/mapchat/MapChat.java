@@ -345,6 +345,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
     }
 
     public static void setText(String name, String text){
+        Log.d(TAG, "setText entered!");
         for( int i = 0; i < friendInfo.size(); i++){
             if(friendInfo.get(i).getName().equals(name)){
                 friendInfo.get(i).getMarker().setSnippet(text);
