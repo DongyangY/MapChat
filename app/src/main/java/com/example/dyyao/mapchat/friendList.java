@@ -25,7 +25,7 @@ public class friendList extends AppCompatActivity {
     private ListView friendlist;
     private static String TAG = "friendList";
     ArrayList<String> selectedItems;
-    String selectedNames = "";
+    String selectedNames;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +69,7 @@ public class friendList extends AppCompatActivity {
                 Log.d(TAG, "add group");
                 SparseBooleanArray checked = friendlist.getCheckedItemPositions();
                 Log.d(TAG, String.valueOf(checked.size()));
+                selectedNames = "";
                 for (int i = 0; i < checked.size(); i++) {
                     int position = checked.keyAt(i);
                     Log.d(TAG, String.valueOf(position));
