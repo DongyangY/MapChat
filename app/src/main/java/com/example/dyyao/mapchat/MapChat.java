@@ -234,7 +234,6 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
                 mMap.getUiSettings().setMyLocationButtonEnabled(true);
                 mMap.getUiSettings().setZoomControlsEnabled(true);
                 mMap.getUiSettings().setCompassEnabled(true);
-                mMap.setMyLocationEnabled(true);
             }
         }
 
