@@ -2,6 +2,12 @@ package com.example.dyyao.mapchat;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -55,7 +61,9 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
     public static List<myFriend> friendInfo;
     private Marker mMarker;
     private Marker mPin = null;
-    private final String[] colors = { "blue", "red", "green", "yellow", "black"};
+    private final int[] colors = { R.drawable.peopleblue, R.drawable.peoplered, R.drawable.peoplegreen, R.drawable.peopleyellow, R.drawable.peoplepurple};
+    private final int[] colorspin = { R.drawable.pinblue, R.drawable.pinred, R.drawable.pinred, R.drawable.pinred, R.drawable.pinred};
+
     private String groupName;
     private String userName;
     private final String pinName = "MyPin";
@@ -151,6 +159,15 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
                 //setting the title for the marker.
                 //this will be displayed on taping the marker
                 markerOptions.title(pinName);
+
+                Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.pinblue).copy(Bitmap.Config.ARGB_8888, true);
+                BitmapDrawable draw = new BitmapDrawable(getResources(), bm);
+                Bitmap drawBmp = draw.getBitmap();
+
+                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(drawBmp))
+                        .anchor(0.5f, 1);
+
+
                 mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
 
                 if(!isExist) {
@@ -176,10 +193,31 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
 
     }
 
+    public void setPeopleMarker(int drawableColor, String peopleUserID, Marker marker, boolean hasText){
+
+        Bitmap bm = BitmapFactory.decodeResource(getResources(), drawableColor).copy(Bitmap.Config.ARGB_8888, true);
+        Canvas canvas = new Canvas(bm);
+
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.FILL_AND_STROKE);
+        paint.setTextSize(40);
+        paint.setColor(Color.GRAY);
+
+        if (hasText)
+            canvas.drawText(peopleUserID, 0, 3 * bm.getHeight() / 4, paint); // paint defines the text color, stroke width, size
+
+        BitmapDrawable draw = new BitmapDrawable(getResources(), bm);
+        Bitmap drawBmp = draw.getBitmap();
+        marker = mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(40.502661,-74.451771))
+                .icon(BitmapDescriptorFactory.fromBitmap(drawBmp))
+                .anchor(0.5f, 1));
+        marker.setVisible(false);
+
+    }
+
     private void intialSelf() {
-        mMarker =  mMap.addMarker(
-                new MarkerOptions().position(new LatLng(40.502661,-74.451771)).title(userName));
-        mMarker.setVisible(false);
+        setPeopleMarker(colors[0], userName, mMarker, true);
     }
 
     private void setUpMap() {
@@ -228,9 +266,9 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
                                float velocityY) {
 
             float sensitvity = 50;
-            if((e1.getX() - e2.getX()) > sensitvity){
+            if((e1.getX() - e2.getX()) > sensitvity) {
                 SwipeLeft();
-            }else if((e2.getX() - e1.getX()) > sensitvity){
+            } else if ((e2.getX() - e1.getX()) > sensitvity) {
                 SwipeRight();
             }
 
@@ -267,12 +305,12 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
     private void initialFriend(){
         for( int i = 1; i < fNames.length; i++) {
             if(!fNames[i].equals(userName)) {
-                Marker m = mMap.addMarker(
-                        new MarkerOptions().position(new LatLng(40.502661, -74.451771)).title(fNames[i]));
-                m.setVisible(false);
-                Marker p = mMap.addMarker(
-                        new MarkerOptions().position(new LatLng(40.502661, -74.451771)).title(fNames[i]));
-                p.setVisible(false);
+                Marker m = null;
+                setPeopleMarker(colors[i], fNames[i], m, true);
+
+                Marker p = null;
+                setPeopleMarker(colorspin[i], fNames[i], p, false);
+
                 friendInfo.add(new myFriend(fNames[i], m, colors[i], p));
                 Log.e(TAG, fNames[i]);
             }
@@ -345,7 +383,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
     }
 
     public static void setText(String name, String text){
-        Log.d(TAG, "setText entered!");
+        Log.d(TAG, "-----------------------------------------------setText entered!----------------------------------");
         for( int i = 0; i < friendInfo.size(); i++){
             if(friendInfo.get(i).getName().equals(name)){
                 friendInfo.get(i).getMarker().setSnippet(text);

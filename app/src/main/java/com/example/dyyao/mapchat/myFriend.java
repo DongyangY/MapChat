@@ -13,9 +13,9 @@ public class myFriend {
     private boolean selected;
     private Marker userMarker;
     private Marker userPin;
-    private String color;
+    private int color;
 
-    public myFriend (String name, Marker marker, String c, Marker p){
+    public myFriend (String name, Marker marker, int c, Marker p){
         userName = name;
         selected = false;
         userMarker = marker;
@@ -53,7 +53,7 @@ public class myFriend {
     public Marker getUserPin(){
         return userPin;
     }
-    public String getColor() {
+    public int getColor() {
         return color;
     }
 
