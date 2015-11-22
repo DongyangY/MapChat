@@ -96,6 +96,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
                 String sentence = Inputchat.getText().toString();
                 chatlog.append(sentence + "\n");
                 mMarker.setSnippet(sentence);
+                mMarker.showInfoWindow();
                 //mMarker.setPosition(new LatLng(40, -80));
                 Login.mLogCommandBuffer.add("send_message:" + groupName + ":" + userName + ":" + sentence);
 
@@ -209,7 +210,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         BitmapDrawable draw = new BitmapDrawable(getResources(), bm);
         Bitmap drawBmp = draw.getBitmap();
         Marker marker = mMap.addMarker(new MarkerOptions()
-                .position(new LatLng(40.502661,-74.451771))
+                .position(new LatLng(40.502661, -74.451771))
                 .icon(BitmapDescriptorFactory.fromBitmap(drawBmp))
                 .anchor(0.5f, 1));
         marker.setVisible(false);
@@ -231,9 +232,10 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
             // Check if we were successful in obtaining the map.
             if (mMap != null) {
                 mMap.moveCamera(CameraUpdateFactory.zoomTo(12));
-                mMap.getUiSettings().setMyLocationButtonEnabled(true);
+                mMap.getUiSettings().setMyLocationButtonEnabled(false);
                 mMap.getUiSettings().setZoomControlsEnabled(true);
                 mMap.getUiSettings().setCompassEnabled(true);
+                mMap.setMyLocationEnabled(false);
             }
         }
 
@@ -370,9 +372,14 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         Log.v(TAG, latLng.latitude + " " + latLng.longitude);
         double lat = latLng.latitude;
         double lng = latLng.longitude;
+
+        mMarker.setPosition(latLng);
+        mMarker.setVisible(true);
+
         Login.mLogCommandBuffer.add("update_location:" + groupName + ":" + userName + ":" + lat + ":" + lng);
 
         Log.e(TAG,"login_commandBuffer_update_location");
+
         if (!initialLocation) {
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
             for (myFriend f : friendInfo) {
@@ -380,7 +387,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
                 f.getMarker().setVisible(true);
             }
             initialLocation = true;
-        };
+        }
     }
 
     public static void setText(String name, String text){
@@ -388,6 +395,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         for( int i = 0; i < friendInfo.size(); i++){
             if(friendInfo.get(i).getName().equals(name)){
                 friendInfo.get(i).getMarker().setSnippet(text);
+                friendInfo.get(i).getMarker().showInfoWindow();
                 chatlog.append(text + "\n");
             }
         }
