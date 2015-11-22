@@ -306,10 +306,10 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         for( int i = 1; i < fNames.length; i++) {
             if(!fNames[i].equals(userName)) {
                 Marker m = null;
-                setPeopleMarker(colors[i], fNames[i], m, true);
+                setPeopleMarker(colors[i - 1], fNames[i], m, true);
 
                 Marker p = null;
-                setPeopleMarker(colorspin[i], fNames[i], p, false);
+                setPeopleMarker(colorspin[i - 1], fNames[i], p, false);
 
                 friendInfo.add(new myFriend(fNames[i], m, colors[i], p));
                 Log.e(TAG, fNames[i]);
