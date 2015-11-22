@@ -12,11 +12,15 @@ public class myFriend {
     private String userName;
     private boolean selected;
     private Marker userMarker;
+    private Marker userPin;
+    private String color;
 
-    public myFriend (String name, Marker marker){
+    public myFriend (String name, Marker marker, String c, Marker p){
         userName = name;
         selected = false;
         userMarker = marker;
+        color = c;
+        userPin = p;
     }
 
     public String getName() {
@@ -39,8 +43,18 @@ public class myFriend {
         userMarker.setPosition(latLng);
     }
 
+    public void setPin(LatLng latLng){
+        userPin.setPosition(latLng);
+    }
+
     public Marker getMarker(){
         return userMarker;
+    }
+    public Marker getUserPin(){
+        return userPin;
+    }
+    public String getColor() {
+        return color;
     }
 
 }

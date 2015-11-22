@@ -3,16 +3,12 @@ package com.example.dyyao.mapchat;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.EditText;
-
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Arrays;
@@ -67,11 +63,17 @@ public class ClientTaskR extends AsyncTask<Void, String, Void>{
         switch (cmds[0]) {
             case "create_group":
                 Intent intent = new Intent(fl, MapChat.class);
-                intent.putExtra("friendNames", Arrays.copyOfRange(cmds, 2, cmds.length));
+                intent.putExtra("friendNames", cmds);
                 fl.startActivity(intent);
                 break;
             case "update_location":
                 MapChat.changeLocation(cmds[2], new LatLng(Double.valueOf(cmds[3]), Double.valueOf(cmds[4])));
+                break;
+            case "send_message":
+                MapChat.setText(cmds[2], cmds[3]);
+                break;
+            case "change_pin":
+                MapChat.changeUserPin(cmds[2], new LatLng(Double.valueOf(cmds[3]), Double.valueOf(cmds[4])));
                 break;
         }
     }

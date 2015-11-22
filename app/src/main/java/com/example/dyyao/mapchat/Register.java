@@ -20,7 +20,6 @@ import java.util.Queue;
 public class Register extends AppCompatActivity implements View.OnClickListener {
 
     private final String TAG = "Register";
-    //public Queue<String> mRegCommandBuffer;
     Button bRegister;
     EditText etFirstName, etLastName, etUsername, etPassword, etCPassword;
 
@@ -38,15 +37,6 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
         etCPassword = (EditText) findViewById(R.id.et_cpassword);
         bRegister = (Button) findViewById(R.id.btn_register);
         bRegister.setOnClickListener(this);
-
-        //mRegCommandBuffer = new LinkedList<>();
-
-        //ClientTaskWR mClientTaskWR = new ClientTaskWR(mRegCommandBuffer, null, this, null);
-        //mClientTaskWR.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        //ClientTaskR mClientTaskR = new ClientTaskR();
-        //mClientTaskR.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        //ClientTaskWR mClientTaskWR = new ClientTaskWR(mRegCommandBuffer, null, this);
-        //mClientTaskWR.execute();
     }
 
 
@@ -64,7 +54,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
                     etCPassword.setText("");
                     Toast.makeText(this, "Try Again!", Toast.LENGTH_SHORT).show();
                 }
-                //startActivity(new Intent(this, friendList.class));
+                Login.UserID = etUsername.getText().toString();
                 break;
         }
     }

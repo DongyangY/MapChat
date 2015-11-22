@@ -4,11 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.Toast;
-
-import com.google.android.gms.location.internal.LocationRequestUpdateData;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,9 +14,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.Queue;
 
 /**
@@ -68,14 +62,7 @@ public class ClientTaskWR extends AsyncTask<Void, String, Void> {
 
                     Log.d(TAG, "execute line");
                     serverResponse = mBufferedReader.readLine();
-                    //sResponseBuffer.add(serverResponse);
                     Log.d(TAG, serverResponse);
-                    /*
-                    if (line.equals("no") && mSocket != null){
-                        mSocket.close();
-                    }
-                    */
-                    //Log.d(TAG, serverResponse);
                     publishProgress(serverResponse);
                 } catch (UnknownHostException e){
                     e.printStackTrace();
@@ -96,7 +83,6 @@ public class ClientTaskWR extends AsyncTask<Void, String, Void> {
     protected void onProgressUpdate(String... result){
         super.onProgressUpdate(result);
         String[] sResponses = result[0].split(":");
-        //int cmdsLength = cmds.length;
         String command = sResponses[0];
         Log.d(TAG, command);
         String status = sResponses[1];
@@ -110,7 +96,6 @@ public class ClientTaskWR extends AsyncTask<Void, String, Void> {
                     Intent loginIntent = new Intent(login, friendList.class);
                     loginIntent.putExtra("friendNames", sResponses);
                     login.startActivity(loginIntent);
-                    //login.startActivity(new Intent(login, friendList.class));
                 } else {
                     Log.d(TAG, "Login Failed");
                     Toast.makeText(login, "Login Failed!",Toast.LENGTH_SHORT).show();
@@ -154,13 +139,24 @@ public class ClientTaskWR extends AsyncTask<Void, String, Void> {
                     Intent friendlistIntent = new Intent(friendlist, MapChat.class);
                     friendlistIntent.putExtra("friendNames", sResponses);
                     friendlist.startActivity(friendlistIntent);
-                    //friendlist.startActivity(new Intent(friendlist, MapChat.class));
                 }else{
                     Log.d(TAG, "Create Group Failed");
-                    //Toast.makeText()
+                    Toast.makeText(friendlist, "Create Group Failed!", Toast.LENGTH_SHORT).show();
                 }
+                break;
             }
-
+            case  "update_location":{
+                Log.d(TAG, "update_location response received");
+                break;
+            }
+            case "change_pin":{
+                Log.d(TAG,"change pin response received");
+                break;
+            }
+            case "send_message":{
+                Log.d(TAG,"send message response received");
+                break;
+            }
         }
 
         //Log.d(TAG, result[0]);

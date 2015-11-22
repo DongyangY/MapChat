@@ -3,6 +3,8 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include
+        layout="@layout/tool_bar"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -12,7 +14,8 @@
         android:textSize="@dimen/abc_text_size_large_material"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="false"
-        android:textColor="@color/abc_primary_text_disable_only_material_light" />
+        android:textColor="@color/abc_primary_text_disable_only_material_light"
+        android:layout_marginTop="72dp" />
 
     <EditText
         android:id="@+id/et_username"
@@ -45,12 +48,14 @@
         android:id="@+id/tv_RegisterLink"
         android:layout_width="wrap_content"
         android:text="Register Here!"
+        android:focusable="false"
         android:layout_gravity="center_horizontal"
         android:layout_height="wrap_content"
         android:layout_below="@+id/b_Login"
         android:layout_centerHorizontal="true"
         android:maxLines="1"
-        android:editable="false" />
+        android:editable="false"
+        android:clickable="true"/>
 
     <TextView
         android:layout_width="wrap_content"

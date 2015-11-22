@@ -2,18 +2,20 @@ package com.example.dyyao.mapchat;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseBooleanArray;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,9 +25,11 @@ public class friendList extends AppCompatActivity {
     private Button addG;
     private Button test;
     private ListView friendlist;
+    private EditText gpNames;
     private static String TAG = "friendList";
     ArrayList<String> selectedItems;
     String selectedNames;
+    public static String groupName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +79,8 @@ public class friendList extends AppCompatActivity {
                     Log.d(TAG, String.valueOf(position));
 
                     if (checked.valueAt(i)){
+                        /*HUGE BUGGGGGGGGGGGGGGGGGGGGGGG!*/
+                        /*login button should be clicked between addF and addG*/
                         Log.d(TAG, String.valueOf(adapter.getItem(position)));
                         selectedItems.add(adapter.getItem(position));
                         selectedNames +=":";
@@ -83,8 +89,8 @@ public class friendList extends AppCompatActivity {
 
                 }
                 Log.d(TAG, "group member " + selectedNames);
-                Login.mLogCommandBuffer.add("create_group:" + "new" + selectedNames);
-                //startActivity(new Intent(friendList.this, MapChat.class));
+                open();
+                //Login.mLogCommandBuffer.add("create_group:" + "new" + selectedNames);
             }
         });
 
@@ -93,9 +99,6 @@ public class friendList extends AppCompatActivity {
             public void onClick(View v) {
                 Intent afIntent = new Intent(friendList.this, AddFriend.class);
                 startActivityForResult(afIntent, 1);
-
-                //startActivity(new Intent(friendList.this, AddFriend.class));
-
             }
         });
         /*
@@ -128,15 +131,20 @@ public class friendList extends AppCompatActivity {
             }
         }
     }//onActivityResult
+
     public void open(){
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-
-        alertDialogBuilder.setMessage("Do you want to accept this request? ");
-
+        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflater.inflate(R.layout.dialog_sign, null);
+        alertDialogBuilder.setView(v);
+        gpNames = (EditText) v.findViewById(R.id.groupname);
+        Log.d(TAG, "Group name: " +  gpNames.getText().toString());
         alertDialogBuilder.setPositiveButton("yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface arg0, int arg1) {
-                Toast.makeText(friendList.this, "You clicked yes button", Toast.LENGTH_LONG).show();
+                //Log.d(TAG, "Group name: " +  String.valueOf(gpNames));
+                groupName = gpNames.getText().toString();
+                Login.mLogCommandBuffer.add("create_group:" + groupName + selectedNames);
             }
         });
 
@@ -146,7 +154,6 @@ public class friendList extends AppCompatActivity {
                 //finish();
             }
         });
-
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
