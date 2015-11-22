@@ -54,6 +54,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
                     etCPassword.setText("");
                     Toast.makeText(this, "Try Again!", Toast.LENGTH_SHORT).show();
                 }
+                Login.UserID = etUsername.getText().toString();
                 break;
         }
     }

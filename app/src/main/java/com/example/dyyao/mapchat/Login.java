@@ -24,6 +24,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     public static final int SERVER_PORT_WR = 4444;
     public static final int SERVER_PORT_R = 5555;
     public static  Queue<String> mLogCommandBuffer;
+    public static String UserID;
     private static final String TAG = "Login";
 
 
@@ -55,6 +56,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         switch (view.getId()) {
             case R.id.b_Login:
                 Log.d(TAG, "at");
+                UserID = etUsername.getText().toString();
                 mLogCommandBuffer.add("login:" + etUsername.getText().toString() + ":" + etPassword.getText().toString());
                 Log.d(TAG, "buffer size " + String.valueOf(mLogCommandBuffer.size()));
                 break;

@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -25,9 +26,11 @@ public class friendList extends AppCompatActivity {
     private Button addG;
     private Button test;
     private ListView friendlist;
+    private EditText gpNames;
     private static String TAG = "friendList";
     ArrayList<String> selectedItems;
     String selectedNames;
+    String groupName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +90,8 @@ public class friendList extends AppCompatActivity {
 
                 }
                 Log.d(TAG, "group member " + selectedNames);
-                Login.mLogCommandBuffer.add("create_group:" + "new" + selectedNames);
+                open();
+                //Login.mLogCommandBuffer.add("create_group:" + "new" + selectedNames);
             }
         });
 
@@ -128,16 +132,20 @@ public class friendList extends AppCompatActivity {
             }
         }
     }//onActivityResult
+
     public void open(){
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.dialog_sign, null);
         alertDialogBuilder.setView(v);
+        gpNames = (EditText) v.findViewById(R.id.groupname);
+        Log.d(TAG, "Group name: " +  gpNames.getText().toString());
         alertDialogBuilder.setPositiveButton("yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface arg0, int arg1) {
-                startActivity(new Intent(friendList.this, MapChat.class));
-                //Toast.makeText(friendList.this, "You clicked yes button", Toast.LENGTH_LONG).show();
+                //Log.d(TAG, "Group name: " +  String.valueOf(gpNames));
+                groupName = gpNames.getText().toString();
+                Login.mLogCommandBuffer.add("create_group:" + groupName + selectedNames);
             }
         });
 

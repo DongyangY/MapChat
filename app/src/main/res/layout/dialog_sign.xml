@@ -9,15 +9,6 @@
         android:background = "#FFFFBB33"
         android:contentDescription = "@string/app_name"
         android:id="@+id/imageView" />
-    <EditText
-        android:id = "@+id/groupname"
-        android:inputType = "textEmailAddress"
-        android:layout_width = "match_parent"
-        android:layout_height = "wrap_content"
-        android:layout_marginLeft = "4dp"
-        android:layout_marginRight = "4dp"
-        android:layout_below="@+id/tv_group"
-        android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -25,8 +16,17 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Group Name"
         android:id="@+id/tv_group"
-        android:layout_below="@+id/imageView"
-        android:layout_alignStart="@+id/groupname" />
+        android:layout_below="@id/imageView" />
+
+    <EditText
+        android:id = "@+id/groupname"
+        android:inputType = "textEmailAddress"
+        android:layout_width = "match_parent"
+        android:layout_height = "wrap_content"
+        android:layout_marginLeft = "4dp"
+        android:layout_marginRight = "4dp"
+        android:layout_below="@id/tv_group"
+        android:layout_alignParentStart="true" />
 
 
 </RelativeLayout>
