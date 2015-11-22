@@ -41,7 +41,7 @@ import java.util.List;
 public class MapChat extends FragmentActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener{
-    Button bSend, bshow;
+    Button bSend;
     EditText Inputchat;
     static TextView chatlog;
     ViewFlipper page;
@@ -85,10 +85,11 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         bSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //String sentence = Inputchat.getText().toString() + "\n";
-                //chatlog.append(sentence);
+                String sentence = Inputchat.getText().toString();
+                chatlog.append(sentence + "\n");
+                mMarker.setSnippet(sentence);
                 //mMarker.setPosition(new LatLng(40, -80));
-                Login.mLogCommandBuffer.add("send_message:" + groupName + ":" + userName + ":" + Inputchat.getText().toString());
+                Login.mLogCommandBuffer.add("send_message:" + groupName + ":" + userName + ":" + sentence);
 
             }
 
@@ -140,17 +141,6 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         //icon = BitmapDescriptorFactory.fromResource(R.drawable.simpleapple);
         //markerOptions = new MarkerOptions().position(sydney).title("Current Location").snippet("Thinking of finding some thing....").icon(icon);
         //move = mMap.addMarker(markerOptions);
-
-        bshow = (Button) findViewById(R.id.btn_show);
-        bshow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mMarker.setPosition(new LatLng(40, -80));
-
-                Login.mLogCommandBuffer.add("update_location:" + groupName + ":" + userName + ":" + "40" + ":" + "-80");
-
-            }
-        });
 
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override

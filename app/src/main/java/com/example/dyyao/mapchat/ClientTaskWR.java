@@ -153,6 +153,10 @@ public class ClientTaskWR extends AsyncTask<Void, String, Void> {
                 Log.d(TAG,"change pin response received");
                 break;
             }
+            case "send_message":{
+                Log.d(TAG,"send message response received");
+                break;
+            }
         }
 
         //Log.d(TAG, result[0]);
