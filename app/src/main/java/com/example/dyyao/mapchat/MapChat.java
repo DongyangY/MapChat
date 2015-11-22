@@ -182,9 +182,11 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
                 mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
-                        if(marker.getTitle().equals(pinName)) {
-                            open(marker);
-                            isExist = false;
+                        if(!marker.getTitle().equals(null)) {
+                            if (marker.getTitle().equals(pinName)) {
+                                open(marker);
+                                isExist = false;
+                            }
                         }
                         return false;
                     }

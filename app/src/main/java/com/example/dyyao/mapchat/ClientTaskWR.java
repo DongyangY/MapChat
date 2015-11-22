@@ -82,11 +82,12 @@ public class ClientTaskWR extends AsyncTask<Void, String, Void> {
 
     protected void onProgressUpdate(String... result){
         super.onProgressUpdate(result);
+        Log.d(TAG,result[0]);
         String[] sResponses = result[0].split(":");
         String command = sResponses[0];
-        Log.d(TAG, command);
+        Log.d(TAG, "command is: " + command);
         String status = sResponses[1];
-        Log.d(TAG, status);
+        Log.d(TAG, "status is:" + status);
 
         switch (command){
             case "login":{
