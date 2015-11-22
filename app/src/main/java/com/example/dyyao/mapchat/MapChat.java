@@ -62,7 +62,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
     private Marker mMarker;
     private Marker mPin = null;
     private final int[] colors = { R.drawable.peopleblue, R.drawable.peoplered, R.drawable.peoplegreen, R.drawable.peopleyellow, R.drawable.peoplepurple};
-    private final int[] colorspin = { R.drawable.pinblue, R.drawable.pinred, R.drawable.pinred, R.drawable.pinred, R.drawable.pinred};
+    private final int[] colorspin = { R.drawable.pinblue, R.drawable.pinred, R.drawable.pingreen, R.drawable.pinyellow, R.drawable.pinpurple};
 
     private String groupName;
     private String userName;
@@ -193,7 +193,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
 
     }
 
-    public void setPeopleMarker(int drawableColor, String peopleUserID, Marker marker, boolean hasText){
+    public Marker setPeopleMarker(int drawableColor, String peopleUserID, boolean hasText){
 
         Bitmap bm = BitmapFactory.decodeResource(getResources(), drawableColor).copy(Bitmap.Config.ARGB_8888, true);
         Canvas canvas = new Canvas(bm);
@@ -208,16 +208,18 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
 
         BitmapDrawable draw = new BitmapDrawable(getResources(), bm);
         Bitmap drawBmp = draw.getBitmap();
-        marker = mMap.addMarker(new MarkerOptions()
+        Marker marker = mMap.addMarker(new MarkerOptions()
                 .position(new LatLng(40.502661,-74.451771))
                 .icon(BitmapDescriptorFactory.fromBitmap(drawBmp))
                 .anchor(0.5f, 1));
         marker.setVisible(false);
 
+        return marker;
+
     }
 
     private void intialSelf() {
-        setPeopleMarker(colors[0], userName, mMarker, true);
+        mMarker = setPeopleMarker(colors[0], userName, true);
     }
 
     private void setUpMap() {
@@ -306,11 +308,9 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         int j = 1;
         for( int i = 1; i < fNames.length; i++) {
             if(!fNames[i].equals(userName)) {
-                Marker m = null;
-                setPeopleMarker(colors[j], fNames[i], m, true);
+                Marker m = setPeopleMarker(colors[j], fNames[i], true);
 
-                Marker p = null;
-                setPeopleMarker(colorspin[j], fNames[i], p, false);
+                Marker p = setPeopleMarker(colorspin[j], fNames[i], false);
 
                 friendInfo.add(new myFriend(fNames[i], m, colors[j], p));
                 Log.e(TAG, fNames[i]);
