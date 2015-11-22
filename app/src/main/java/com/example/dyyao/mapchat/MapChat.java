@@ -2,6 +2,7 @@ package com.example.dyyao.mapchat;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -18,17 +19,17 @@ import android.widget.ViewFlipper;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.location.LocationListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,25 +38,34 @@ import java.util.List;
 /**
  * Created by luluzhao on 11/15/15.
  */
-public class MapChat extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
-
+public class MapChat extends FragmentActivity implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        LocationListener{
     Button bSend, bshow;
     EditText Inputchat;
     TextView chatlog;
     ViewFlipper page;
     Animation animFlipInForeward;
     Animation animFlipInBackward;
-    static MarkerOptions markerOptions;
     static BitmapDescriptor icon;
-    static Marker move;
     private GoogleMap mMap;
-    String userId;
     String[] values;
     String[] fNames;
 
     public static List<myFriend> friendInfo;
+    private Marker mMarker;
+    private final String[] colors = { "blue", "red", "green", "yellow", "black"};
+    private String groupName;
+    private String userName;
+    public static final String TAG = "MapChat";
 
+    private boolean initialLocation = false;
+    private boolean isTested = false;
+
+    private Location currentLocation = null;
     private GoogleApiClient mGoogleApiClient;
+    private LocationRequest mLocationRequest;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,21 +82,21 @@ public class MapChat extends FragmentActivity implements OnMapReadyCallback, Goo
         bSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String sentence = Inputchat.getText().toString() + "\n";
-                chatlog.append(sentence);
-                //LatLng l = new LatLng(40.513817, -74.464844);
-                //changeLocation("a", l);
-                //updateMarker();
+                //String sentence = Inputchat.getText().toString() + "\n";
+                //chatlog.append(sentence);
+                isTested = true;
+                mMarker.setPosition(new LatLng(40, -80));
             }
 
         });
 
-        userId = Login.UserID;
-
+        userName = Login.UserID;
+        groupName = fNames[0];
+        Log.e(TAG,groupName);
         page = (ViewFlipper) findViewById(R.id.flipper);
         animFlipInForeward = AnimationUtils.loadAnimation(this, R.anim.flipin);
         animFlipInBackward = AnimationUtils.loadAnimation(this, R.anim.flipin_reverse);
-
+/*
         try {
             if (mMap == null) {
                 mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
@@ -101,21 +111,41 @@ public class MapChat extends FragmentActivity implements OnMapReadyCallback, Goo
         mMap.getUiSettings().setCompassEnabled(true);
         mMap.setMyLocationEnabled(true);
         //Set up Map friend list
+*/
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        //Location service
+
+        mGoogleApiClient.connect();
+
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(10000);       // 10 seconds, in milliseconds
+        mLocationRequest.setFastestInterval(5000); // 5 second, in milliseconds
+
+
+        setUpMap();
+        initialFriend();
+        intialSelf();
+
 
         LatLng sydney = new LatLng(40, -80);
         icon = BitmapDescriptorFactory.fromResource(R.drawable.simpleapple);
-        markerOptions = new MarkerOptions().position(sydney).title("Current Location").snippet("Thinking of finding some thing....").icon(icon);
-        move = mMap.addMarker(markerOptions);
+        //markerOptions = new MarkerOptions().position(sydney).title("Current Location").snippet("Thinking of finding some thing....").icon(icon);
+        //move = mMap.addMarker(markerOptions);
 
         bshow = (Button) findViewById(R.id.btn_show);
         bshow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                move.remove();
-                LatLng where = new LatLng(40, -70);
-                markerOptions = new MarkerOptions().position(where).title("Chat log").snippet("please keep talking....").icon(icon);
-                markerOptions.position(where);
-                move = mMap.addMarker(markerOptions);
+                isTested = true;
+                mMarker.setPosition(new LatLng(40, -80));
+
+                Login.mLogCommandBuffer.add("update_location:" + groupName + ":" + userName + ":" + "40" + ":" + "-80");
+
             }
         });
 
@@ -142,25 +172,33 @@ public class MapChat extends FragmentActivity implements OnMapReadyCallback, Goo
             }
         });
 
-        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                return false;
+    }
+
+    private void intialSelf() {
+        mMarker =  mMap.addMarker(
+                new MarkerOptions().position(new LatLng(40.502661,-74.451771)).title(userName));
+        mMarker.setVisible(false);
+    }
+
+    private void setUpMap() {
+        if (mMap == null) {
+            // Try to obtain the map from the SupportMapFragment.
+            mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+            Log.v(TAG, "Set map");
+
+            // Check if we were successful in obtaining the map.
+            if (mMap != null) {
+                mMap.moveCamera(CameraUpdateFactory.zoomTo(12));
+                mMap.getUiSettings().setMyLocationButtonEnabled(true);
+                mMap.getUiSettings().setZoomControlsEnabled(true);
+                mMap.getUiSettings().setCompassEnabled(true);
+                mMap.setMyLocationEnabled(true);
             }
-        });
+        }
 
-        buildGoogleApiClient();
+
     }
 
-    protected synchronized void buildGoogleApiClient() {
-        Log.i("Map: ", "build google play service");
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-    }
 
     private void SwipeRight(){
         page.setInAnimation(animFlipInBackward);
@@ -201,26 +239,6 @@ public class MapChat extends FragmentActivity implements OnMapReadyCallback, Goo
 
     GestureDetector gestureDetector = new GestureDetector(simpleOnGestureListener);
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        /*
-        mMap = googleMap;
-
-        mMap.moveCamera(CameraUpdateFactory.zoomTo(12));
-        mMap.getUiSettings().setMyLocationButtonEnabled(true);
-        mMap.getUiSettings().setZoomControlsEnabled(true);
-        mMap.getUiSettings().setCompassEnabled(true);
-        mMap.setMyLocationEnabled(true);
-        */
-/*
-        Marker high = mMap.addMarker(new MarkerOptions().position(new LatLng(40.513817,-74.464844)).title("HighPoint Solutions Stadium"));
-        Marker bcc = mMap.addMarker(new MarkerOptions().position(new LatLng(40.523128, -74.458797)).title("Busch Campus Center"));
-        Marker rsc = mMap.addMarker(new MarkerOptions().position(new LatLng(40.502661,-74.451771)).title("Rutgers Student Center"));
-        Marker ee = mMap.addMarker(new MarkerOptions().position(new LatLng(40.521663,-74.460665)).title("Electrical Engineering Building"));
-        Marker old = mMap.addMarker(new MarkerOptions().position(new LatLng(40.498720, -74.446229)).title("Old Queens"));
-*/
-    }
-
     public void open(final Marker marker){
         AlertDialog.Builder alerDialogBuilder = new AlertDialog.Builder(this);
         alerDialogBuilder.setMessage("Do you want to delete this marker?");
@@ -243,17 +261,23 @@ public class MapChat extends FragmentActivity implements OnMapReadyCallback, Goo
     }
 
     private void initialFriend(){
-        for( int i = 0; i < fNames.length; i++) {
-            Marker m = mMap.addMarker(
-                    new MarkerOptions().position(new LatLng(40.502661,-74.451771)).title(fNames[i]));
-            m.setVisible(false);
-            friendInfo.add(new myFriend(fNames[i], m));
+        for( int i = 1; i < fNames.length; i++) {
+            if(!fNames[i].equals(userName)) {
+                Marker m = mMap.addMarker(
+                        new MarkerOptions().position(new LatLng(40.502661, -74.451771)).title(fNames[i]));
+                m.setVisible(false);
+                friendInfo.add(new myFriend(fNames[i], m, colors[i]));
+                Log.e(TAG, fNames[i]);
+            }
         }
     }
 
     public static void changeLocation(String name, LatLng latLng){
+        Log.e(TAG,"!!!!!!!!!!!!!!!!!!!!!!!!!!!!"+name + "/" + latLng.toString());
         for( int i = 0; i < friendInfo.size(); i++){
+            Log.e(TAG,"!!!!!!!!!!!!!!!!!!!!!!!!!!!!"+friendInfo.get(i).getName());
             if(friendInfo.get(i).getName().equals(name)){
+                Log.e(TAG,"!!!!!!!!!!!!!!!!!!!!!!!!!!!!"+name + "get!!!!!!!");
                 friendInfo.get(i).setLocation(latLng);
             }
         }
@@ -268,6 +292,14 @@ public class MapChat extends FragmentActivity implements OnMapReadyCallback, Goo
 
     @Override
     public void onConnected(Bundle bundle) {
+        Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if (location != null) {
+            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            // Center camera
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        }
+        Log.v(TAG,"onConnect");
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         Log.i("Map: ", "google play service connected");
     }
 
@@ -279,6 +311,26 @@ public class MapChat extends FragmentActivity implements OnMapReadyCallback, Goo
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Log.i("Map: ", "google play service failed");
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        Log.d(TAG, location.toString());
+        currentLocation = location;
+        LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+        Log.v(TAG, latLng.latitude + " " + latLng.longitude);
+        if (!isTested){
+            mMarker.setPosition(latLng);
+            mMarker.setVisible(true);
+        }
+        if (!initialLocation) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            for (myFriend f : friendInfo) {
+                f.getMarker().setPosition(latLng);
+                f.getMarker().setVisible(true);
+            }
+            initialLocation = true;
+        };
     }
 }
 

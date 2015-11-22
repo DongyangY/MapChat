@@ -63,7 +63,7 @@ public class ClientTaskR extends AsyncTask<Void, String, Void>{
         switch (cmds[0]) {
             case "create_group":
                 Intent intent = new Intent(fl, MapChat.class);
-                intent.putExtra("friendNames", Arrays.copyOfRange(cmds, 2, cmds.length));
+                intent.putExtra("friendNames", cmds);
                 fl.startActivity(intent);
                 break;
             case "update_location":

@@ -12,11 +12,13 @@ public class myFriend {
     private String userName;
     private boolean selected;
     private Marker userMarker;
+    private String color;
 
-    public myFriend (String name, Marker marker){
+    public myFriend (String name, Marker marker, String c){
         userName = name;
         selected = false;
         userMarker = marker;
+        color = c;
     }
 
     public String getName() {
@@ -41,6 +43,10 @@ public class myFriend {
 
     public Marker getMarker(){
         return userMarker;
+    }
+
+    public String getColor() {
+        return color;
     }
 
 }
