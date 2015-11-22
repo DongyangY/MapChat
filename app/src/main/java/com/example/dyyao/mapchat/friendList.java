@@ -2,12 +2,14 @@ package com.example.dyyao.mapchat;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseBooleanArray;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -75,6 +77,8 @@ public class friendList extends AppCompatActivity {
                     Log.d(TAG, String.valueOf(position));
 
                     if (checked.valueAt(i)){
+                        /*HUGE BUGGGGGGGGGGGGGGGGGGGGGGG!*/
+                        /*login button should be clicked between addF and addG*/
                         Log.d(TAG, String.valueOf(adapter.getItem(position)));
                         selectedItems.add(adapter.getItem(position));
                         selectedNames +=":";
@@ -84,7 +88,6 @@ public class friendList extends AppCompatActivity {
                 }
                 Log.d(TAG, "group member " + selectedNames);
                 Login.mLogCommandBuffer.add("create_group:" + "new" + selectedNames);
-                //startActivity(new Intent(friendList.this, MapChat.class));
             }
         });
 
@@ -93,9 +96,6 @@ public class friendList extends AppCompatActivity {
             public void onClick(View v) {
                 Intent afIntent = new Intent(friendList.this, AddFriend.class);
                 startActivityForResult(afIntent, 1);
-
-                //startActivity(new Intent(friendList.this, AddFriend.class));
-
             }
         });
         /*
@@ -130,13 +130,14 @@ public class friendList extends AppCompatActivity {
     }//onActivityResult
     public void open(){
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-
-        alertDialogBuilder.setMessage("Do you want to accept this request? ");
-
+        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflater.inflate(R.layout.dialog_sign, null);
+        alertDialogBuilder.setView(v);
         alertDialogBuilder.setPositiveButton("yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface arg0, int arg1) {
-                Toast.makeText(friendList.this, "You clicked yes button", Toast.LENGTH_LONG).show();
+                startActivity(new Intent(friendList.this, MapChat.class));
+                //Toast.makeText(friendList.this, "You clicked yes button", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -146,7 +147,6 @@ public class friendList extends AppCompatActivity {
                 //finish();
             }
         });
-
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
