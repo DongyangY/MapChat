@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -54,11 +55,22 @@ public class ClientTaskWR extends AsyncTask<Void, String, Void> {
                 try{
                     OutputStream mOutStream = mSocket.getOutputStream();
                     mPrintWriterOut = new PrintWriter(mOutStream, true);
+                    InputStream mInputStream = mSocket.getInputStream();
+                    BufferedReader mBufferedReader = new BufferedReader(new InputStreamReader(mInputStream));
+
+
                     Log.d(TAG, mCommand);
                     mPrintWriterOut.println(mCommand);
 
-                    InputStream mInputStream = mSocket.getInputStream();
-                    BufferedReader mBufferedReader = new BufferedReader(new InputStreamReader(mInputStream));
+                    serverResponse = mBufferedReader.readLine();
+
+                    String[] c = mCommand.split(":");
+                    if (c[0].equals("send_photo")) {
+                        InputStream in = new FileInputStream(MapChat.mediaFile);
+                        copy(in, mOutStream);
+                        in.close();
+                    }
+
 
                     Log.d(TAG, "execute line");
                     serverResponse = mBufferedReader.readLine();
@@ -72,6 +84,14 @@ public class ClientTaskWR extends AsyncTask<Void, String, Void> {
                     serverResponse = "IOException: " + e.toString();
                 }
             }
+        }
+    }
+
+    public static void copy(InputStream in, OutputStream out) throws IOException {
+        byte[] buf = new byte[8192];
+        int len = 0;
+        while ((len = in.read(buf)) != -1) {
+            out.write(buf, 0, len);
         }
     }
 
@@ -158,6 +178,11 @@ public class ClientTaskWR extends AsyncTask<Void, String, Void> {
                 Log.d(TAG,"send message response received");
                 break;
             }
+            case "send_photo":{
+                Log.d(TAG,"send photo response received");
+                break;
+            }
+
         }
 
         //Log.d(TAG, result[0]);

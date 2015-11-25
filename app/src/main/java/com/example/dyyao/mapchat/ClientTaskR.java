@@ -6,12 +6,18 @@ import android.util.Log;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 
 /**
  * Created by Hua Deng on 11/15/2015.
@@ -22,6 +28,8 @@ public class ClientTaskR extends AsyncTask<Void, String, Void>{
     private String serverResponse;
     private static final String TAG = "ClientTaskR";
     public static friendList fl;
+    public static File mediaFile;
+    private String timeStamp;
 
     public ClientTaskR() {
 
@@ -70,10 +78,28 @@ public class ClientTaskR extends AsyncTask<Void, String, Void>{
                 MapChat.changeLocation(cmds[2], new LatLng(Double.valueOf(cmds[3]), Double.valueOf(cmds[4])));
                 break;
             case "send_message":
-                MapChat.setText(cmds[2], cmds[3]);
+                MapChat.setText(cmds[2], cmds[3], cmds[4]);
                 break;
             case "change_pin":
                 MapChat.changeUserPin(cmds[2], new LatLng(Double.valueOf(cmds[3]), Double.valueOf(cmds[4])));
+                break;
+            case "send_photo":
+
+                try {
+                    OutputStream mOutStream = mSocket.getOutputStream();
+                    PrintWriter mPrintWriterOut = new PrintWriter(mOutStream, true);
+                    mPrintWriterOut.println("send_photo:ok");
+
+                    InputStream mInputStream = mSocket.getInputStream();
+                    timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                    mediaFile = new File(MapChat.mediaStorageDir.getPath() + File.separator +
+                            "IMG_"+ timeStamp + ".jpg");
+                    OutputStream out = new FileOutputStream(mediaFile.toString());
+                    ClientTaskWR.copy(mInputStream, out);
+                    out.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 break;
         }
     }
