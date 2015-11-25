@@ -65,11 +65,12 @@ public class ClientTaskWR extends AsyncTask<Void, String, Void> {
                     String[] c = mCommand.split(":");
                     if (c[0].equals("send_photo")) {
                         serverResponse = mBufferedReader.readLine();
+                        OutputStream out = mSocket.getOutputStream();
                         InputStream in = new FileInputStream(MapChat.mediaFile);
-                        copy(in, mOutStream);
+                        copy(in, out);
                         in.close();
+                        out.close();
                     }
-
 
                     Log.d(TAG, "execute line");
                     serverResponse = mBufferedReader.readLine();
@@ -90,6 +91,7 @@ public class ClientTaskWR extends AsyncTask<Void, String, Void> {
         byte[] buf = new byte[8192];
         int len = 0;
         while ((len = in.read(buf)) != -1) {
+            Log.i(TAG, String.valueOf(len));
             out.write(buf, 0, len);
         }
     }
