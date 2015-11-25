@@ -86,7 +86,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
     private boolean initialLocation = false;
     private boolean isExist = false;
 
-    private Location currentLocation = null;
+    public static Location currentLocation = null;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
 
@@ -464,7 +464,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         }
     }
 
-    public class ImageShowTask extends AsyncTask<File, Integer, MarkerOptions> {
+    public static class ImageShowTask extends AsyncTask<File, Integer, MarkerOptions> {
 
         @Override
         protected MarkerOptions doInBackground(File... params) {

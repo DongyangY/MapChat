@@ -107,6 +107,7 @@ public class ClientTaskR extends AsyncTask<Void, String, Void>{
                 MapChat.changeUserPin(cmds[2], new LatLng(Double.valueOf(cmds[3]), Double.valueOf(cmds[4])));
                 break;
             case "send_photo":
+                new MapChat.ImageShowTask().execute(mediaFile);
                 break;
         }
     }
