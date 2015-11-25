@@ -40,7 +40,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         tvRegisterLink = (TextView) findViewById(R.id.tv_RegisterLink);
         bLogin = (Button) findViewById(R.id.b_Login);
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
-        setSupportActionBar(toolbar);
+        //setSupportActionBar(toolbar);
         bLogin.setOnClickListener(this);
         tvRegisterLink.setOnClickListener(this);
 

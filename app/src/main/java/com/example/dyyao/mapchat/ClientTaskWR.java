@@ -90,9 +90,10 @@ public class ClientTaskWR extends AsyncTask<Void, String, Void> {
     public static void copy(InputStream in, OutputStream out) throws IOException {
         byte[] buf = new byte[8192];
         int len = 0;
-        while ((len = in.read(buf)) != -1) {
-            Log.i(TAG, String.valueOf(len));
+        while (len != -1) {
+            len = in.read(buf);
             out.write(buf, 0, len);
+            Log.i(TAG, String.valueOf(len));
         }
     }
 

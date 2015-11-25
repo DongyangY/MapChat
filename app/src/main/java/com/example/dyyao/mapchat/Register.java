@@ -30,8 +30,8 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
         setContentView(R.layout.activity_register);
         ClientTaskWR.register = this;
         Log.d(TAG, "Enter Register");
-        etFirstName = (EditText) findViewById(R.id.et_firstname);
-        etLastName = (EditText) findViewById(R.id.et_lastname);
+        //etFirstName = (EditText) findViewById(R.id.et_firstname);
+        //etLastName = (EditText) findViewById(R.id.et_lastname);
         etUsername = (EditText) findViewById(R.id.et_username);
         etPassword = (EditText) findViewById(R.id.et_password);
         etCPassword = (EditText) findViewById(R.id.et_cpassword);
