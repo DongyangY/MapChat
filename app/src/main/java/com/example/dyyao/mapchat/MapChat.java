@@ -2,14 +2,23 @@ package com.example.dyyao.mapchat;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.SystemClock;
+import android.os.Vibrator;
+import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -17,6 +26,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.BounceInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -30,6 +40,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -37,8 +48,11 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.location.LocationListener;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -54,7 +68,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
     Animation animFlipInForeward;
     Animation animFlipInBackward;
     static BitmapDescriptor icon;
-    private GoogleMap mMap;
+    public static GoogleMap mMap;
     String[] values;
     String[] fNames;
 
@@ -76,7 +90,13 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
 
+    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
+    private Uri fileUri;
+    public static File mediaStorageDir;
+    private String timeStamp;
+    public static File mediaFile;
 
+    public static Vibrator vibrator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -180,6 +200,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
                 }
                 Login.mLogCommandBuffer.add("change_pin:" + groupName + ":" + userName + ":" + latLng.latitude + ":" + latLng.longitude);
                 Log.e(TAG, "login_commandBuffer_change_mPin");
+
                 mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
@@ -192,6 +213,12 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
                 });
             }
         });
+
+        mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "MapChat");
+
+        if (!mediaStorageDir.exists()) mediaStorageDir.mkdirs();
+
+        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 
     }
 
@@ -324,7 +351,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
     }
 
     public static void changeLocation(String name, LatLng latLng){
-        Log.e(TAG,"!!!!!!!!!!!!!!!!!!!!!!!!!!!!"+name + "/" + latLng.toString());
+        Log.e(TAG, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + name + "/" + latLng.toString());
         for( int i = 0; i < friendInfo.size(); i++){
             if(friendInfo.get(i).getName().equals(name)){
                 Log.e(TAG, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + name + "get!!!!!!!");
@@ -334,7 +361,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
     }
 
     public static void changeUserPin(String name, LatLng latLng){
-        Log.e(TAG,"!!!!!!!!!!!!!!pin!!!!!!!!!!!!!!"+name + "/" + latLng.toString());
+        Log.e(TAG, "!!!!!!!!!!!!!!pin!!!!!!!!!!!!!!" + name + "/" + latLng.toString());
         for( int i = 0; i < friendInfo.size(); i++){
             if(friendInfo.get(i).getName().equals(name)){
                 Log.e(TAG, "!!!!!!!!!!!!pin!!!!!!!!!!!!!!!!" + name + "get!!!!!!!");
@@ -353,6 +380,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         }
         Log.v(TAG,"onConnect");
+
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         Log.i("Map: ", "google play service connected");
     }
@@ -381,7 +409,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
 
         Login.mLogCommandBuffer.add("update_location:" + groupName + ":" + userName + ":" + lat + ":" + lng);
 
-        Log.e(TAG,"login_commandBuffer_update_location");
+        Log.e(TAG, "login_commandBuffer_update_location");
 
         if (!initialLocation) {
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
@@ -393,15 +421,101 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         }
     }
 
-    public static void setText(String name, String text){
+    public static void setText(String name, String text, String notification){
         Log.d(TAG, "-----------------------------------------------setText entered!----------------------------------");
         for( int i = 0; i < friendInfo.size(); i++){
             if(friendInfo.get(i).getName().equals(name)){
                 friendInfo.get(i).getMarker().setSnippet(text);
                 friendInfo.get(i).getMarker().showInfoWindow();
                 chatlog.append(text + "\n");
+                if(notification.equals("no")){
+                    markerBounce(friendInfo.get(i).getMarker());
+                    vibrator.vibrate(500);
+                }
+            }
+
+
+        }
+    }
+
+    public void takePhoto(View view) {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+                "IMG_"+ timeStamp + ".jpg");
+        fileUri = android.net.Uri.fromFile(mediaFile);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+        startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                // Image captured and saved to fileUri specified in the Intent
+                new ImageShowTask().execute(mediaFile);
+                Login.mLogCommandBuffer.add("send_photo:" + groupName + ":" + userName);
+
+            } else if (resultCode == RESULT_CANCELED) {
+                // User cancelled the image capture
+            } else {
+                // Image capture failed, advise user
             }
         }
+    }
+
+    public class ImageShowTask extends AsyncTask<File, Integer, MarkerOptions> {
+
+        @Override
+        protected MarkerOptions doInBackground(File... params) {
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));
+            markerOptions.title("image");
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inSampleSize = 15;
+            Bitmap bitmap = BitmapFactory.decodeFile(String.valueOf(mediaFile), options);
+            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
+            return markerOptions;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... progress) {
+
+        }
+
+        @Override
+        protected void onPostExecute(MarkerOptions result) {
+            mMap.addMarker(result);
+        }
+    }
+
+    public static void markerBounce(final Marker marker){
+        final Handler handler = new Handler();
+        final long startTime = SystemClock.uptimeMillis();
+        final long duration = 2000;
+
+        Projection projection = mMap.getProjection();
+        final LatLng markerLatLng = marker.getPosition();
+        Point startPoint = projection.toScreenLocation(markerLatLng);
+        startPoint.offset(0,-100);
+        final LatLng startLatLng = projection.fromScreenLocation(startPoint);
+
+        final BounceInterpolator bounceInterpolator = new BounceInterpolator();
+
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                long elapsed = SystemClock.uptimeMillis() - startTime;
+                float t = bounceInterpolator.getInterpolation((float)elapsed / duration);
+                double lng = t * markerLatLng.longitude + (1 - t)*startLatLng.longitude;
+                double lat = t * markerLatLng.latitude + (1 - t)*startLatLng.latitude;
+                marker.setPosition(new LatLng(lat, lng));
+
+                if(t < 1.0){
+                    handler.postDelayed(this, 16);
+                }
+            }
+        });
     }
 
 }

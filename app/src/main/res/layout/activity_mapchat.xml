@@ -40,6 +40,15 @@
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true" />
 
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="take_photo"
+                android:id="@+id/btn_photo"
+                android:layout_above="@id/btn_send"
+                android:layout_alignParentRight="true"
+                android:onClick="takePhoto"/>
+
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="200dp"
