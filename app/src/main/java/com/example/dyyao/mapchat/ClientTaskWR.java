@@ -178,7 +178,7 @@ public class ClientTaskWR extends AsyncTask<Void, String, Void> {
                 break;
             }
             case "send_photo":{
-                Log.d(TAG,"send photo response received");
+                Log.d(TAG,"SEND PHOTO RES GOT !!!!");
                 break;
             }
 
