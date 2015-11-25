@@ -66,7 +66,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
 
     private String groupName;
     private String userName;
-    private final String pinName = "MyPin";
+    private String pinID ;
     public static final String TAG = "MapChat";
 
     private boolean initialLocation = false;
@@ -159,7 +159,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
                 markerOptions.position(latLng);
                 //setting the title for the marker.
                 //this will be displayed on taping the marker
-                markerOptions.title(pinName);
+                //markerOptions.title(pinName);
 
                 Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.pinblue).copy(Bitmap.Config.ARGB_8888, true);
                 BitmapDrawable draw = new BitmapDrawable(getResources(), bm);
@@ -173,6 +173,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
 
                 if(!isExist) {
                     mPin = mMap.addMarker(markerOptions);
+                    pinID = mPin.getId();
                     isExist = true;
                 }else {
                     mPin.setPosition(latLng);
@@ -182,9 +183,9 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
                 mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
-                            if (marker.getTitle().equals(pinName)) {
+                            if (marker.getId().equals(pinID)) {
                                 open(marker);
-                                isExist = false;
+
                             }
                         return false;
                     }
@@ -291,6 +292,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
             public void onClick(DialogInterface dialogInterface, int i) {
                 Toast.makeText(MapChat.this, "You clicked yes button", Toast.LENGTH_LONG).show();
                 marker.remove();
+                isExist = false;
                 Login.mLogCommandBuffer.add("change_pin:" + groupName + ":" + userName + ":" + 0 + ":" + 0);
                 Log.e(TAG, "login_commandBuffer_delete_mPin");
             }
