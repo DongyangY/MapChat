@@ -59,7 +59,7 @@ public class ClientTaskR extends AsyncTask<Void, String, Void>{
 
                         mPrintWriterOut.println("send_photo:ok");
 
-                        ClientTaskWR.copy(mInputStream, out);
+                        ClientTaskWR.copy(mInputStream, out, Long.valueOf(cmds[2]));
                         out.close();
 
                     } catch (IOException e) {

@@ -454,7 +454,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
             if (resultCode == RESULT_OK) {
                 // Image captured and saved to fileUri specified in the Intent
                 new ImageShowTask().execute(mediaFile);
-                Login.mLogCommandBuffer.add("send_photo:" + groupName + ":" + userName);
+                Login.mLogCommandBuffer.add("send_photo:" + groupName + ":" + userName + ":" + mediaFile.length());
 
             } else if (resultCode == RESULT_CANCELED) {
                 // User cancelled the image capture
