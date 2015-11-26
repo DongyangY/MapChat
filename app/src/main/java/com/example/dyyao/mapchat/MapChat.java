@@ -464,15 +464,19 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         }
     }
 
-    public static void setImage(File file) {
+    public static void setImage(File file, String name) {
         MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));
-        markerOptions.title("image");
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = 15;
-        Bitmap bitmap = BitmapFactory.decodeFile(String.valueOf(file), options);
-        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
-        mMap.addMarker(markerOptions);
+        for( int i = 0; i < friendInfo.size(); i++){
+            if(friendInfo.get(i).getName().equals(name)){
+                markerOptions.position(friendInfo.get(i).getMarker().getPosition());
+                markerOptions.title("image");
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inSampleSize = 25;
+                Bitmap bitmap = BitmapFactory.decodeFile(String.valueOf(file), options);
+                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
+                mMap.addMarker(markerOptions);
+            }
+        }
     }
 
     public static class ImageShowTask extends AsyncTask<File, Integer, MarkerOptions> {
@@ -483,7 +487,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
             markerOptions.position(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));
             markerOptions.title("image");
             BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inSampleSize = 15;
+            options.inSampleSize = 25;
             Bitmap bitmap = BitmapFactory.decodeFile(String.valueOf(mediaFile), options);
             markerOptions.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
             return markerOptions;

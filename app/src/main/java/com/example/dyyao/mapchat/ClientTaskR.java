@@ -30,6 +30,7 @@ public class ClientTaskR extends AsyncTask<Void, String, Void>{
     public static friendList fl;
     public static File mediaFile;
     private String timeStamp;
+    private String imageSender;
 
     public ClientTaskR() {
 
@@ -60,6 +61,9 @@ public class ClientTaskR extends AsyncTask<Void, String, Void>{
                         mPrintWriterOut.println("send_photo:ok");
 
                         ClientTaskWR.copy(mInputStream, out, Long.valueOf(cmds[2]));
+
+                        imageSender = cmds[3];
+
                         out.close();
 
                     } catch (IOException e) {
@@ -107,7 +111,7 @@ public class ClientTaskR extends AsyncTask<Void, String, Void>{
                 MapChat.changeUserPin(cmds[2], new LatLng(Double.valueOf(cmds[3]), Double.valueOf(cmds[4])));
                 break;
             case "send_photo":
-                MapChat.setImage(mediaFile);
+                MapChat.setImage(mediaFile, imageSender);
                 break;
         }
     }
