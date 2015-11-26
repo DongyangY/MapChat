@@ -20,34 +20,55 @@
                 android:layout_height="400dp"
                 android:id="@+id/map"
                 tools:context="com.example.dyyao.mapchat.MapChat"
-                android:name="com.google.android.gms.maps.MapFragment" />
-
-
+                android:name="com.google.android.gms.maps.MapFragment"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                android:layout_above="@+id/btn_send" />
 
             <EditText
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/et_input"
                 android:text=""
-                android:layout_alignParentBottom="true" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="send"
-                android:id="@+id/btn_send"
-                android:layout_toLeftOf="@+id/et_input"
                 android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true" />
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_toStartOf="@+id/btn_send" />
 
-            <Button
+            <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="take_photo"
+                android:id="@+id/btn_send"
+                android:background="@drawable/round_button"
+                android:src="@drawable/send"
+                android:layout_alignParentBottom="true"
+                android:layout_toStartOf="@+id/btn_photo"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:id="@+id/btn_photo"
-                android:layout_above="@id/btn_send"
-                android:layout_alignParentRight="true"
-                android:onClick="takePhoto"/>
+                android:onClick="takePhoto"
+                android:src="@drawable/camera"
+                android:background="@drawable/round_button"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="8dp" />
+
+            <ListView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:id="@+id/listSelect"
+                android:layout_alignParentTop="true"
+                android:layout_alignStart="@+id/btn_send"
+                android:choiceMode="multipleChoice"
+                android:layout_alignBottom="@+id/map"
+                android:layout_marginBottom="400dp"
+                android:layout_marginTop="8dp" />
 
         </RelativeLayout>
         <RelativeLayout

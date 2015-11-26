@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    android:contextClickable="true">
+    android:contextClickable="true"
+    android:descendantFocusability="blocksDescendants"
+    android:background="@drawable/selector">
 
     <ImageView
         android:id="@+id/icon"
@@ -9,32 +11,21 @@
         android:layout_height="48dp"
         android:layout_marginTop="8dp"
         android:src="@drawable/sheep"
-        android:layout_marginLeft="8dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginBottom="8dp">
     </ImageView>
 
     <TextView
         android:id="@+id/label"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@+id/label"
-        android:textSize="30dp"
+        android:textSize="16sp"
+        android:fontFamily="sans-serif"
         android:layout_alignBottom="@+id/icon"
         android:layout_alignParentEnd="true"
         android:layout_toEndOf="@+id/icon"
         android:layout_alignTop="@+id/icon"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="56dp">
+        android:layout_marginLeft="32dp">
     </TextView>
-
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/checkBox"
-        android:layout_alignTop="@+id/label"
-        android:layout_alignParentEnd="true"
-        android:checked="false"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="8dp" />
 
 </RelativeLayout>

@@ -30,6 +30,7 @@ public class ClientTaskR extends AsyncTask<Void, String, Void>{
     public static friendList fl;
     public static File mediaFile;
     private String timeStamp;
+    private String imageSender;
 
     public ClientTaskR() {
 
@@ -44,6 +45,32 @@ public class ClientTaskR extends AsyncTask<Void, String, Void>{
 
             while (true) {
                 serverResponse = mBufferedReader.readLine();
+                String[] cmds = serverResponse.split(":");
+
+                if (cmds[0].equals("send_photo")) {
+                    try {
+                        OutputStream mOutStream = mSocket.getOutputStream();
+                        PrintWriter mPrintWriterOut = new PrintWriter(mOutStream, true);
+
+                        timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                        mediaFile = new File(MapChat.mediaStorageDir.getPath() + File.separator +
+                                "IMG_"+ timeStamp + ".jpg");
+
+                        OutputStream out = new FileOutputStream(mediaFile.toString());
+
+                        mPrintWriterOut.println("send_photo:ok");
+
+                        ClientTaskWR.copy(mInputStream, out, Long.valueOf(cmds[2]));
+
+                        imageSender = cmds[3];
+
+                        out.close();
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
                 publishProgress(serverResponse);
             }
 
@@ -84,22 +111,7 @@ public class ClientTaskR extends AsyncTask<Void, String, Void>{
                 MapChat.changeUserPin(cmds[2], new LatLng(Double.valueOf(cmds[3]), Double.valueOf(cmds[4])));
                 break;
             case "send_photo":
-
-                try {
-                    OutputStream mOutStream = mSocket.getOutputStream();
-                    PrintWriter mPrintWriterOut = new PrintWriter(mOutStream, true);
-                    mPrintWriterOut.println("send_photo:ok");
-
-                    InputStream mInputStream = mSocket.getInputStream();
-                    timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-                    mediaFile = new File(MapChat.mediaStorageDir.getPath() + File.separator +
-                            "IMG_"+ timeStamp + ".jpg");
-                    OutputStream out = new FileOutputStream(mediaFile.toString());
-                    ClientTaskWR.copy(mInputStream, out);
-                    out.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                MapChat.setImage(mediaFile, imageSender);
                 break;
         }
     }

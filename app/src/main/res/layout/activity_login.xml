@@ -12,8 +12,6 @@
         android:maxLines="1"
         android:hint="Username"
         android:fontFamily="sans-serif-thin"
-
-
         android:textSize="20dp"
         android:layout_above="@+id/et_password"
         android:layout_centerHorizontal="true" />
@@ -37,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
         android:fontFamily="sans-serif-thin"
-        android:background="@color/buttonColor"
+        android:background="@color/button"
         android:layout_below="@id/et_password"
         android:layout_alignStart="@id/et_password" />
 

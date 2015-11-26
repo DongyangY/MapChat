@@ -66,15 +66,15 @@ public class ClientTaskWR extends AsyncTask<Void, String, Void> {
                     if (c[0].equals("send_photo")) {
                         serverResponse = mBufferedReader.readLine();
                         InputStream in = new FileInputStream(MapChat.mediaFile);
-                        copy(in, mOutStream);
+                        copy(in, mOutStream, MapChat.mediaFile.length());
                         in.close();
+                    } else {
+                        Log.d(TAG, "execute line");
+                        serverResponse = mBufferedReader.readLine();
+                        Log.d(TAG, serverResponse);
+                        publishProgress(serverResponse);
                     }
 
-
-                    Log.d(TAG, "execute line");
-                    serverResponse = mBufferedReader.readLine();
-                    Log.d(TAG, serverResponse);
-                    publishProgress(serverResponse);
                 } catch (UnknownHostException e){
                     e.printStackTrace();
                     serverResponse = "UnknownHostException: " + e.toString();
@@ -86,11 +86,14 @@ public class ClientTaskWR extends AsyncTask<Void, String, Void> {
         }
     }
 
-    public static void copy(InputStream in, OutputStream out) throws IOException {
+    public static void copy(InputStream in, OutputStream out, long length) throws IOException {
         byte[] buf = new byte[8192];
         int len = 0;
-        while ((len = in.read(buf)) != -1) {
+        while (length > 0) {
+            len = in.read(buf);
             out.write(buf, 0, len);
+            length -= len;
+            Log.i(TAG, String.valueOf(len));
         }
     }
 

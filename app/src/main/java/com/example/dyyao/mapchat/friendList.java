@@ -2,28 +2,37 @@ package com.example.dyyao.mapchat;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseBooleanArray;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class friendList extends AppCompatActivity {
-    private Button addF;
-    private Button addG;
-    private Button test;
+    private ImageButton addF;
+    private ImageButton addG;
     private ListView friendlist;
     private EditText gpNames;
     private static String TAG = "friendList";
@@ -38,32 +47,41 @@ public class friendList extends AppCompatActivity {
         ClientTaskWR.friendlist = this;
         ClientTaskR.fl = this;
 
-        addF = (Button) findViewById(R.id.addFriendButton);
-        addG = (Button) findViewById(R.id.addGroupButton);
-        //test = (Button) findViewById(R.id.testButton);
+        addF = (ImageButton) findViewById(R.id.addFriendButton);
+        addG = (ImageButton) findViewById(R.id.addGroupButton);
 
-        final ArrayList<String> friends = new ArrayList<>();
-        String[] values = getIntent().getStringArrayExtra("friendNames");
+        final ArrayList<myFriend> friends = new ArrayList<>();
+        final String[] values = getIntent().getStringArrayExtra("friendNames");
         final String[] fNames = Arrays.copyOfRange(values, 2, values.length);
         selectedItems = new ArrayList<>();
-        /*String[] values = new String[] { "a", "b", "c", "d", "e", "f", "g",
-                "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s",
-                "t", "u", "w", "x", "y", "z" };
-        */
-        final ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_multiple_choice, fNames);
+        //String[] s = new String[] { "a", "b", "c", "d", "e", "f", "g","i","j","k"};
+
+        //final ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+         //       android.R.layout.simple_list_item_multiple_choice, fNames);
+
+        for(int i = 0; i<fNames.length ; i++){
+            myFriend f = new myFriend(fNames[i],null,0,null);
+            friends.add(f);
+        }
+        final myFriendAdapter adapterTest = new myFriendAdapter(this, friends);
 
         friendlist = (ListView) findViewById(R.id.listView);
+        friendlist.setAdapter(adapterTest);
 
-        friendlist.setAdapter(adapter);
-
-        friendlist.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        friendlist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.e(TAG, "check on: " + friends.get(position).getName());
+                view.setSelected(true);
+                //Toast.makeText(friendList.this, "check on: " + friends.get(position).getName(), Toast.LENGTH_LONG).show();
+                if (friends.get(position).isSelected()) {
+                    friends.get(position).setSelected(false);
+                    view.setBackgroundColor(Color.TRANSPARENT);
+                }
+                else {
+                    friends.get(position).setSelected(true);
+                    view.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+                }
             }
         });
 
@@ -71,6 +89,7 @@ public class friendList extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "add group");
+                /*
                 SparseBooleanArray checked = friendlist.getCheckedItemPositions();
                 Log.d(TAG, String.valueOf(checked.size()));
                 selectedNames = "";
@@ -78,18 +97,27 @@ public class friendList extends AppCompatActivity {
                     int position = checked.keyAt(i);
                     Log.d(TAG, String.valueOf(position));
 
-                    if (checked.valueAt(i)){
-                        /*HUGE BUGGGGGGGGGGGGGGGGGGGGGGG!*/
-                        /*login button should be clicked between addF and addG*/
-                        Log.d(TAG, String.valueOf(adapter.getItem(position)));
-                        selectedItems.add(adapter.getItem(position));
-                        selectedNames +=":";
+                    if (checked.valueAt(i)) {
+                        //HUGE BUGGGGGGGGGGGGGGGGGGGGGGG!
+                        //login button should be clicked between addF and addG
+                        Log.d(TAG, String.valueOf(adapterTest.getItem(position)));
+                        selectedItems.add(adapterTest.getItem(position).getName());
+                        selectedNames += ":";
                         selectedNames += selectedItems.get(i);
                     }
 
                 }
                 Log.d(TAG, "group member " + selectedNames);
+        */
+                selectedNames = "";
+                for (int i = 0; i < friends.size(); i++) {
+                    if (friends.get(i).isSelected()){
+                        selectedNames += ":";
+                        selectedNames += friends.get(i).getName();
+                    }
+                }
                 open();
+                Log.d(TAG, "group member " + selectedNames);
                 //Login.mLogCommandBuffer.add("create_group:" + "new" + selectedNames);
             }
         });
@@ -99,18 +127,19 @@ public class friendList extends AppCompatActivity {
             public void onClick(View v) {
                 Intent afIntent = new Intent(friendList.this, AddFriend.class);
                 startActivityForResult(afIntent, 1);
+                /*
+                StringBuffer responseText = new StringBuffer();
+                responseText.append("The following were selected...\n");
+                for(int i=0;i<friends.size();i++){
+                    myFriend country = friends.get(i);
+                    if(country.isSelected()){
+                        responseText.append("\n" + country.getName());
+                    }
+                }
+                textView.setText(responseText);
+                */
             }
         });
-        /*
-        test.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //startActivity(new Intent(friendList.this, TestDialog.class));
-                open();
-
-            }
-        });
-        */
     }
 
     @Override
@@ -121,9 +150,7 @@ public class friendList extends AppCompatActivity {
                 String[] result = data.getStringArrayExtra("result");
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                         android.R.layout.simple_list_item_multiple_choice, result);
-
                 friendlist = (ListView) findViewById(R.id.listView);
-
                 friendlist.setAdapter(adapter);
             }
             if (resultCode == Activity.RESULT_CANCELED) {

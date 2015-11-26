@@ -47,6 +47,10 @@ public class myFriend {
         userPin.setPosition(latLng);
     }
 
+    public void inverseSelect(){
+        if (selected) selected = false;
+        else selected = true;
+    }
     public Marker getMarker(){
         return userMarker;
     }

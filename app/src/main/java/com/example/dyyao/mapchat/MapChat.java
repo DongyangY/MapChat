@@ -27,8 +27,11 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.BounceInterpolator;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
@@ -61,8 +64,9 @@ import java.util.List;
 public class MapChat extends FragmentActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener{
-    Button bSend;
+    ImageButton bSend;
     EditText Inputchat;
+    ListView selectF;
     static TextView chatlog;
     ViewFlipper page;
     Animation animFlipInForeward;
@@ -104,22 +108,28 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         setContentView(R.layout.activity_mapchat);
         Inputchat = (EditText) findViewById(R.id.et_input);
         chatlog = (TextView) findViewById(R.id.tv_chatlogview);
-        bSend = (Button) findViewById(R.id.btn_send);
+        bSend = (ImageButton) findViewById(R.id.btn_send);
+        selectF = (ListView) findViewById(R.id.listSelect);
         friendInfo = new ArrayList<>();
 
         values = getIntent().getStringArrayExtra("friendNames");
         fNames = Arrays.copyOfRange(values, 2, values.length);
-
         bSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Inputchat.setText("");
                 String sentence = Inputchat.getText().toString();
                 chatlog.append(sentence + "\n");
                 mMarker.setSnippet(sentence);
                 mMarker.showInfoWindow();
+                for( int i = 0; i < friendInfo.size(); i++) {
+                    if (friendInfo.get(i).isSelected()) {
+                        sentence += ":";
+                        sentence += friendInfo.get(i).getName();
+                    }
+                }
                 //mMarker.setPosition(new LatLng(40, -80));
                 Login.mLogCommandBuffer.add("send_message:" + groupName + ":" + userName + ":" + sentence);
-
             }
 
         });
@@ -130,22 +140,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         page = (ViewFlipper) findViewById(R.id.flipper);
         animFlipInForeward = AnimationUtils.loadAnimation(this, R.anim.flipin);
         animFlipInBackward = AnimationUtils.loadAnimation(this, R.anim.flipin_reverse);
-/*
-        try {
-            if (mMap == null) {
-                mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        mMap.moveCamera(CameraUpdateFactory.zoomTo(10));
-        mMap.getUiSettings().setMyLocationButtonEnabled(true);
-        mMap.getUiSettings().setZoomControlsEnabled(true);
-        mMap.getUiSettings().setCompassEnabled(true);
-        mMap.setMyLocationEnabled(true);
-        //Set up Map friend list
-*/
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -160,17 +155,28 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         mLocationRequest.setInterval(10000);       // 10 seconds, in milliseconds
         mLocationRequest.setFastestInterval(5000); // 5 second, in milliseconds
 
-
         setUpMap();
         initialFriend();
         intialSelf();
 
+        final SelectAdapter selectAdapter = new SelectAdapter(this, friendInfo);
+        selectF.setAdapter(selectAdapter);
 
-        //LatLng sydney = new LatLng(40, -80);
-        //icon = BitmapDescriptorFactory.fromResource(R.drawable.simpleapple);
-        //markerOptions = new MarkerOptions().position(sydney).title("Current Location").snippet("Thinking of finding some thing....").icon(icon);
-        //move = mMap.addMarker(markerOptions);
-
+        selectF.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.e(TAG, "check on: " + friendInfo.get(position).getName());
+                view.setSelected(true);
+                //Toast.makeText(friendList.this, "check on: " + friends.get(position).getName(), Toast.LENGTH_LONG).show();
+                if (friendInfo.get(position).isSelected()) {
+                    friendInfo.get(position).setSelected(false);
+                    view.setBackgroundColor(Color.TRANSPARENT);
+                } else {
+                    friendInfo.get(position).setSelected(true);
+                    view.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+                }
+            }
+        });
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
@@ -206,7 +212,12 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
                     public boolean onMarkerClick(Marker marker) {
                             if (marker.getId().equals(pinID)) {
                                 open(marker);
-
+                                /*
+                            }else{
+                                for (myFriend f : friendInfo) {
+                                    if(f.getMarker().getId().equals(marker.getId())) f.inverseSelect();
+                                }
+                                */
                             }
                         return false;
                     }
@@ -233,7 +244,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         paint.setColor(Color.GRAY);
 
         if (hasText)
-            canvas.drawText(peopleUserID, 0, 3 * bm.getHeight() / 4, paint); // paint defines the text color, stroke width, size
+            canvas.drawText(peopleUserID, bm.getWidth()/3, bm.getHeight()/3, paint); // paint defines the text color, stroke width, size
 
         BitmapDrawable draw = new BitmapDrawable(getResources(), bm);
         Bitmap drawBmp = draw.getBitmap();
@@ -267,8 +278,6 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
                 mMap.setMyLocationEnabled(false);
             }
         }
-
-
     }
 
 
@@ -428,13 +437,11 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
                 friendInfo.get(i).getMarker().setSnippet(text);
                 friendInfo.get(i).getMarker().showInfoWindow();
                 chatlog.append(text + "\n");
-                if(notification.equals("no")){
+                if(notification.equals("yes")){
                     markerBounce(friendInfo.get(i).getMarker());
                     vibrator.vibrate(500);
                 }
             }
-
-
         }
     }
 
@@ -454,12 +461,27 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
             if (resultCode == RESULT_OK) {
                 // Image captured and saved to fileUri specified in the Intent
                 new ImageShowTask().execute(mediaFile);
-                Login.mLogCommandBuffer.add("send_photo:" + groupName + ":" + userName);
+                Login.mLogCommandBuffer.add("send_photo:" + groupName + ":" + userName + ":" + mediaFile.length());
 
             } else if (resultCode == RESULT_CANCELED) {
                 // User cancelled the image capture
             } else {
                 // Image capture failed, advise user
+            }
+        }
+    }
+
+    public static void setImage(File file, String name) {
+        MarkerOptions markerOptions = new MarkerOptions();
+        for( int i = 0; i < friendInfo.size(); i++){
+            if(friendInfo.get(i).getName().equals(name)){
+                markerOptions.position(friendInfo.get(i).getMarker().getPosition());
+                markerOptions.title("image");
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inSampleSize = 25;
+                Bitmap bitmap = BitmapFactory.decodeFile(String.valueOf(file), options);
+                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
+                mMap.addMarker(markerOptions);
             }
         }
     }
@@ -472,7 +494,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
             markerOptions.position(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));
             markerOptions.title("image");
             BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inSampleSize = 15;
+            options.inSampleSize = 25;
             Bitmap bitmap = BitmapFactory.decodeFile(String.valueOf(mediaFile), options);
             markerOptions.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
             return markerOptions;
@@ -506,12 +528,12 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
             @Override
             public void run() {
                 long elapsed = SystemClock.uptimeMillis() - startTime;
-                float t = bounceInterpolator.getInterpolation((float)elapsed / duration);
-                double lng = t * markerLatLng.longitude + (1 - t)*startLatLng.longitude;
-                double lat = t * markerLatLng.latitude + (1 - t)*startLatLng.latitude;
+                float t = bounceInterpolator.getInterpolation((float) elapsed / duration);
+                double lng = t * markerLatLng.longitude + (1 - t) * startLatLng.longitude;
+                double lat = t * markerLatLng.latitude + (1 - t) * startLatLng.latitude;
                 marker.setPosition(new LatLng(lat, lng));
 
-                if(t < 1.0){
+                if (t < 1.0) {
                     handler.postDelayed(this, 16);
                 }
             }
