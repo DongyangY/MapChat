@@ -464,6 +464,17 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         }
     }
 
+    public static void setImage(File file) {
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));
+        markerOptions.title("image");
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = 15;
+        Bitmap bitmap = BitmapFactory.decodeFile(String.valueOf(file), options);
+        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
+        mMap.addMarker(markerOptions);
+    }
+
     public static class ImageShowTask extends AsyncTask<File, Integer, MarkerOptions> {
 
         @Override
