@@ -3,6 +3,8 @@ package com.example.dyyao.mapchat;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
+
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.BufferedReader;
@@ -24,13 +26,14 @@ import java.util.Date;
  */
 public class ClientTaskR extends AsyncTask<Void, String, Void>{
 
-    private Socket mSocket;
+    public static Socket mSocket;
     private String serverResponse;
     private static final String TAG = "ClientTaskR";
     public static friendList fl;
     public static File mediaFile;
     private String timeStamp;
     private String imageSender;
+    public static MapChat mMapchat;
 
     public ClientTaskR() {
 
@@ -112,6 +115,15 @@ public class ClientTaskR extends AsyncTask<Void, String, Void>{
                 break;
             case "send_photo":
                 MapChat.setImage(mediaFile, imageSender);
+                break;
+            case "exit_group":
+                Log.d(TAG, "exit group " + cmds[2]);
+                MapChat.removeUser(cmds[2]);
+                MapChat.selectF.setAdapter(new SelectAdapter(mMapchat, mMapchat.friendInfo));
+                Toast.makeText(mMapchat, cmds[2] + " exit the group!", Toast.LENGTH_LONG).show();
+                break;
+            case "add_friend":
+
                 break;
         }
     }

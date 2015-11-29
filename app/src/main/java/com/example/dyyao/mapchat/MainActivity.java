@@ -10,6 +10,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import java.io.IOException;
+
 public class MainActivity extends AppCompatActivity {
 
     Button btry;
@@ -63,4 +65,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    protected void onDestroy(){
+        super.onDestroy();
+        Login.mLogCommandBuffer.add("logout:" + Login.UserID);
+        try {
+            ClientTaskWR.mSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            ClientTaskR.mSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

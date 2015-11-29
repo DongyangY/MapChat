@@ -32,7 +32,7 @@ public class AddFriend extends AppCompatActivity {
         bAddFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "at");
+                Log.d(TAG, "at add friend");
                 Login.mLogCommandBuffer.add("add_friend:" + userID.getText().toString());
                 Log.d(TAG, "buffer size " + String.valueOf(Login.mLogCommandBuffer.size()));
                 //startActivity(new Intent(AddFriend.this, friendList.class));

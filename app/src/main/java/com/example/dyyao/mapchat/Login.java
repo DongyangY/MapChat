@@ -55,7 +55,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.b_Login:
-                Log.d(TAG, "at");
+                Log.d(TAG, "at login");
                 UserID = etUsername.getText().toString();
                 mLogCommandBuffer.add("login:" + etUsername.getText().toString() + ":" + etPassword.getText().toString());
                 Log.d(TAG, "buffer size " + String.valueOf(mLogCommandBuffer.size()));

@@ -25,7 +25,7 @@ public class ClientTaskWR extends AsyncTask<Void, String, Void> {
 
     private Queue<String> mCommandBuffer;
     private String mCommand;
-    private Socket mSocket;
+    public static Socket mSocket;
     private String serverResponse = "";
     private PrintWriter mPrintWriterOut;
     private Login login;
@@ -146,7 +146,7 @@ public class ClientTaskWR extends AsyncTask<Void, String, Void> {
                     Log.d(TAG, "Add Friend Succeed");
                     String[] fNames = Arrays.copyOfRange(sResponses, 2, sResponses.length);
                     Intent returnIntent = new Intent();
-                    returnIntent.putExtra("result",fNames);
+                    returnIntent.putExtra("result", fNames);
                     addFriend.setResult(Activity.RESULT_OK, returnIntent);
                     addFriend.finish();
                 } else {
