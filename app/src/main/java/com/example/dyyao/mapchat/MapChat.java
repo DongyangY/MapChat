@@ -1,6 +1,7 @@
 package com.example.dyyao.mapchat;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -23,9 +24,12 @@ import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.Display;
 import android.view.GestureDetector;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.BounceInterpolator;
@@ -33,6 +37,8 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -104,6 +110,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
     public static File mediaFile;
 
     public static Vibrator vibrator;
+    private static ArrayList<String> imageIds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +122,8 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         selectF = (ListView) findViewById(R.id.listSelect);
         friendInfo = new ArrayList<>();
         ClientTaskR.mMapchat = this;
+
+        imageIds = new ArrayList<String>();
 
         values = getIntent().getStringArrayExtra("friendNames");
         fNames = Arrays.copyOfRange(values, 2, values.length);
@@ -202,46 +211,54 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
 
                 mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
 
-                if(!isExist) {
+                if (!isExist) {
                     mPin = mMap.addMarker(markerOptions);
                     pinID = mPin.getId();
                     isExist = true;
-                }else {
+                } else {
                     mPin.setPosition(latLng);
                 }
                 Login.mLogCommandBuffer.add("change_pin:" + groupName + ":" + userName + ":" + latLng.latitude + ":" + latLng.longitude);
                 Log.e(TAG, "login_commandBuffer_change_mPin");
+            }
+        });
 
-                mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                    @Override
-                    public boolean onMarkerClick(Marker marker) {
-                            if (marker.getId().equals(pinID)) {
-                                open(marker);
-                            }else{
-                                Geocoder geocoder = new Geocoder(MapChat.this, Locale.getDefault());
-                                List<Address> addresses = null;
-                                try {
-                                    addresses = geocoder.getFromLocation(marker.getPosition().latitude, marker.getPosition().longitude, 1);
-                                } catch (IOException e) {
-                                    Log.d(TAG, "IOException!");
-                                }
-                                // Print out address
-                                if (addresses == null || addresses.size()  == 0) {
-                                    marker.setSnippet("No address found.");
-                                } else {
-                                    Address address = addresses.get(0);
-                                    String addr = "";
-                                    // Fetch the address lines using getAddressLine,
-                                    // join them, and send them to the thread.
-                                    for(int i = 0; i < address.getMaxAddressLineIndex(); i++) {
-                                        addr += address.getAddressLine(i) + " ";
-                                    }
-                                    marker.setSnippet(addr);
-                                }
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+
+                Log.i(TAG, "CLICK MARKER!!!!");
+
+                if (imageIds.contains(marker.getId())) {
+                    Log.i(TAG, "CLICK IMAGE!!!!");
+                    showImage(marker.getSnippet());
+                } else {
+                    if (marker.getId().equals(pinID)) {
+                        open(marker);
+                    } else {
+                        Geocoder geocoder = new Geocoder(MapChat.this, Locale.getDefault());
+                        List<Address> addresses = null;
+                        try {
+                            addresses = geocoder.getFromLocation(marker.getPosition().latitude, marker.getPosition().longitude, 1);
+                        } catch (IOException e) {
+                            Log.d(TAG, "IOException!");
+                        }
+                        // Print out address
+                        if (addresses == null || addresses.size() == 0) {
+                            marker.setSnippet("No address found.");
+                        } else {
+                            Address address = addresses.get(0);
+                            String addr = "";
+                            // Fetch the address lines using getAddressLine,
+                            // join them, and send them to the thread.
+                            for (int i = 0; i < address.getMaxAddressLineIndex(); i++) {
+                                addr += address.getAddressLine(i) + " ";
                             }
-                        return false;
+                            marker.setSnippet(addr);
+                        }
                     }
-                });
+                }
+                return false;
             }
         });
 
@@ -251,6 +268,38 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
 
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 
+    }
+
+    public void showImage(final String fileName) {
+        Log.i(TAG, "SHOW IMAGE!!!!");
+
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int screenWidth = size.x;
+        int screenHeight = size.y;
+
+        Bitmap bitmap = BitmapFactory.decodeFile(fileName);
+        int bitmapHeight = bitmap.getHeight();
+        int bitmapWidth = bitmap.getWidth();
+
+        while(bitmapHeight > (screenHeight - 250) || bitmapWidth > (screenWidth - 250)) {
+            bitmapHeight = bitmapHeight / 2;
+            bitmapWidth = bitmapWidth / 2;
+        }
+
+        BitmapDrawable resizedBitmap = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, bitmapWidth, bitmapHeight, false));
+
+        Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.image_dialog_layout);
+
+        ImageView image = (ImageView) dialog.findViewById(R.id.image_dialog);
+
+        image.setBackground(resizedBitmap);
+        dialog.getWindow().setBackgroundDrawable(null);
+
+        dialog.show();
     }
 
     public Marker setPeopleMarker(int drawableColor, String peopleUserID, boolean hasText){
@@ -497,11 +546,9 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
             if(friendInfo.get(i).getName().equals(name)){
                 markerOptions.position(friendInfo.get(i).getMarker().getPosition());
                 markerOptions.title("image");
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inSampleSize = 25;
-                Bitmap bitmap = BitmapFactory.decodeFile(String.valueOf(file), options);
-                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
-                mMap.addMarker(markerOptions);
+                markerOptions.snippet(String.valueOf(file));
+                Marker marker = mMap.addMarker(markerOptions);
+                imageIds.add(marker.getId());
             }
         }
     }
@@ -513,10 +560,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));
             markerOptions.title("image");
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inSampleSize = 25;
-            Bitmap bitmap = BitmapFactory.decodeFile(String.valueOf(mediaFile), options);
-            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
+            markerOptions.snippet(String.valueOf(mediaFile));
             return markerOptions;
         }
 
@@ -527,7 +571,8 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
 
         @Override
         protected void onPostExecute(MarkerOptions result) {
-            mMap.addMarker(result);
+            Marker marker = mMap.addMarker(result);
+            imageIds.add(marker.getId());
         }
     }
 
