@@ -117,9 +117,11 @@ public class ClientTaskR extends AsyncTask<Void, String, Void>{
                 MapChat.setImage(mediaFile, imageSender);
                 break;
             case "exit_group":
+                Log.d(TAG, "exit group " + cmds[2]);
                 MapChat.removeUser(cmds[2]);
                 MapChat.selectF.setAdapter(new SelectAdapter(mMapchat, mMapchat.friendInfo));
                 Toast.makeText(mMapchat, cmds[2] + " exit the group!", Toast.LENGTH_LONG).show();
+                break;
         }
     }
 }

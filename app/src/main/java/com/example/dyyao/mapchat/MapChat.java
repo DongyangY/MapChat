@@ -26,7 +26,6 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -34,11 +33,9 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.BounceInterpolator;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,7 +49,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.Projection;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -170,7 +166,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
 
         setUpMap();
         initialFriend();
-        intialSelf();
+        initialSelf();
 
         final SelectAdapter selectAdapter = new SelectAdapter(this, friendInfo);
         selectF.setAdapter(selectAdapter);
@@ -328,12 +324,14 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
 
     }
 
-    private void intialSelf() {
+    private void initialSelf() {
+        Log.d(TAG,"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + "enter initialSelf");
         mMarker = setPeopleMarker(colors[0], userName, true);
     }
 
     private void setUpMap() {
-        if (mMap == null) {
+        Log.d(TAG,"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + "enter setUpMap");
+        //if (mMap == null) {
             // Try to obtain the map from the SupportMapFragment.
             mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
             Log.v(TAG, "Set map");
@@ -346,7 +344,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
                 mMap.getUiSettings().setCompassEnabled(true);
                 mMap.setMyLocationEnabled(false);
             }
-        }
+        //}
     }
 
 
@@ -414,6 +412,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
     }
 
     private void initialFriend(){
+        Log.d(TAG,"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + "enter initialFriend");
         int j = 1;
         for( int i = 1; i < fNames.length; i++) {
             if(!fNames[i].equals(userName)) {
@@ -618,7 +617,9 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
     @Override
     protected void onDestroy(){
         super.onDestroy();
+        Log.d(TAG, userName + "exit group");
         Login.mLogCommandBuffer.add("exit_group:" + groupName + ":" + userName);
+        mGoogleApiClient.disconnect();
     }
 
 }
