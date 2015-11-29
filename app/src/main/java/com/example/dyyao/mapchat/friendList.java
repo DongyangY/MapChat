@@ -49,9 +49,9 @@ public class friendList extends AppCompatActivity {
     private EditText gpNames;
     private static String TAG = "friendList";
     ArrayList<String> selectedItems;
-    ArrayList<myFriend> friends;
+    public static ArrayList<myFriend> friends;
     String selectedNames;
-    myFriendAdapter adapterTest = null;
+    public static myFriendAdapter adapterTest = null;
     public static String groupName;
 
     @Override
@@ -176,7 +176,7 @@ public class friendList extends AppCompatActivity {
         alertDialog.show();
     }
 
-    public void addFriend(String name){
+    public static void addFriend(String name){
         myFriend f = new myFriend(name,null,0,null);
         friends.add(f);
         if (adapterTest != null) {

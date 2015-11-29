@@ -123,7 +123,7 @@ public class ClientTaskR extends AsyncTask<Void, String, Void>{
                 Toast.makeText(mMapchat, cmds[2] + " exit the group!", Toast.LENGTH_LONG).show();
                 break;
             case "add_friend":
-
+                friendList.addFriend(cmds[1]);
                 break;
         }
     }
