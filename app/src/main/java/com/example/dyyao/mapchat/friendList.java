@@ -139,10 +139,14 @@ public class friendList extends AppCompatActivity {
         if (requestCode == 1) {
             if(resultCode == Activity.RESULT_OK){
                 String[] result = data.getStringArrayExtra("result");
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                        android.R.layout.simple_list_item_multiple_choice, result);
+                for(int i = 0; i<result.length ; i++){
+                    myFriend f = new myFriend(result[i],null,0,null);
+                    friends.add(f);
+                }
+
+                adapterTest = new myFriendAdapter(this, friends);
                 friendlist = (ListView) findViewById(R.id.listView);
-                friendlist.setAdapter(adapter);
+                friendlist.setAdapter(adapterTest);
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 //Write your code if there's no result
