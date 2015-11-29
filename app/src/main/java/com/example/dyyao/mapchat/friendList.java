@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,6 +27,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -39,7 +44,8 @@ public class friendList extends AppCompatActivity {
     ArrayList<String> selectedItems;
     String selectedNames;
     public static String groupName;
-    //public myFriendAdapter adapterTest;
+    public myFriendAdapter adapterTest;
+    ArrayList<myFriend> friends;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,21 +57,22 @@ public class friendList extends AppCompatActivity {
         addF = (ImageButton) findViewById(R.id.addFriendButton);
         addG = (ImageButton) findViewById(R.id.addGroupButton);
 
-        final ArrayList<myFriend> friends = new ArrayList<>();
-        final String[] values = getIntent().getStringArrayExtra("friendNames");
-        final String[] fNames = Arrays.copyOfRange(values, 2, values.length);
+        friends = new ArrayList<>();
+
+        String[] values = getIntent().getStringArrayExtra("friendNames");
+        String[] fNames = Arrays.copyOfRange(values, 2, values.length);
         selectedItems = new ArrayList<>();
         //String[] s = new String[] { "a", "b", "c", "d", "e", "f", "g","i","j","k"};
 
         //final ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-         //       android.R.layout.simple_list_item_multiple_choice, fNames);
+        //       android.R.layout.simple_list_item_multiple_choice, fNames);
 
-        for(int i = 0; i<fNames.length ; i++){
-            myFriend f = new myFriend(fNames[i],null,0,null);
+        for (int i = 0; i < fNames.length; i++) {
+            myFriend f = new myFriend(fNames[i], null, 0, null);
             friends.add(f);
         }
 
-        final myFriendAdapter adapterTest = new myFriendAdapter(this, friends);
+        adapterTest = new myFriendAdapter(this, friends);
 
         friendlist = (ListView) findViewById(R.id.listView);
         friendlist.setAdapter(adapterTest);
@@ -79,8 +86,7 @@ public class friendList extends AppCompatActivity {
                 if (friends.get(position).isSelected()) {
                     friends.get(position).setSelected(false);
                     view.setBackgroundColor(Color.TRANSPARENT);
-                }
-                else {
+                } else {
                     friends.get(position).setSelected(true);
                     view.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
                 }
@@ -113,7 +119,7 @@ public class friendList extends AppCompatActivity {
         */
                 selectedNames = "";
                 for (int i = 0; i < friends.size(); i++) {
-                    if (friends.get(i).isSelected()){
+                    if (friends.get(i).isSelected()) {
                         selectedNames += ":";
                         selectedNames += friends.get(i).getName();
                     }
@@ -135,18 +141,20 @@ public class friendList extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        ArrayList<myFriend> addedFriends = new ArrayList<>();
+        friends = new ArrayList<>();
+
         if (requestCode == 1) {
-            if(resultCode == Activity.RESULT_OK){
+            if (resultCode == Activity.RESULT_OK) {
                 String[] result = data.getStringArrayExtra("result");
-                //ArrayAdapter<String> adpter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice, result);
-                for (int i = 0; i < result.length; i++){
-                    myFriend f = new myFriend(result[i],null,0,null);
-                    addedFriends.add(f);
+                for (int i = 0; i < result.length; i++) {
+                    myFriend f = new myFriend(result[i], null, 0, null);
+                    friends.add(f);
                 }
-                final myFriendAdapter addedFadapterTest = new myFriendAdapter(this, addedFriends);
+
+                adapterTest = new myFriendAdapter(this, friends);
+
                 friendlist = (ListView) findViewById(R.id.listView);
-                friendlist.setAdapter(addedFadapterTest);
+                friendlist.setAdapter(adapterTest);
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 //Write your code if there's no result
@@ -154,13 +162,13 @@ public class friendList extends AppCompatActivity {
         }
     }//onActivityResult
 
-    public void open(){
+    public void open() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.dialog_sign, null);
         alertDialogBuilder.setView(v);
         gpNames = (EditText) v.findViewById(R.id.groupname);
-        Log.d(TAG, "Group name: " +  gpNames.getText().toString());
+        Log.d(TAG, "Group name: " + gpNames.getText().toString());
         alertDialogBuilder.setPositiveButton("yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface arg0, int arg1) {
@@ -179,7 +187,4 @@ public class friendList extends AppCompatActivity {
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
-
-
-
 }
