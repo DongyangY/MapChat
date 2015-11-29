@@ -39,6 +39,7 @@ public class friendList extends AppCompatActivity {
     ArrayList<String> selectedItems;
     String selectedNames;
     public static String groupName;
+    //public myFriendAdapter adapterTest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +64,7 @@ public class friendList extends AppCompatActivity {
             myFriend f = new myFriend(fNames[i],null,0,null);
             friends.add(f);
         }
+
         final myFriendAdapter adapterTest = new myFriendAdapter(this, friends);
 
         friendlist = (ListView) findViewById(R.id.listView);
@@ -127,31 +129,24 @@ public class friendList extends AppCompatActivity {
             public void onClick(View v) {
                 Intent afIntent = new Intent(friendList.this, AddFriend.class);
                 startActivityForResult(afIntent, 1);
-                /*
-                StringBuffer responseText = new StringBuffer();
-                responseText.append("The following were selected...\n");
-                for(int i=0;i<friends.size();i++){
-                    myFriend country = friends.get(i);
-                    if(country.isSelected()){
-                        responseText.append("\n" + country.getName());
-                    }
-                }
-                textView.setText(responseText);
-                */
             }
         });
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
+        ArrayList<myFriend> addedFriends = new ArrayList<>();
         if (requestCode == 1) {
             if(resultCode == Activity.RESULT_OK){
                 String[] result = data.getStringArrayExtra("result");
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                        android.R.layout.simple_list_item_multiple_choice, result);
+                //ArrayAdapter<String> adpter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice, result);
+                for (int i = 0; i < result.length; i++){
+                    myFriend f = new myFriend(result[i],null,0,null);
+                    addedFriends.add(f);
+                }
+                final myFriendAdapter addedFadapterTest = new myFriendAdapter(this, addedFriends);
                 friendlist = (ListView) findViewById(R.id.listView);
-                friendlist.setAdapter(adapter);
+                friendlist.setAdapter(addedFadapterTest);
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 //Write your code if there's no result

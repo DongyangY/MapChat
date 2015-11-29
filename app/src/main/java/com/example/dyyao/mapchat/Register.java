@@ -42,7 +42,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_register:
-                Log.d(TAG, "at");
+                Log.d(TAG, "at register");
                 /*Check password consistency*/
                 if(etPassword.getText().toString().equals(etCPassword.getText().toString())){
                     Login.mLogCommandBuffer.add("register:" + etUsername.getText().toString() + ":" + etPassword.getText().toString());

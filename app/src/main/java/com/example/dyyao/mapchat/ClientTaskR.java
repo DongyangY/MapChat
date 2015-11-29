@@ -26,7 +26,7 @@ import java.util.Date;
  */
 public class ClientTaskR extends AsyncTask<Void, String, Void>{
 
-    private Socket mSocket;
+    public static Socket mSocket;
     private String serverResponse;
     private static final String TAG = "ClientTaskR";
     public static friendList fl;
