@@ -122,6 +122,9 @@ public class ClientTaskR extends AsyncTask<Void, String, Void>{
                 MapChat.selectF.setAdapter(new SelectAdapter(mMapchat, mMapchat.friendInfo));
                 Toast.makeText(mMapchat, cmds[2] + " exit the group!", Toast.LENGTH_LONG).show();
                 break;
+            case "add_friend":
+
+                break;
         }
     }
 }
