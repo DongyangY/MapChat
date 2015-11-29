@@ -135,7 +135,7 @@ public class friendList extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
+        friends = new ArrayList<>();
         if (requestCode == 1) {
             if(resultCode == Activity.RESULT_OK){
                 String[] result = data.getStringArrayExtra("result");
