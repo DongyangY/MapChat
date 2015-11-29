@@ -7,9 +7,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity">
 
-    <include
-        layout="@layout/tool_bar"/>
-
 
     <Button
         android:layout_width="wrap_content"
@@ -17,18 +14,7 @@
         android:text="try"
         android:id="@+id/btn_try"
         android:layout_marginTop="189dp"
-        android:layout_alignParentEnd="true"
-        android:layout_toEndOf="@+id/fragment_navigation_drawer" />
+        android:layout_alignParentEnd="true" />
 
-    <fragment
-        android:id="@+id/fragment_navigation_drawer"
-        android:name="com.example.dyyao.mapchat.FragmentDrawer"
-        android:layout_width="@dimen/nav_drawer_width"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:layout="@layout/fragment_navigation_drawer"
-        tools:layout="@layout/fragment_navigation_drawer"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
 
 </RelativeLayout>

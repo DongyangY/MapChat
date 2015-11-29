@@ -6,9 +6,15 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
@@ -22,10 +28,16 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -37,7 +49,9 @@ public class friendList extends AppCompatActivity {
     private EditText gpNames;
     private static String TAG = "friendList";
     ArrayList<String> selectedItems;
+    ArrayList<myFriend> friends;
     String selectedNames;
+    myFriendAdapter adapterTest = null;
     public static String groupName;
 
     @Override
@@ -47,10 +61,17 @@ public class friendList extends AppCompatActivity {
         ClientTaskWR.friendlist = this;
         ClientTaskR.fl = this;
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            CharSequence title = "My Friends";
+            getSupportActionBar().setTitle(title);
+        }
+
         addF = (ImageButton) findViewById(R.id.addFriendButton);
         addG = (ImageButton) findViewById(R.id.addGroupButton);
 
-        final ArrayList<myFriend> friends = new ArrayList<>();
+        friends = new ArrayList<>();
         final String[] values = getIntent().getStringArrayExtra("friendNames");
         final String[] fNames = Arrays.copyOfRange(values, 2, values.length);
         selectedItems = new ArrayList<>();
@@ -63,8 +84,8 @@ public class friendList extends AppCompatActivity {
             myFriend f = new myFriend(fNames[i],null,0,null);
             friends.add(f);
         }
-        final myFriendAdapter adapterTest = new myFriendAdapter(this, friends);
 
+        adapterTest = new myFriendAdapter(this, friends);
         friendlist = (ListView) findViewById(R.id.listView);
         friendlist.setAdapter(adapterTest);
 
@@ -76,7 +97,7 @@ public class friendList extends AppCompatActivity {
                 //Toast.makeText(friendList.this, "check on: " + friends.get(position).getName(), Toast.LENGTH_LONG).show();
                 if (friends.get(position).isSelected()) {
                     friends.get(position).setSelected(false);
-                    view.setBackgroundColor(Color.TRANSPARENT);
+                    view.setBackgroundColor(Color.WHITE);
                 }
                 else {
                     friends.get(position).setSelected(true);
@@ -89,26 +110,6 @@ public class friendList extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "add group");
-                /*
-                SparseBooleanArray checked = friendlist.getCheckedItemPositions();
-                Log.d(TAG, String.valueOf(checked.size()));
-                selectedNames = "";
-                for (int i = 0; i < checked.size(); i++) {
-                    int position = checked.keyAt(i);
-                    Log.d(TAG, String.valueOf(position));
-
-                    if (checked.valueAt(i)) {
-                        //HUGE BUGGGGGGGGGGGGGGGGGGGGGGG!
-                        //login button should be clicked between addF and addG
-                        Log.d(TAG, String.valueOf(adapterTest.getItem(position)));
-                        selectedItems.add(adapterTest.getItem(position).getName());
-                        selectedNames += ":";
-                        selectedNames += selectedItems.get(i);
-                    }
-
-                }
-                Log.d(TAG, "group member " + selectedNames);
-        */
                 selectedNames = "";
                 for (int i = 0; i < friends.size(); i++) {
                     if (friends.get(i).isSelected()){
@@ -125,19 +126,9 @@ public class friendList extends AppCompatActivity {
         addF.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent afIntent = new Intent(friendList.this, AddFriend.class);
-                startActivityForResult(afIntent, 1);
-                /*
-                StringBuffer responseText = new StringBuffer();
-                responseText.append("The following were selected...\n");
-                for(int i=0;i<friends.size();i++){
-                    myFriend country = friends.get(i);
-                    if(country.isSelected()){
-                        responseText.append("\n" + country.getName());
-                    }
-                }
-                textView.setText(responseText);
-                */
+                //Intent afIntent = new Intent(friendList.this, AddFriend.class);
+                //startActivityForResult(afIntent, 1);
+                addFriend("NewFriend");
             }
         });
     }
@@ -185,6 +176,15 @@ public class friendList extends AppCompatActivity {
         alertDialog.show();
     }
 
+    public void addFriend(String name){
+        myFriend f = new myFriend(name,null,0,null);
+        friends.add(f);
+        if (adapterTest != null) {
+            adapterTest.notifyDataSetChanged();
+        }else{
+            Log.e(TAG, "AdapterTest null");
+        }
+    }
 
 
 }

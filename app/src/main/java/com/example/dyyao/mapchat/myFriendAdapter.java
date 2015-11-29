@@ -9,11 +9,14 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.graphics.Color.WHITE;
 
 /**
  * Created by mxizhang on 15/11/15.
@@ -30,23 +33,28 @@ public class myFriendAdapter extends ArrayAdapter<myFriend> {
     }
 
     static class ViewHolder {
+        protected ImageView icon;
         protected TextView text;
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        final View view ;
-        if (convertView == null) {
-            LayoutInflater inflator = context.getLayoutInflater();
-            view = inflator.inflate(R.layout.list_row, null);
-            final ViewHolder viewHolder = new ViewHolder();
-            viewHolder.text = (TextView) view.findViewById(R.id.label);
-            viewHolder.text.setText(list.get(position).getName());
-            view.setTag(viewHolder);
-        } else {
-            view = convertView;
+    public View getView(int position, View v, ViewGroup parent) {
+        ViewHolder viewHolder;
+        LayoutInflater inflator = context.getLayoutInflater();
+        v = inflator.inflate(R.layout.list_row, null);
+        v.setBackgroundColor(Color.WHITE);
+        viewHolder = new ViewHolder();
+        viewHolder.text = (TextView) v.findViewById(R.id.label);
+        viewHolder.text.setText(list.get(position).getName());
+        if(list.get(position).isSelected()){
+            v.setBackgroundResource(R.color.colorPrimaryDark);
         }
-        return view;
+        viewHolder.icon = (ImageView) v.findViewById(R.id.icon);
+        viewHolder.icon.setImageResource(list.get(position).getImage());
+
+        v.setTag(viewHolder);
+
+        return v;
     }
 
 }

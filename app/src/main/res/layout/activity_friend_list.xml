@@ -1,35 +1,73 @@
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     tools:context="com.example.dyyao.mapchat.friendList">
 
-    <ImageButton
-        android:layout_width="wrap_content"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:minHeight="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/addFriendButton"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:background="@drawable/round_button"
-        android:src="@drawable/icon_plus" />
+        android:paddingTop="@dimen/action_bar_horizontal_margin"
+        android:paddingBottom="@dimen/action_bar_vertical_margin"
+        android:paddingEnd="@dimen/action_bar_horizontal_margin"
+        android:paddingLeft="@dimen/action_bar_horizontal_margin"
+        >
 
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/addGroupButton"
-        android:background="@drawable/round_button"
-        android:src="@drawable/chat_icon"
-        android:layout_alignParentTop="true"
-        android:layout_alignEnd="@+id/listView" />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView2"
+            android:layout_above="@+id/relativeLayout"
+            android:layout_centerHorizontal="true" />
 
-    <ListView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/listView"
-        android:layout_below="@+id/addFriendButton"
-        android:layout_alignParentStart="true"
-        android:choiceMode="multipleChoice" />
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/addGroupButton"
+            android:src="@drawable/chat_icon"
+            android:background="@color/trnasparent"
+            android:layout_alignParentTop="true"
+            android:layout_toStartOf="@+id/addFriendButton"
+            android:layout_gravity="end" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/addFriendButton"
+            android:background="@color/trnasparent"
+            android:src="@drawable/icon_plus"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="end" />
+
+
+    </android.support.v7.widget.Toolbar>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:layout_below="@+id/toolbar"
+        android:id="@+id/relativeLayout">
+
+
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/listView"
+            android:divider="#00000000"
+            android:dividerHeight="8dp"
+            android:choiceMode="multipleChoice"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true" />
+
+    </RelativeLayout>
+
 
 </RelativeLayout>

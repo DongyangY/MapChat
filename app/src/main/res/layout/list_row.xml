@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:contextClickable="true"
     android:descendantFocusability="blocksDescendants"
     android:background="@drawable/selector">
@@ -11,7 +12,7 @@
         android:layout_height="48dp"
         android:layout_marginTop="8dp"
         android:src="@drawable/sheep"
-        android:layout_marginLeft="16dp"
+        android:layout_marginStart="8dp"
         android:layout_marginBottom="8dp">
     </ImageView>
 
@@ -19,13 +20,15 @@
         android:id="@+id/label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
+        android:textSize="20sp"
         android:fontFamily="sans-serif"
         android:layout_alignBottom="@+id/icon"
         android:layout_alignParentEnd="true"
         android:layout_toEndOf="@+id/icon"
         android:layout_alignTop="@+id/icon"
-        android:layout_marginLeft="32dp">
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:layout_marginStart="8dp">
     </TextView>
 
 </RelativeLayout>
