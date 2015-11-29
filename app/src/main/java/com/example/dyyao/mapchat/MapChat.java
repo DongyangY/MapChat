@@ -114,8 +114,8 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         setContentView(R.layout.activity_mapchat);
         Inputchat = (EditText) findViewById(R.id.et_input);
         chatlog = (TextView) findViewById(R.id.tv_chatlogview);
-        bSend = (ImageButton) findViewById(R.id.btn_send);
         selectF = (ListView) findViewById(R.id.listSelect);
+        bSend = (ImageButton) findViewById(R.id.btn_send);
         friendInfo = new ArrayList<>();
         ClientTaskR.mMapchat = this;
 
