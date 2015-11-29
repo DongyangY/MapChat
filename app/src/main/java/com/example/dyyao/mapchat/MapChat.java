@@ -558,5 +558,11 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         });
     }
 
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        Login.mLogCommandBuffer.add("exit_group:" + groupName + ":" + userName);
+    }
+
 }
 

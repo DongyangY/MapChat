@@ -113,6 +113,12 @@ public class ClientTaskR extends AsyncTask<Void, String, Void>{
             case "send_photo":
                 MapChat.setImage(mediaFile, imageSender);
                 break;
+            case "exit_group":
+                for (int i = 0; i < MapChat.friendInfo.size(); i++){
+                    if (MapChat.friendInfo.get(i).getName().equals(cmds[2])){
+                        MapChat.friendInfo.remove(i);
+                    }
+                }
         }
     }
 }

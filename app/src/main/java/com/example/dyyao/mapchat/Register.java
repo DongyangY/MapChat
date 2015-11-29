@@ -21,7 +21,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
 
     private final String TAG = "Register";
     Button bRegister;
-    EditText etFirstName, etLastName, etUsername, etPassword, etCPassword;
+    EditText etUsername, etPassword, etCPassword;
 
 
     @Override
