@@ -75,7 +75,6 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
     ViewFlipper page;
     Animation animFlipInForeward;
     Animation animFlipInBackward;
-    static BitmapDescriptor icon;
     public static GoogleMap mMap;
     String[] values;
     String[] fNames;
@@ -426,6 +425,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
     @Override
     public void onLocationChanged(Location location) {
         Log.d(TAG, location.toString());
+        currentLocation = location;
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         Log.v(TAG, latLng.latitude + " " + latLng.longitude);
         double lat = latLng.latitude;
