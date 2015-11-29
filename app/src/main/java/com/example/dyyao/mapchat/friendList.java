@@ -126,9 +126,9 @@ public class friendList extends AppCompatActivity {
         addF.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Intent afIntent = new Intent(friendList.this, AddFriend.class);
-                //startActivityForResult(afIntent, 1);
-                addFriend("NewFriend");
+                Intent afIntent = new Intent(friendList.this, AddFriend.class);
+                startActivityForResult(afIntent, 1);
+                //addFriend("NewFriend");
             }
         });
     }
