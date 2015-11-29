@@ -10,6 +10,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -52,11 +54,13 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.location.LocationListener;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by luluzhao on 11/15/15.
@@ -117,7 +121,6 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         bSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Inputchat.setText("");
                 String sentence = Inputchat.getText().toString();
                 chatlog.append(sentence + "\n");
                 mMarker.setSnippet(sentence);
@@ -130,6 +133,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
                 }
                 //mMarker.setPosition(new LatLng(40, -80));
                 Login.mLogCommandBuffer.add("send_message:" + groupName + ":" + userName + ":" + sentence);
+                Inputchat.setText("");
             }
 
         });
@@ -212,12 +216,27 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
                     public boolean onMarkerClick(Marker marker) {
                             if (marker.getId().equals(pinID)) {
                                 open(marker);
-                                /*
                             }else{
-                                for (myFriend f : friendInfo) {
-                                    if(f.getMarker().getId().equals(marker.getId())) f.inverseSelect();
+                                Geocoder geocoder = new Geocoder(MapChat.this, Locale.getDefault());
+                                List<Address> addresses = null;
+                                try {
+                                    addresses = geocoder.getFromLocation(marker.getPosition().latitude, marker.getPosition().longitude, 1);
+                                } catch (IOException e) {
+                                    Log.d(TAG, "IOException!");
                                 }
-                                */
+                                // Print out address
+                                if (addresses == null || addresses.size()  == 0) {
+                                    marker.setSnippet("No address found.");
+                                } else {
+                                    Address address = addresses.get(0);
+                                    String addr = "";
+                                    // Fetch the address lines using getAddressLine,
+                                    // join them, and send them to the thread.
+                                    for(int i = 0; i < address.getMaxAddressLineIndex(); i++) {
+                                        addr += address.getAddressLine(i) + " ";
+                                    }
+                                    marker.setSnippet(addr);
+                                }
                             }
                         return false;
                     }
@@ -407,8 +426,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
     @Override
     public void onLocationChanged(Location location) {
         Log.d(TAG, location.toString());
-        currentLocation = location;
-        LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         Log.v(TAG, latLng.latitude + " " + latLng.longitude);
         double lat = latLng.latitude;
         double lng = latLng.longitude;

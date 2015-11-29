@@ -25,17 +25,6 @@
                 android:layout_alignParentStart="true"
                 android:layout_above="@+id/btn_send" />
 
-            <EditText
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/et_input"
-                android:text=""
-                android:layout_alignParentBottom="true"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:layout_toStartOf="@+id/btn_send" />
 
             <ImageButton
                 android:layout_width="wrap_content"
@@ -58,6 +47,18 @@
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentEnd="true"
                 android:layout_margin="8dp" />
+
+            <EditText
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/et_input"
+                android:text=""
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_toStartOf="@+id/btn_send" />
 
             <ListView
                 android:layout_width="wrap_content"
