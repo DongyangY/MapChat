@@ -114,6 +114,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         bSend = (ImageButton) findViewById(R.id.btn_send);
         selectF = (ListView) findViewById(R.id.listSelect);
         friendInfo = new ArrayList<>();
+        ClientTaskR.mMapchat = this;
 
         values = getIntent().getStringArrayExtra("friendNames");
         fNames = Arrays.copyOfRange(values, 2, values.length);
@@ -556,6 +557,16 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
                 }
             }
         });
+    }
+
+    public static void removeUser(String usrName){
+        for (int i = 0; i < MapChat.friendInfo.size(); i++){
+            if (MapChat.friendInfo.get(i).getName().equals(usrName)){
+                MapChat.friendInfo.get(i).getMarker().remove();
+                MapChat.friendInfo.get(i).getUserPin().remove();
+                MapChat.friendInfo.remove(i);
+            }
+        }
     }
 
     @Override
