@@ -70,7 +70,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         LocationListener{
     ImageButton bSend;
     EditText Inputchat;
-    ListView selectF;
+    public static ListView selectF;
     static TextView chatlog;
     ViewFlipper page;
     Animation animFlipInForeward;
@@ -181,6 +181,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
                 }
             }
         });
+
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
