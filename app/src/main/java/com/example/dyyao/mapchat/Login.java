@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -66,6 +67,22 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 startActivity(new Intent(this, Register.class));
                 break;
 
+        }
+    }
+
+    protected void onDestroy(){
+        Log.d(TAG, "Login onDestroy");
+        super.onDestroy();
+        Login.mLogCommandBuffer.add("logout:" + Login.UserID);
+        try {
+            ClientTaskWR.mSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            ClientTaskR.mSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
