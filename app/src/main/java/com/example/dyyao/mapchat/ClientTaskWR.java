@@ -64,6 +64,7 @@ public class ClientTaskWR extends AsyncTask<Void, String, Void> {
 
                     String[] c = mCommand.split(":");
                     if (c[0].equals("send_photo")) {
+                        Log.d(TAG, "send_photo command");
                         serverResponse = mBufferedReader.readLine();
                         InputStream in = new FileInputStream(MapChat.mediaFile);
                         copy(in, mOutStream, MapChat.mediaFile.length());

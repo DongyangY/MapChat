@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -32,7 +33,9 @@ import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.BounceInterpolator;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -108,12 +111,18 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
     public static Vibrator vibrator;
     private static ArrayList<String> imageIds;
 
+    ImageButton show;
+
+    private static ChatArrayAdapter chatArrayAdapter;
+    private ListView listView;
+    static boolean side = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mapchat);
         Inputchat = (EditText) findViewById(R.id.et_input);
-        chatlog = (TextView) findViewById(R.id.tv_chatlogview);
+        //chatlog = (TextView) findViewById(R.id.tv_chatlogview);
         selectF = (ListView) findViewById(R.id.listSelect);
         bSend = (ImageButton) findViewById(R.id.btn_send);
         friendInfo = new ArrayList<>();
@@ -121,12 +130,22 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
 
         imageIds = new ArrayList<String>();
 
+        show = (ImageButton) findViewById(R.id.btn_show);
+        show.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SwipeRight();
+            }
+        });
+
         values = getIntent().getStringArrayExtra("friendNames");
         fNames = Arrays.copyOfRange(values, 2, values.length);
         bSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String sentence = Inputchat.getText().toString();
+                side = false;
+                sendChatMessage();
                 chatlog.append(sentence + "\n");
                 mMarker.setSnippet(sentence);
                 mMarker.showInfoWindow();
@@ -264,6 +283,31 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
 
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 
+        listView = (ListView) findViewById(R.id.listView1);
+
+        chatArrayAdapter = new ChatArrayAdapter(getApplicationContext(), R.layout.activity_chat_singlemessage);
+        listView.setAdapter(chatArrayAdapter);
+
+        Inputchat = (EditText) findViewById(R.id.et_input);
+
+        listView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
+        listView.setAdapter(chatArrayAdapter);
+
+        //to scroll the list view to bottom on data change
+        chatArrayAdapter.registerDataSetObserver(new DataSetObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                listView.setSelection(chatArrayAdapter.getCount() - 1);
+            }
+        });
+
+    }
+
+    private boolean sendChatMessage(){
+        chatArrayAdapter.add(new ChatMessage(side, Inputchat.getText().toString()));
+        Inputchat.setText("");
+        return true;
     }
 
     public void showImage(final String fileName) {
@@ -504,7 +548,9 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
             if(friendInfo.get(i).getName().equals(name)){
                 friendInfo.get(i).getMarker().setSnippet(text);
                 friendInfo.get(i).getMarker().showInfoWindow();
-                chatlog.append(text + "\n");
+                //chatlog.append(text + "\n");
+                side = true;
+                chatArrayAdapter.add(new ChatMessage(side, name + ": " + text));
                 if(notification.equals("yes")){
                     markerBounce(friendInfo.get(i).getMarker());
                     vibrator.vibrate(500);
