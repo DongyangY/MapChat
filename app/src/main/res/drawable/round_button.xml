@@ -3,7 +3,7 @@
     android:color="@color/colorPrimary">
     <item>
         <shape android:shape="oval">
-            <solid android:color="@color/colorPrimaryDark"/>
+            <solid android:color="@color/trnasparent"/>
         </shape>
     </item>
 </ripple>
