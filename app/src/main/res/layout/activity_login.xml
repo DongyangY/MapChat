@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/background">
 
+
     <EditText
         android:id="@+id/et_username"
         android:layout_width="300dp"
@@ -52,5 +53,16 @@
         android:maxLines="1"
         android:editable="false"
         android:clickable="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="MapChat"
+        android:fontFamily="sans-serif-thin"
+        android:id="@+id/textView"
+        android:layout_above="@+id/et_username"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="78dp" />
 
 </RelativeLayout>
