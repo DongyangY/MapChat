@@ -82,7 +82,7 @@
 
         </RelativeLayout>
         <RelativeLayout
-            android:layout_width="200dp"
+            android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:orientation="horizontal">
             <ListView
