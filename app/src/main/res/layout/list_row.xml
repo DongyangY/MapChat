@@ -28,7 +28,9 @@
         android:layout_alignTop="@+id/icon"
         android:textStyle="bold"
         android:layout_gravity="center"
-        android:layout_marginStart="8dp">
+        android:layout_marginStart="8dp"
+        android:gravity="center_vertical"
+        android:text="F">
     </TextView>
 
 </RelativeLayout>
