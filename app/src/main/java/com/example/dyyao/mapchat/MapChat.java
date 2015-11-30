@@ -76,7 +76,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
     ImageButton bSend;
     EditText Inputchat;
     public static ListView selectF;
-    static TextView chatlog;
+    //static TextView chatlog;
     ViewFlipper page;
     Animation animFlipInForeward;
     Animation animFlipInBackward;
@@ -89,6 +89,9 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
     private Marker mPin = null;
     private final int[] colors = { R.drawable.peopleblue, R.drawable.peoplered, R.drawable.peoplegreen, R.drawable.peopleyellow, R.drawable.peoplepurple};
     private final int[] colorspin = { R.drawable.pinblue, R.drawable.pinred, R.drawable.pingreen, R.drawable.pinyellow, R.drawable.pinpurple};
+
+    private static final int[] colorsImage = { R.drawable.imageblue, R.drawable.imagered, R.drawable.imagegreen, R.drawable.imageyellow, R.drawable.imagepurple };
+    public static MapChat mapChat;
 
     private String groupName;
     private String userName;
@@ -138,6 +141,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
             }
         });
 
+        mapChat = this;
         values = getIntent().getStringArrayExtra("friendNames");
         fNames = Arrays.copyOfRange(values, 2, values.length);
         bSend.setOnClickListener(new View.OnClickListener() {
@@ -146,7 +150,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
                 String sentence = Inputchat.getText().toString();
                 side = false;
                 sendChatMessage();
-                chatlog.append(sentence + "\n");
+                //chatlog.append(sentence + "\n");
                 mMarker.setSnippet(sentence);
                 mMarker.showInfoWindow();
                 for( int i = 0; i < friendInfo.size(); i++) {
@@ -592,6 +596,16 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
                 markerOptions.position(friendInfo.get(i).getMarker().getPosition());
                 markerOptions.title("image");
                 markerOptions.snippet(String.valueOf(file));
+
+                Bitmap bm = BitmapFactory.decodeResource(mapChat.getResources(), colorsImage[i + 1]).copy(Bitmap.Config.ARGB_8888, true);
+
+                BitmapDrawable draw = new BitmapDrawable(mapChat.getResources(), Bitmap.createScaledBitmap(bm, 108, 108, false));
+
+                Bitmap drawBmp = draw.getBitmap();
+
+                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(drawBmp))
+                        .anchor(0.5f, 1);
+
                 Marker marker = mMap.addMarker(markerOptions);
                 imageIds.add(marker.getId());
             }
@@ -606,6 +620,14 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
             markerOptions.position(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));
             markerOptions.title("image");
             markerOptions.snippet(String.valueOf(mediaFile));
+
+            Bitmap bm = BitmapFactory.decodeResource(mapChat.getResources(), colorsImage[0]).copy(Bitmap.Config.ARGB_8888, true);
+            BitmapDrawable draw = new BitmapDrawable(mapChat.getResources(), Bitmap.createScaledBitmap(bm, 120, 120, false));
+            Bitmap drawBmp = draw.getBitmap();
+
+            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(drawBmp))
+                    .anchor(0.5f, 1);
+
             return markerOptions;
         }
 
