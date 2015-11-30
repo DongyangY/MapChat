@@ -71,22 +71,28 @@
                 android:layout_marginBottom="400dp"
                 android:layout_marginTop="8dp" />
 
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="200dp"
-            android:layout_height="fill_parent"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:background="#A0A0A0">
-            <ScrollView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-            <TextView
+            <ImageButton
+                style="?android:attr/buttonStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=""
-                android:id="@+id/tv_chatlogview" />
-            </ScrollView>
+                android:text="show"
+                android:id="@+id/btn_show"
+                android:layout_alignParentBottom="true"
+                android:layout_toStartOf="@+id/btn_send" />
+
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="horizontal">
+
+            <ListView
+                android:id="@+id/listView1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="80dp">
+            </ListView>
 
         </RelativeLayout>
 
