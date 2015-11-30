@@ -324,15 +324,17 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         int screenHeight = size.y;
 
         Bitmap bitmap = BitmapFactory.decodeFile(fileName);
-        int bitmapHeight = bitmap.getHeight();
-        int bitmapWidth = bitmap.getWidth();
+        //int bitmapHeight = bitmap.getHeight();
+        //int bitmapWidth = bitmap.getWidth();
 
-        while(bitmapHeight > (screenHeight - 250) || bitmapWidth > (screenWidth - 250)) {
+        /*
+        while(bitmapHeight > (screenHeight) || bitmapWidth > (screenWidth)) {
             bitmapHeight = bitmapHeight / 2;
             bitmapWidth = bitmapWidth / 2;
         }
+        */
 
-        BitmapDrawable resizedBitmap = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, bitmapWidth, bitmapHeight, false));
+        BitmapDrawable resizedBitmap = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, screenWidth, screenHeight, false));
 
         Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
