@@ -9,26 +9,30 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button btry;
+    Button enter;
+    EditText ip;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_mainpage);
 
 
-        btry = (Button) findViewById(R.id.btn_try);
+        ip = (EditText) findViewById(R.id.et_ip);
+        enter = (Button) findViewById(R.id.btn_enter);
 
 
-        btry.setOnClickListener(new View.OnClickListener() {
+        enter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Login.SERVER_IP_ADDRESS=ip.getText().toString();
                 startActivity(new Intent(MainActivity.this, Login.class));
             }
         });

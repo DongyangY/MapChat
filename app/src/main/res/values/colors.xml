@@ -6,5 +6,6 @@
     <color name="colorExtra">#90656f</color>
     <color name="textColorPrimary">#7c686c</color>
     <color name="button">#a2cdcb</color>
+    <color name="mapChat">#cccccc</color>
     <color name="trnasparent">#00000000</color>
 </resources>
