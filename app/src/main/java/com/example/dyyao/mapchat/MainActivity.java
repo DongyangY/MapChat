@@ -40,8 +40,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
+    @Override
     protected void onDestroy(){
+        super.onDestroy();
         Log.d(TAG, "Main onDestroy");
     }
 

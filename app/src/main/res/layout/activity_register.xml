@@ -13,8 +13,9 @@
         android:text="Username"
         android:fontFamily="sans-serif-thin"
         android:id="@+id/tv_username"
-        android:layout_marginTop="37dp"
-        android:layout_alignParentTop="true"
+        android:layout_marginTop="49dp"
+        android:textSize="20dp"
+        android:layout_below="@+id/imageView5"
         android:layout_alignStart="@+id/et_username" />
 
     <EditText
@@ -34,7 +35,8 @@
         android:text="Password"
         android:id="@+id/tv_password"
         android:layout_below="@+id/et_username"
-        android:layout_alignStart="@+id/et_username" />
+        android:layout_alignStart="@+id/et_username"
+        android:textSize="20dp" />
 
     <EditText
         android:layout_width="300dp"
@@ -55,7 +57,8 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:id="@+id/tv_cpassword"
         android:layout_below="@+id/et_password"
-        android:layout_alignStart="@+id/tv_password" />
+        android:layout_alignStart="@+id/tv_password"
+        android:textSize="20dp" />
 
     <EditText
         android:layout_width="300dp"
@@ -75,8 +78,18 @@
         android:fontFamily="sans-serif-thin"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:background="#a2cbcd"
-        android:layout_marginTop="67dp"
+        android:layout_marginTop="45dp"
         android:layout_below="@+id/et_cpassword"
-        android:layout_alignStart="@+id/et_cpassword" />
+        android:layout_alignStart="@+id/et_cpassword"
+        android:textSize="20dp" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView5"
+        android:src="@drawable/logo"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="30dp" />
 
 </RelativeLayout>
