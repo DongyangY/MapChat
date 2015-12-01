@@ -417,7 +417,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
 
                 Marker p = setPeopleMarker(colorspin[j], fNames[i], false);
 
-                friendInfo.add(new myFriend(fNames[i], m, colors[j], p));
+                friendInfo.add(new myFriend(fNames[i], m, j, p));
                 Log.e(TAG, fNames[i]);
                 j++;
             }
@@ -627,7 +627,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
                 markerOptions.title("image");
                 markerOptions.snippet(String.valueOf(file));
 
-                Bitmap bm = BitmapFactory.decodeResource(mapChat.getResources(), colorsImage[i + 1]).copy(Bitmap.Config.ARGB_8888, true);
+                Bitmap bm = BitmapFactory.decodeResource(mapChat.getResources(), colorsImage[friendInfo.get(i).getColor()]).copy(Bitmap.Config.ARGB_8888, true);
 
                 BitmapDrawable draw = new BitmapDrawable(mapChat.getResources(), Bitmap.createScaledBitmap(bm, 108, 108, false));
 
