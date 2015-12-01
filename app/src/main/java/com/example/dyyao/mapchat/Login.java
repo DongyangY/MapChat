@@ -1,16 +1,19 @@
 package com.example.dyyao.mapchat;
 
 import android.content.Intent;
+import android.graphics.PixelFormat;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -31,10 +34,19 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     public static String UserID;
     private static final String TAG = "Login";
 
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        Window window = getWindow();
+        window.setFormat(PixelFormat.RGBA_8888);
+    }
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        StartAnimations();
         etUsername = (EditText) findViewById(R.id.et_username);
         etPassword = (EditText) findViewById(R.id.et_password);
         tvRegisterLink = (TextView) findViewById(R.id.tv_RegisterLink);
@@ -49,6 +61,24 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         ClientTaskR mClientTaskR = new ClientTaskR();
         mClientTaskR.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         Log.d(TAG, "WR connected");
+
+    }
+
+
+    private void StartAnimations() {
+        Animation anim = AnimationUtils.loadAnimation(this, R.anim.alpha);
+        anim.reset();
+        RelativeLayout l=(RelativeLayout) findViewById(R.id.lin_lay1);
+        l.clearAnimation();
+        l.startAnimation(anim);
+
+        anim = AnimationUtils.loadAnimation(this, R.anim.translate);
+        anim.reset();
+        ImageView iv = (ImageView) findViewById(R.id.imageView4);
+
+        iv.clearAnimation();
+        iv.startAnimation(anim);
+
 
     }
 
@@ -70,6 +100,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         }
     }
 
+    @Override
     protected void onDestroy(){
         Log.d(TAG, "Login onDestroy");
         super.onDestroy();
