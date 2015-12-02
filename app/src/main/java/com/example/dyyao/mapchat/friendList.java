@@ -49,7 +49,7 @@ public class friendList extends AppCompatActivity {
     private EditText gpNames;
     private static String TAG = "friendList";
     ArrayList<String> selectedItems;
-    public static ArrayList<myFriend> friends;
+    protected static ArrayList<myFriend> friends;
     String selectedNames;
     public static myFriendAdapter adapterTest = null;
     public static String groupName;
@@ -93,11 +93,14 @@ public class friendList extends AppCompatActivity {
         friendlist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                /*
                 if (adapterTest != null) {
                     adapterTest.notifyDataSetChanged();
                 }else{
                     Log.e(TAG, "AdapterTest null");
                 }
+                */
+                Log.e(TAG, "!!!!" + friends.size());
                 Log.e(TAG, "check on: " + friends.get(position).getName());
                 view.setSelected(true);
                 //Toast.makeText(friendList.this, "check on: " + friends.get(position).getName(), Toast.LENGTH_LONG).show();
@@ -141,10 +144,10 @@ public class friendList extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        friends = new ArrayList<>();
         if (requestCode == 1) {
             Log.e(TAG, "~~~~~~~~~~~~~~~~~~~~~~~~requestCode 1");
             if(resultCode == Activity.RESULT_OK){
+                friends = new ArrayList<>();
                 Log.e(TAG, "~~~~~~~~~~~~~~~~~~~~~~~~resultCode OK");
                 String[] result = data.getStringArrayExtra("result");
                 for(int i = 0; i<result.length ; i++){
@@ -155,9 +158,11 @@ public class friendList extends AppCompatActivity {
                 adapterTest = new myFriendAdapter(this, friends);
                 friendlist = (ListView) findViewById(R.id.listView);
                 friendlist.setAdapter(adapterTest);
+                Log.e(TAG, "!!!!" + friends.size());
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 Log.e(TAG, "~~~~~~~~~~~~~~~~~~~~~~~~resultCode Cancel");
+                Log.e(TAG, "!!!!" + friends.size());
                 //Write your code if there's no result
             }
         }
