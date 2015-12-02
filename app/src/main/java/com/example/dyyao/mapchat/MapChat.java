@@ -308,9 +308,9 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
     protected void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "Mapchat onDestroy");
-        Log.d(TAG, userName + "exit group");
-        Login.mLogCommandBuffer.add("exit_group:" + groupName + ":" + userName);
-        mGoogleApiClient.disconnect();
+        //Log.d(TAG, userName + "exit group");
+        //Login.mLogCommandBuffer.add("exit_group:" + groupName + ":" + userName);
+        //mGoogleApiClient.disconnect();
     }
 
     @Override
@@ -323,6 +323,9 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
     protected void onStop() {
         Log.d(TAG, "Mapchat onStop");
         super.onStop();
+        Log.d(TAG, userName + "exit group");
+        Login.mLogCommandBuffer.add("exit_group:" + groupName + ":" + userName);
+        mGoogleApiClient.disconnect();
     }
 
     @Override
@@ -335,6 +338,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
     protected void onRestart() {
         Log.d(TAG, "Mapchat onRestart");
         super.onRestart();
+        finish();
     }
 
     private boolean sendChatMessage() {
