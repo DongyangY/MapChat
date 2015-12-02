@@ -119,6 +119,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
 
     private boolean exited = false;
     private boolean takePhoto = false;
+    private boolean isOnLog = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -346,6 +347,15 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
     }
 
     @Override
+    public void onBackPressed() {
+        if (isOnLog) {
+            SwipeLeft();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
     protected void onResume() {
         Log.d(TAG, "Mapchat onResume");
         super.onResume();
@@ -490,12 +500,18 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
     }
 
     private void SwipeRight() {
+
+        isOnLog = true;
+
         page.setInAnimation(animFlipInBackward);
         //page.setOutAnimation(animFlipOutBackward);
         page.showPrevious();
     }
 
     private void SwipeLeft() {
+
+        isOnLog = false;
+
         page.setInAnimation(animFlipInForeward);
         //page.setOutAnimation(animFlipOutForeward);
         page.showNext();
