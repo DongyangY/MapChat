@@ -356,7 +356,6 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
     protected void onRestart() {
         Log.d(TAG, "Mapchat onRestart");
         super.onRestart();
-        takePhoto = false;
         finish();
     }
 
@@ -626,6 +625,8 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         fileUri = android.net.Uri.fromFile(mediaFile);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
         startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+
+        takePhoto = false;
     }
 
     @Override
