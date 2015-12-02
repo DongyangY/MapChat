@@ -335,14 +335,13 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
     protected void onStop() {
         Log.d(TAG, "Mapchat onStop");
         super.onStop();
-        /*
+
         if (!exited && !takePhoto) {
             Log.d(TAG, userName + "exit group");
             Login.mLogCommandBuffer.add("exit_group:" + groupName + ":" + userName);
             mGoogleApiClient.disconnect();
             exited = true;
         }
-        */
     }
 
     @Override
@@ -355,7 +354,12 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
     protected void onRestart() {
         Log.d(TAG, "Mapchat onRestart");
         super.onRestart();
-        finish();
+
+        if (!takePhoto) {
+            finish();
+        }
+
+        takePhoto = false;
     }
 
     private boolean sendChatMessage() {
@@ -624,8 +628,6 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         fileUri = android.net.Uri.fromFile(mediaFile);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
         startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
-
-        takePhoto = false;
     }
 
     @Override
