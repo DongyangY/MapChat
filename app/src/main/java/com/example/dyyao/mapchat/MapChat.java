@@ -50,6 +50,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -122,6 +123,10 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mapchat);
+
+
+        MapsInitializer.initialize(getApplicationContext());
+
         Inputchat = (EditText) findViewById(R.id.et_input);
         //chatlog = (TextView) findViewById(R.id.tv_chatlogview);
         selectF = (ListView) findViewById(R.id.listSelect);
@@ -145,21 +150,28 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         bSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String sentence = Inputchat.getText().toString();
-                side = false;
-                sendChatMessage();
-                //chatlog.append(sentence + "\n");
-                mMarker.setSnippet(sentence);
-                mMarker.showInfoWindow();
-                for (int i = 0; i < friendInfo.size(); i++) {
-                    if (friendInfo.get(i).isSelected()) {
-                        sentence += ":";
-                        sentence += friendInfo.get(i).getName();
+                if (Inputchat.getText().toString().equals("")) {
+                    Toast.makeText(getApplicationContext(), "Please text something before sending ",
+                            Toast.LENGTH_LONG).show();
+
+                }else {
+                    String sentence = Inputchat.getText().toString();
+                    side = false;
+                    sendChatMessage();
+                    //chatlog.append(sentence + "\n");
+                    mMarker.setSnippet(sentence);
+                    mMarker.showInfoWindow();
+                    for (int i = 0; i < friendInfo.size(); i++) {
+                        if (friendInfo.get(i).isSelected()) {
+                            sentence += ":";
+                            sentence += friendInfo.get(i).getName();
+                        }
                     }
+                    //mMarker.setPosition(new LatLng(40, -80));
+                    Login.mLogCommandBuffer.add("send_message:" + groupName + ":" + userName + ":" + sentence);
+                    Inputchat.setText("");
                 }
-                //mMarker.setPosition(new LatLng(40, -80));
-                Login.mLogCommandBuffer.add("send_message:" + groupName + ":" + userName + ":" + sentence);
-                Inputchat.setText("");
+
             }
 
         });
@@ -517,7 +529,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         alerDialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Toast.makeText(MapChat.this, "You clicked yes button", Toast.LENGTH_LONG).show();
+                Toast.makeText(MapChat.this, "You have deleted the marker", Toast.LENGTH_LONG).show();
                 marker.remove();
                 isExist = false;
                 Login.mLogCommandBuffer.add("change_pin:" + groupName + ":" + userName + ":" + 0 + ":" + 0);
