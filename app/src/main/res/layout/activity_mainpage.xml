@@ -12,7 +12,7 @@
         android:id="@+id/et_ip"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:text = "172.31.17.19"
+        android:text = "172.31.18.227"
         android:hint="Please enter the IP Address"
         android:fontFamily="sans-serif-thin"
         android:maxLines="1"/>
