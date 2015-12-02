@@ -20,7 +20,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/et_userid"
         android:layout_below="@+id/tv_userid"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:maxLines="1" />
 
     <Button
         android:layout_width="300dp"

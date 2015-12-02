@@ -15,6 +15,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Group Name"
+        android:fontFamily="sans-serif-thin"
         android:id="@+id/tv_group"
         android:layout_below="@id/imageView" />
 
@@ -26,7 +27,8 @@
         android:layout_marginLeft = "4dp"
         android:layout_marginRight = "4dp"
         android:layout_below="@id/tv_group"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:maxLines="1" />
 
 
 </RelativeLayout>

@@ -58,6 +58,7 @@ public class friendList extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend_list);
+        Log.d(TAG, "friendlist onCreate");
         ClientTaskWR.friendlist = this;
         ClientTaskR.fl = this;
 
@@ -92,6 +93,11 @@ public class friendList extends AppCompatActivity {
         friendlist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (adapterTest != null) {
+                    adapterTest.notifyDataSetChanged();
+                }else{
+                    Log.e(TAG, "AdapterTest null");
+                }
                 Log.e(TAG, "check on: " + friends.get(position).getName());
                 view.setSelected(true);
                 //Toast.makeText(friendList.this, "check on: " + friends.get(position).getName(), Toast.LENGTH_LONG).show();
@@ -137,7 +143,9 @@ public class friendList extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         friends = new ArrayList<>();
         if (requestCode == 1) {
+            Log.e(TAG, "~~~~~~~~~~~~~~~~~~~~~~~~requestCode 1");
             if(resultCode == Activity.RESULT_OK){
+                Log.e(TAG, "~~~~~~~~~~~~~~~~~~~~~~~~resultCode OK");
                 String[] result = data.getStringArrayExtra("result");
                 for(int i = 0; i<result.length ; i++){
                     myFriend f = new myFriend(result[i],null,0,null);
@@ -149,6 +157,7 @@ public class friendList extends AppCompatActivity {
                 friendlist.setAdapter(adapterTest);
             }
             if (resultCode == Activity.RESULT_CANCELED) {
+                Log.e(TAG, "~~~~~~~~~~~~~~~~~~~~~~~~resultCode Cancel");
                 //Write your code if there's no result
             }
         }
