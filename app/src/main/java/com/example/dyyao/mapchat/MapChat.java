@@ -118,6 +118,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
     static boolean side = false;
 
     private boolean exited = false;
+    private boolean takePhoto = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -337,7 +338,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
     protected void onStop() {
         Log.d(TAG, "Mapchat onStop");
         super.onStop();
-        if (!exited) {
+        if (!exited && !takePhoto) {
             Log.d(TAG, userName + "exit group");
             Login.mLogCommandBuffer.add("exit_group:" + groupName + ":" + userName);
             mGoogleApiClient.disconnect();
@@ -355,6 +356,7 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
     protected void onRestart() {
         Log.d(TAG, "Mapchat onRestart");
         super.onRestart();
+        takePhoto = false;
         finish();
     }
 
@@ -615,6 +617,8 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
     }
 
     public void takePhoto(View view) {
+        takePhoto = true;
+
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         mediaFile = new File(mediaStorageDir.getPath() + File.separator +
