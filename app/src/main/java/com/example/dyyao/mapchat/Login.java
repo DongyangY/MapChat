@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -91,12 +92,16 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 if (ClientTaskWR.mSocket != null && ClientTaskWR.mSocket.isConnected() && ClientTaskR.mSocket.isConnected()){
                     mLogCommandBuffer.add("login:" + etUsername.getText().toString() + ":" + etPassword.getText().toString());
                     Log.d(TAG, "buffer size " + String.valueOf(mLogCommandBuffer.size()));
+                } else {
+                    Toast.makeText(this, "No Connection to Server",Toast.LENGTH_SHORT).show();
                 }
                 break;
 
             case R.id.tv_RegisterLink:
                 if (ClientTaskWR.mSocket != null && ClientTaskWR.mSocket.isConnected() && ClientTaskR.mSocket.isConnected()){
                     startActivity(new Intent(this, Register.class));
+                } else {
+                    Toast.makeText(this, "No Connection to Server",Toast.LENGTH_SHORT).show();
                 }
                 break;
 
