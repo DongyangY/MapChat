@@ -116,6 +116,8 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
     private ListView listView;
     static boolean side = false;
 
+    private boolean exited = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -323,9 +325,12 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
     protected void onStop() {
         Log.d(TAG, "Mapchat onStop");
         super.onStop();
-        Log.d(TAG, userName + "exit group");
-        Login.mLogCommandBuffer.add("exit_group:" + groupName + ":" + userName);
-        mGoogleApiClient.disconnect();
+        if (!exited) {
+            Log.d(TAG, userName + "exit group");
+            Login.mLogCommandBuffer.add("exit_group:" + groupName + ":" + userName);
+            mGoogleApiClient.disconnect();
+            exited = true;
+        }
     }
 
     @Override
