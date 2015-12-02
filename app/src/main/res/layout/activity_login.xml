@@ -16,7 +16,8 @@
         android:fontFamily="sans-serif-thin"
         android:textSize="20dp"
         android:layout_above="@+id/et_password"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:singleLine="true" />
 
     <EditText
         android:id="@+id/et_password"

@@ -86,8 +86,7 @@
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentStart="true"
                     android:layout_toStartOf="@+id/btn_send"
-                    android:layout_marginRight="4dp"
-                    android:maxLines="1" />
+                    android:layout_marginRight="4dp" />
 
             </RelativeLayout>
 

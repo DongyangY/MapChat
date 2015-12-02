@@ -29,7 +29,8 @@
         android:layout_below="@id/tv_group"
         android:fontFamily="sans-serif-thin"
         android:layout_alignParentStart="true"
-        android:maxLines="1" />
+        android:maxLines="1"
+        android:singleLine="true" />
 
 
 </RelativeLayout>

@@ -15,7 +15,8 @@
         android:text = "172.31.18.227"
         android:hint="Please enter the IP Address"
         android:fontFamily="sans-serif-thin"
-        android:maxLines="1"/>
+        android:maxLines="1"
+        android:singleLine="true" />
 
     <Button
         android:layout_width="300dp"
