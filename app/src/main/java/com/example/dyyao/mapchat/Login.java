@@ -88,8 +88,10 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             case R.id.b_Login:
                 Log.d(TAG, "at login");
                 UserID = etUsername.getText().toString();
-                mLogCommandBuffer.add("login:" + etUsername.getText().toString() + ":" + etPassword.getText().toString());
-                Log.d(TAG, "buffer size " + String.valueOf(mLogCommandBuffer.size()));
+                if (ClientTaskWR.mSocket != null && ClientTaskWR.mSocket.isConnected() && ClientTaskR.mSocket.isConnected()){
+                    mLogCommandBuffer.add("login:" + etUsername.getText().toString() + ":" + etPassword.getText().toString());
+                    Log.d(TAG, "buffer size " + String.valueOf(mLogCommandBuffer.size()));
+                }
                 break;
 
             case R.id.tv_RegisterLink:
