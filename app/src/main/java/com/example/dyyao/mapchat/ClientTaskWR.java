@@ -64,18 +64,19 @@ public class ClientTaskWR extends AsyncTask<Void, String, Void> {
                     mPrintWriterOut.println(mCommand);
 
                     String[] c = mCommand.split(":");
-                    if (c[0].equals("send_photo")) {
-                        Log.d(TAG, "send_photo command");
-                        serverResponse = mBufferedReader.readLine();
-                        InputStream in = new FileInputStream(MapChat.mediaFile);
-                        copy(in, mOutStream, MapChat.mediaFile.length());
-                        in.close();
-                    } else {
+                    //if (c[0].equals("send_photo")) {
+                        //Log.d(TAG, "send_photo command");
+                        //serverResponse = mBufferedReader.readLine();
+                        //InputStream in = new FileInputStream(MapChat.mediaFile);
+                        //copy(in, mOutStream, MapChat.mediaFile.length());
+                        //in.close();
+
+                    //} else {
                         Log.d(TAG, "execute line");
                         serverResponse = mBufferedReader.readLine();
                         Log.d(TAG, serverResponse);
                         publishProgress(serverResponse);
-                    }
+                    //}
 
                 } catch (UnknownHostException e){
                     e.printStackTrace();
@@ -182,10 +183,10 @@ public class ClientTaskWR extends AsyncTask<Void, String, Void> {
                 Log.d(TAG,"send message response received");
                 break;
             }
-            case "send_photo":{
-                Log.d(TAG,"SEND PHOTO RES GOT !!!!");
-                break;
-            }
+            //case "send_photo":{
+            //    Log.d(TAG,"SEND PHOTO RES GOT !!!!");
+            //    break;
+            //}
 
         }
 

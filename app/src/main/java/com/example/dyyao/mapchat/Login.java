@@ -31,7 +31,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     public static String SERVER_IP_ADDRESS;
     public static final int SERVER_PORT_WR = 4444;
     public static final int SERVER_PORT_R = 5555;
+    public static final int SERVER_PORT_PHOTO = 6666;
     public static Queue<String> mLogCommandBuffer;
+    public static Queue<String> mPhotoCommandBuffer;
     public static String UserID;
     private static final String TAG = "Login";
 
@@ -56,11 +58,14 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         tvRegisterLink.setOnClickListener(this);
 
         mLogCommandBuffer = new LinkedList<>();
+        mPhotoCommandBuffer = new LinkedList<>();
 
         ClientTaskWR mClientTaskWR = new ClientTaskWR(mLogCommandBuffer, this);
         mClientTaskWR.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         ClientTaskR mClientTaskR = new ClientTaskR();
         mClientTaskR.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        ClientTaskWRPhoto mClientTaskWRPhoto = new ClientTaskWRPhoto(mPhotoCommandBuffer, this);
+        mClientTaskWRPhoto.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         Log.d(TAG, "WR connected");
 
     }
