@@ -118,10 +118,18 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         Log.d(TAG, "Login onDestroy");
         super.onDestroy();
         try {
-            if (ClientTaskWR.mSocket != null && ClientTaskWR.mSocket.isConnected() && ClientTaskR.mSocket.isConnected()) {
+            if (ClientTaskWR.mSocket != null && ClientTaskWR.mSocket.isConnected() && ClientTaskR.mSocket.isConnected() ) {
 
                 ClientTaskR.mSocket.close();
                 ClientTaskWR.mSocket.close();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            if (ClientTaskWRPhoto.mSocketPhoto != null && ClientTaskWRPhoto.mSocketPhoto.isConnected()) {
+                ClientTaskWRPhoto.mSocketPhoto.close();
             }
 
         } catch (IOException e) {
