@@ -338,12 +338,14 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
     protected void onStop() {
         Log.d(TAG, "Mapchat onStop");
         super.onStop();
+        /*
         if (!exited && !takePhoto) {
             Log.d(TAG, userName + "exit group");
             Login.mLogCommandBuffer.add("exit_group:" + groupName + ":" + userName);
             mGoogleApiClient.disconnect();
             exited = true;
         }
+        */
     }
 
     @Override
