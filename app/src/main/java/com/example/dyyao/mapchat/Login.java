@@ -114,7 +114,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         super.onDestroy();
         try {
             if (ClientTaskWR.mSocket != null && ClientTaskWR.mSocket.isConnected() && ClientTaskR.mSocket.isConnected()) {
-                Login.mLogCommandBuffer.add("logout:" + Login.UserID);
+
                 ClientTaskR.mSocket.close();
                 ClientTaskWR.mSocket.close();
             }

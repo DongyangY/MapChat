@@ -193,7 +193,8 @@ public class friendList extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d(TAG, "Mapchat onDestroy");
+        Log.d(TAG, "friendlist onDestroy");
+        Login.mLogCommandBuffer.add("logout:" + Login.UserID);
         //Log.d(TAG, userName + "exit group");
         //Login.mLogCommandBuffer.add("exit_group:" + groupName + ":" + userName);
         //mGoogleApiClient.disconnect();
@@ -202,6 +203,7 @@ public class friendList extends AppCompatActivity {
     @Override
     protected void onPause() {
         Log.d(TAG, "friendlist onPause");
+        super.onPause();
     }
 
     @Override
