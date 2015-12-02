@@ -45,32 +45,32 @@
 
                 <ImageButton
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:id="@+id/btn_send"
-                    android:src="@drawable/send1"
+                    android:src="@drawable/ic_send_black_24dp"
                     android:background="@color/trnasparent"
                     android:layout_alignParentTop="true"
                     android:layout_toStartOf="@+id/btn_photo"
                     android:layout_marginTop="4dp"
-                    android:layout_marginRight="2dp" />
+                    android:layout_marginRight="4dp" />
 
                 <ImageButton
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:id="@+id/btn_photo"
                     android:onClick="takePhoto"
-                    android:src="@drawable/camera1"
+                    android:src="@drawable/ic_camera_alt_black_24dp"
                     android:background="@color/trnasparent"
                     android:layout_alignParentTop="true"
                     android:layout_toStartOf="@+id/btn_show"
                     android:layout_marginTop="4dp"
-                    android:layout_marginRight="2dp" />
+                    android:layout_marginRight="4dp" />
 
                 <ImageButton
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:id="@+id/btn_show"
-                    android:src="@drawable/note"
+                    android:src="@drawable/ic_list_black_24dp"
                     android:background="@color/trnasparent"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentEnd="true"
