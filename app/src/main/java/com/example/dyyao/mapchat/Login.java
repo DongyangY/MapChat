@@ -95,8 +95,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 break;
 
             case R.id.tv_RegisterLink:
-
-                startActivity(new Intent(this, Register.class));
+                if (ClientTaskWR.mSocket != null && ClientTaskWR.mSocket.isConnected() && ClientTaskR.mSocket.isConnected()){
+                    startActivity(new Intent(this, Register.class));
+                }
                 break;
 
         }
