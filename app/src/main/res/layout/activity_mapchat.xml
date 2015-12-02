@@ -52,7 +52,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_toStartOf="@+id/btn_photo"
                     android:layout_marginTop="4dp"
-                    android:layout_marginRight="4dp" />
+                    android:layout_marginRight="8dp" />
 
                 <ImageButton
                     android:layout_width="wrap_content"
@@ -64,7 +64,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_toStartOf="@+id/btn_show"
                     android:layout_marginTop="4dp"
-                    android:layout_marginRight="4dp" />
+                    android:layout_marginRight="8dp" />
 
                 <ImageButton
                     android:layout_width="wrap_content"
@@ -84,7 +84,8 @@
                     android:text=""
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentStart="true"
-                    android:layout_toStartOf="@+id/btn_send" />
+                    android:layout_toStartOf="@+id/btn_send"
+                    android:layout_marginRight="4dp" />
 
             </RelativeLayout>
 
