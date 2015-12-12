@@ -11,9 +11,6 @@ import android.widget.EditText;
 import java.util.LinkedList;
 import java.util.Queue;
 
-/**
- * Created by luluzhao on 11/15/15.
- */
 public class AddFriend extends AppCompatActivity {
     EditText userID;
     Button bAddFriend;

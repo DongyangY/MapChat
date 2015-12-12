@@ -18,9 +18,6 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Queue;
 
-/**
- * Created by Hua Deng on 12/1/2015.
- */
 public class ClientTaskWRPhoto extends AsyncTask <Void, String, Void>{
     private Queue<String> mCommandBuffer;
     private String mCommand;

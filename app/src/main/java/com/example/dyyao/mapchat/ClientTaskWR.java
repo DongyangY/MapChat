@@ -19,9 +19,6 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Queue;
 
-/**
- * Created by Hua Deng on 11/15/2015.
- */
 public class ClientTaskWR extends AsyncTask<Void, String, Void> {
 
     private Queue<String> mCommandBuffer;

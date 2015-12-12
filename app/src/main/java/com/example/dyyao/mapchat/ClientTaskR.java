@@ -21,9 +21,6 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
-/**
- * Created by Hua Deng on 11/15/2015.
- */
 public class ClientTaskR extends AsyncTask<Void, String, Void>{
 
     public static Socket mSocket;

@@ -10,9 +10,6 @@ import android.widget.TextView;
 
 import java.util.List;
 
-/**
- * Created by mercypp on 11/25/15.
- */
 public class SelectAdapter extends ArrayAdapter<myFriend> {
     private final List<myFriend> list;
     private final Activity context;

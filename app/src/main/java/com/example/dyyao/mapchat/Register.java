@@ -14,9 +14,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-/**
- * Created by luluzhao on 11/15/15.
- */
 public class Register extends AppCompatActivity implements View.OnClickListener {
 
     private final String TAG = "Register";

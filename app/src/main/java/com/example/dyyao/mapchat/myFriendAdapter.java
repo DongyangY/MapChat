@@ -18,9 +18,6 @@ import java.util.List;
 
 import static android.graphics.Color.WHITE;
 
-/**
- * Created by mxizhang on 15/11/15.
- */
 public class myFriendAdapter extends ArrayAdapter<myFriend> {
 
     private final List<myFriend> list;

@@ -21,9 +21,6 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
 
-/**
- * Created by luluzhao on 11/15/15.
- */
 public class Login extends AppCompatActivity implements View.OnClickListener {
     Button bLogin;
     EditText etUsername, etPassword;

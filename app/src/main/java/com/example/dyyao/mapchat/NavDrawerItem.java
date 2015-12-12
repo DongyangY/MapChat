@@ -1,8 +1,5 @@
 package com.example.dyyao.mapchat;
 
-/**
- * Created by mercypp on 15/11/21.
- */
 public class NavDrawerItem {
     private boolean showNotify;
     private String title;

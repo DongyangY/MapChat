@@ -4,9 +4,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-/**
- * Created by mxizhang on 15/11/15.
- */
 public class myFriend {
 
     private String userName;
