@@ -196,6 +196,8 @@ public class FriendList extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        // Send log out command to server
         Login.mLogCommandBuffer.add("logout:" + Login.UserID);
     }
 }
