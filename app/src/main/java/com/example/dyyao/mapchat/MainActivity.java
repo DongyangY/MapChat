@@ -7,6 +7,9 @@
  *         Lulu Zhao
  */
 
+// A correction for previous incorrect GitHub account email
+// Try to resume the con
+
 package com.example.dyyao.mapchat;
 
 import android.content.Intent;
