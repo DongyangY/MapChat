@@ -8,7 +8,7 @@
  */
 
 // A correction for previous incorrect GitHub account email
-// Try to resume the con
+// Try to resume the contribution
 
 package com.example.dyyao.mapchat;
 
