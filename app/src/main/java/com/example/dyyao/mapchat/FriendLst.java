@@ -28,14 +28,14 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class FriendList extends AppCompatActivity {
+public class FriendLst extends AppCompatActivity {
     private ImageButton addF;
     private ImageButton addG;
 
     // The list view for showing the friends
     private ListView friendList;
     private EditText gpNames;
-    private static String TAG = "FriendList";
+    private static String TAG = "FriendLst";
 
     // The selected friends for grouping
     private ArrayList<String> selectedItems;
@@ -115,7 +115,7 @@ public class FriendList extends AppCompatActivity {
         addF.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent afIntent = new Intent(FriendList.this, FriendInvitation.class);
+                Intent afIntent = new Intent(FriendLst.this, FriendInvitation.class);
                 startActivityForResult(afIntent, 1);
             }
         });
