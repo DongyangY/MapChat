@@ -7,9 +7,6 @@
  *         Lulu Zhao
  */
 
-// A correction for previous incorrect GitHub account email
-// Try to resume the contribution
-
 package com.example.dyyao.mapchat;
 
 import android.content.Intent;
@@ -48,11 +45,12 @@ public class MainActivity extends AppCompatActivity {
         ip = (EditText) findViewById(R.id.et_ip);
         enter = (Button) findViewById(R.id.btn_enter);
 
-
         enter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Login.serverIpAddress = ip.getText().toString();
+
+                // Enter login activity
                 startActivity(new Intent(MainActivity.this, Login.class));
             }
         });

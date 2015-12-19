@@ -1,3 +1,13 @@
+/**
+ * The map chat room
+ * Synchronize both self and other members' location, message, pin, and image
+ *
+ * @author Dongyang Yao
+ *         Hua Deng
+ *         Xi Zhang
+ *         Lulu Zhao
+ */
+
 package com.example.dyyao.mapchat;
 
 import android.app.AlertDialog;
@@ -70,52 +80,99 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
 
-    ImageButton bSend;
-    ImageButton show;
-    EditText Inputchat;
-    public static ListView selectF;
-    //static TextView chatlog;
-    ViewFlipper page;
-    Animation animFlipInForeward;
-    Animation animFlipInBackward;
-    public static GoogleMap mMap;
-    String[] values;
-    String[] fNames;
+    // Send message button
+    private ImageButton bSend;
 
-    public static List<myFriend> friendInfo;
+    // Show chat history button
+    private ImageButton show;
+
+    // Text field for message
+    private EditText Inputchat;
+
+    // Group member list
+    public static ListView selectF;
+
+    private ViewFlipper page;
+
+    private Animation animFlipInForeward;
+
+    private Animation animFlipInBackward;
+
+    // Google map reference
+    public static GoogleMap mMap;
+
+    private String[] values;
+
+    private String[] fNames;
+
+    public static List<Friend> friendInfo;
+
+    // Self location marker
     private Marker mMarker;
+
+    // Self pin marker
     private Marker mPin = null;
+
+    // Image for people
     private final int[] colors = {R.drawable.peopleblue, R.drawable.peoplered, R.drawable.peoplegreen, R.drawable.peopleyellow, R.drawable.peoplepurple};
+
+    // Image for pins
     private final int[] colorspin = {R.drawable.pinblue, R.drawable.pinred, R.drawable.pingreen, R.drawable.pinyellow, R.drawable.pinpurple};
+
+    // Image for photos
     private static final int[] colorsImage = {R.drawable.imageblue, R.drawable.imagered, R.drawable.imagegreen, R.drawable.imageyellow, R.drawable.imagepurple};
+
+    // Reference for this
     public static MapChat mapChat;
 
+    // Group name
     private String groupName;
+
+    // Local user name
     private String userName;
+
+    // Self pin
     private String pinID;
+
     public static final String TAG = "MapChat";
 
     private boolean initialLocation = false;
+
     private boolean isExist = false;
+
+    // Self current location
     private Location currentLocation = null;
+
+    // Google plat service for location
     private GoogleApiClient mGoogleApiClient;
+
+    // Periodical request for location update
     private LocationRequest mLocationRequest;
 
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
+
     private Uri fileUri;
+
     public static File mediaStorageDir;
+
     private String timeStamp;
+
     public static File mediaFile;
 
     public static Vibrator vibrator;
+
     private static ArrayList<String> imageIds;
 
     private static ChatArrayAdapter chatArrayAdapter;
+
     private ListView listView;
+
     static boolean side = false;
 
     private boolean exited = false;
+
     private boolean takePhoto = false;
+
     private boolean isOnLog = false;
 
     @Override
@@ -125,11 +182,10 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         Inputchat = (EditText) findViewById(R.id.et_input);
-        //chatlog = (TextView) findViewById(R.id.tv_chatlogview);
         selectF = (ListView) findViewById(R.id.listSelect);
         bSend = (ImageButton) findViewById(R.id.btn_send);
         friendInfo = new ArrayList<>();
-        ClientTaskR.mMapchat = this;
+        ClientTaskR.mMapChat = this;
 
         imageIds = new ArrayList<String>();
 
@@ -144,6 +200,8 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         mapChat = this;
         values = getIntent().getStringArrayExtra("friendNames");
         fNames = Arrays.copyOfRange(values, 2, values.length);
+
+        // Send message
         bSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -151,11 +209,10 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
                     Toast.makeText(getApplicationContext(), "Please text something before sending ",
                             Toast.LENGTH_LONG).show();
 
-                }else {
+                } else {
                     String sentence = Inputchat.getText().toString();
                     side = false;
                     sendChatMessage();
-                    //chatlog.append(sentence + "\n");
                     mMarker.setSnippet(sentence);
                     mMarker.showInfoWindow();
                     for (int i = 0; i < friendInfo.size(); i++) {
@@ -164,7 +221,6 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
                             sentence += friendInfo.get(i).getName();
                         }
                     }
-                    //mMarker.setPosition(new LatLng(40, -80));
                     Login.mLogCommandBuffer.add("send_message:" + groupName + ":" + userName + ":" + sentence);
                     Inputchat.setText("");
                 }
@@ -175,38 +231,41 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
 
         userName = Login.UserID;
         groupName = fNames[0];
-        Log.e(TAG, groupName);
+
         page = (ViewFlipper) findViewById(R.id.flipper);
         animFlipInForeward = AnimationUtils.loadAnimation(this, R.anim.flipin);
         animFlipInBackward = AnimationUtils.loadAnimation(this, R.anim.flipin_reverse);
 
+        // Connect google play service
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
-        //Location service
-
         mGoogleApiClient.connect();
 
+        // Request location updates
         mLocationRequest = new LocationRequest();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationRequest.setInterval(10000);       // 10 seconds, in milliseconds
         mLocationRequest.setFastestInterval(5000); // 5 second, in milliseconds
 
         setUpMap();
+
         initialFriend();
+
         initialSelf();
 
+        // Bind group member list to view
         final SelectAdapter selectAdapter = new SelectAdapter(this, friendInfo);
         selectF.setAdapter(selectAdapter);
 
+        // Action for a group member selected or unselected
         selectF.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.e(TAG, "check on: " + friendInfo.get(position).getName());
                 view.setSelected(true);
-                //Toast.makeText(friendList.this, "check on: " + friends.get(position).getName(), Toast.LENGTH_LONG).show();
+
                 if (friendInfo.get(position).isSelected()) {
                     friendInfo.get(position).setSelected(false);
                     view.setBackgroundColor(Color.TRANSPARENT);
@@ -217,15 +276,12 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
             }
         });
 
+        // Set a negotiating pin after clicking for a long time on the map
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
                 MarkerOptions markerOptions = new MarkerOptions();
-                //setting the position for the marker
                 markerOptions.position(latLng);
-                //setting the title for the marker.
-                //this will be displayed on taping the marker
-                //markerOptions.title(pinName);
 
                 Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.pinblue).copy(Bitmap.Config.ARGB_8888, true);
                 BitmapDrawable draw = new BitmapDrawable(getResources(), bm);
@@ -233,7 +289,6 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
 
                 markerOptions.icon(BitmapDescriptorFactory.fromBitmap(drawBmp))
                         .anchor(0.5f, 1);
-
 
                 mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
 
@@ -244,39 +299,39 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
                 } else {
                     mPin.setPosition(latLng);
                 }
+
+                // Send the request to change self pin location on others' map
                 Login.mLogCommandBuffer.add("change_pin:" + groupName + ":" + userName + ":" + latLng.latitude + ":" + latLng.longitude);
-                Log.e(TAG, "login_commandBuffer_change_mPin");
             }
         });
 
+        // Action when clicking the marker
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
 
-                Log.i(TAG, "CLICK MARKER!!!!");
-
+                // Click the image marker to show image
                 if (imageIds.contains(marker.getId())) {
-                    Log.i(TAG, "CLICK IMAGE!!!!");
                     showImage(marker.getSnippet());
                 } else {
+                    // Click the pin marker to show address
                     if (marker.getId().equals(pinID)) {
                         open(marker);
                     } else {
+
+                        // Get the location address
                         Geocoder geocoder = new Geocoder(MapChat.this, Locale.getDefault());
                         List<Address> addresses = null;
                         try {
                             addresses = geocoder.getFromLocation(marker.getPosition().latitude, marker.getPosition().longitude, 1);
                         } catch (IOException e) {
-                            Log.d(TAG, "IOException!");
+
                         }
-                        // Print out address
                         if (addresses == null || addresses.size() == 0) {
                             marker.setSnippet("No address found.");
                         } else {
                             Address address = addresses.get(0);
                             String addr = "";
-                            // Fetch the address lines using getAddressLine,
-                            // join them, and send them to the thread.
                             for (int i = 0; i < address.getMaxAddressLineIndex(); i++) {
                                 addr += address.getAddressLine(i) + " ";
                             }
@@ -304,7 +359,6 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         listView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
         listView.setAdapter(chatArrayAdapter);
 
-        //to scroll the list view to bottom on data change
         chatArrayAdapter.registerDataSetObserver(new DataSetObserver() {
             @Override
             public void onChanged() {
@@ -315,26 +369,14 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
 
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG, "Mapchat onDestroy");
-        //Log.d(TAG, userName + "exit group");
-        //Login.mLogCommandBuffer.add("exit_group:" + groupName + ":" + userName);
-        //mGoogleApiClient.disconnect();
-    }
-
-    @Override
-    protected void onPause() {
-        Log.d(TAG, "Mapchat onPause");
-        super.onPause();
-    }
-
+    /**
+     * Exit the group
+     */
     @Override
     protected void onStop() {
-        Log.d(TAG, "Mapchat onStop");
         super.onStop();
 
+        // Do not exit group if is taking the photo
         if (!exited && !takePhoto) {
             Log.d(TAG, userName + "exit group");
             Login.mLogCommandBuffer.add("exit_group:" + groupName + ":" + userName);
@@ -343,6 +385,9 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         }
     }
 
+    /**
+     * Swipe the chat history view
+     */
     @Override
     public void onBackPressed() {
         if (isOnLog) {
@@ -352,15 +397,11 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         }
     }
 
-    @Override
-    protected void onResume() {
-        Log.d(TAG, "Mapchat onResume");
-        super.onResume();
-    }
-
+    /**
+     * Back from taking the photo
+     */
     @Override
     protected void onRestart() {
-        Log.d(TAG, "Mapchat onRestart");
         super.onRestart();
 
         if (!takePhoto) {
@@ -370,14 +411,21 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         takePhoto = false;
     }
 
+    /**
+     * Log the chat message from self
+     * @return
+     */
     private boolean sendChatMessage() {
         chatArrayAdapter.add(new ChatMessage(side, Inputchat.getText().toString()));
         Inputchat.setText("");
         return true;
     }
 
+    /**
+     * Display the image
+     * @param fileName image file directory
+     */
     public void showImage(final String fileName) {
-        Log.i(TAG, "SHOW IMAGE!!!!");
 
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
@@ -386,15 +434,6 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         int screenHeight = size.y;
 
         Bitmap bitmap = BitmapFactory.decodeFile(fileName);
-        //int bitmapHeight = bitmap.getHeight();
-        //int bitmapWidth = bitmap.getWidth();
-
-        /*
-        while(bitmapHeight > (screenHeight) || bitmapWidth > (screenWidth)) {
-            bitmapHeight = bitmapHeight / 2;
-            bitmapWidth = bitmapWidth / 2;
-        }
-        */
 
         BitmapDrawable resizedBitmap = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, screenWidth, screenHeight, false));
 
@@ -410,6 +449,13 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         dialog.show();
     }
 
+    /**
+     * Set people marker on map
+     * @param drawableColor
+     * @param peopleUserID
+     * @param hasText
+     * @return
+     */
     public Marker setPeopleMarker(int drawableColor, String peopleUserID, boolean hasText) {
 
         Bitmap bm = BitmapFactory.decodeResource(getResources(), drawableColor).copy(Bitmap.Config.ARGB_8888, true);
@@ -436,13 +482,17 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
 
     }
 
+    /**
+     * Init self marker
+     */
     private void initialSelf() {
-        Log.d(TAG, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + "enter initialSelf");
         mMarker = setPeopleMarker(colors[0], userName, true);
     }
 
+    /**
+     * Init group members' marker
+     */
     private void initialFriend() {
-        Log.d(TAG, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + "enter initialFriend");
         int j = 1;
         for (int i = 1; i < fNames.length; i++) {
             if (!fNames[i].equals(userName)) {
@@ -450,19 +500,18 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
 
                 Marker p = setPeopleMarker(colorspin[j], fNames[i], false);
 
-                friendInfo.add(new myFriend(fNames[i], m, j, p));
+                friendInfo.add(new Friend(fNames[i], m, j, p));
                 Log.e(TAG, fNames[i]);
                 j++;
             }
         }
     }
 
+    /**
+     * Init the Google map
+     */
     private void setUpMap() {
-        Log.d(TAG, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + "enter setUpMap");
-        //if (mMap == null) {
-        // Try to obtain the map from the SupportMapFragment.
         mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
-        Log.v(TAG, "Set map");
 
         // Check if we were successful in obtaining the map.
         if (mMap != null) {
@@ -472,45 +521,52 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
             mMap.getUiSettings().setCompassEnabled(true);
             mMap.setMyLocationEnabled(false);
         }
-        //}
     }
 
+    /**
+     * Change the local group member' location
+     * Callback when receiving the update request from server
+     * @param name The group member's name
+     * @param latLng The updating location
+     */
     public static void changeLocation(String name, LatLng latLng) {
-        Log.e(TAG, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + name + "/" + latLng.toString());
         for (int i = 0; i < friendInfo.size(); i++) {
             if (friendInfo.get(i).getName().equals(name)) {
-                Log.e(TAG, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + name + "get!!!!!!!");
                 friendInfo.get(i).setLocation(latLng);
             }
         }
     }
 
+    /**
+     * Change the local group member's pin location
+     * Callback when receiving the update request from server
+     * @param name The group member's name
+     * @param latLng The updating location
+     */
     public static void changeUserPin(String name, LatLng latLng) {
-        Log.e(TAG, "!!!!!!!!!!!!!!pin!!!!!!!!!!!!!!" + name + "/" + latLng.toString());
         for (int i = 0; i < friendInfo.size(); i++) {
             if (friendInfo.get(i).getName().equals(name)) {
-                Log.e(TAG, "!!!!!!!!!!!!pin!!!!!!!!!!!!!!!!" + name + "get!!!!!!!");
                 friendInfo.get(i).getUserPin().setVisible(true);
                 friendInfo.get(i).setPin(latLng);
             }
         }
     }
 
+    /**
+     * Show chat history
+     */
     private void SwipeRight() {
-
         isOnLog = true;
-
         page.setInAnimation(animFlipInBackward);
-        //page.setOutAnimation(animFlipOutBackward);
         page.showPrevious();
     }
 
+    /**
+     * Dismiss chat history
+     */
     private void SwipeLeft() {
-
         isOnLog = false;
-
         page.setInAnimation(animFlipInForeward);
-        //page.setOutAnimation(animFlipOutForeward);
         page.showNext();
     }
 
@@ -541,6 +597,10 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
 
     GestureDetector gestureDetector = new GestureDetector(simpleOnGestureListener);
 
+    /**
+     * Delete self's pin marker
+     * @param marker pin marker reference
+     */
     public void open(final Marker marker) {
         AlertDialog.Builder alerDialogBuilder = new AlertDialog.Builder(this);
         alerDialogBuilder.setMessage("Do you want to delete this marker?");
@@ -550,8 +610,9 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
                 Toast.makeText(MapChat.this, "You have deleted the marker", Toast.LENGTH_LONG).show();
                 marker.remove();
                 isExist = false;
+
+                // Send request for deleting self's pin marker to server
                 Login.mLogCommandBuffer.add("change_pin:" + groupName + ":" + userName + ":" + 0 + ":" + 0);
-                Log.e(TAG, "login_commandBuffer_delete_mPin");
             }
         });
 
@@ -565,6 +626,10 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         alerDialogBuilder.show();
     }
 
+    /**
+     * Callback when google play service connected
+     * @param bundle
+     */
     @Override
     public void onConnected(Bundle bundle) {
         Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
@@ -573,22 +638,24 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
             // Center camera
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         }
-        Log.v(TAG, "onConnect");
 
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-        Log.i("Map: ", "google play service connected");
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-        Log.i("Map: ", "google play service suspended");
+
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        Log.i("Map: ", "google play service failed");
+
     }
 
+    /**
+     * Callback when self's location updated
+     * @param location
+     */
     @Override
     public void onLocationChanged(Location location) {
         Log.d(TAG, location.toString());
@@ -601,13 +668,12 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         mMarker.setPosition(latLng);
         mMarker.setVisible(true);
 
+        // Send self location update request to server
         Login.mLogCommandBuffer.add("update_location:" + groupName + ":" + userName + ":" + lat + ":" + lng);
-
-        Log.e(TAG, "login_commandBuffer_update_location");
 
         if (!initialLocation) {
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-            for (myFriend f : friendInfo) {
+            for (Friend f : friendInfo) {
                 f.getMarker().setPosition(latLng);
                 f.getMarker().setVisible(true);
             }
@@ -615,23 +681,32 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         }
     }
 
+    /**
+     * Add group member's message to local
+     * Triggered by server's command
+     * @param name
+     * @param text
+     * @param notification
+     */
     public static void setText(String name, String text, String notification) {
-        Log.d(TAG, "-----------------------------------------------setText entered!----------------------------------");
         for (int i = 0; i < friendInfo.size(); i++) {
             if (friendInfo.get(i).getName().equals(name)) {
                 friendInfo.get(i).getMarker().setSnippet(text);
                 friendInfo.get(i).getMarker().showInfoWindow();
-                //chatlog.append(text + "\n");
                 side = true;
                 chatArrayAdapter.add(new ChatMessage(side, name + ": " + text));
                 if (notification.equals("yes")) {
-                    markerBounce(friendInfo.get(i).getMarker());
+                    bounceMarker(friendInfo.get(i).getMarker());
                     vibrator.vibrate(500);
                 }
             }
         }
     }
 
+    /**
+     * Take a photo using implicit activity
+     * @param view
+     */
     public void takePhoto(View view) {
         takePhoto = true;
 
@@ -644,13 +719,20 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
     }
 
+    /**
+     * Save the photo and send to group members
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 // Image captured and saved to fileUri specified in the Intent
                 new ImageShowTask().execute(mediaFile);
-                //Login.mLogCommandBuffer.add("send_photo:" + groupName + ":" + userName + ":" + mediaFile.length());
+
+                // Send photo to group members
                 Login.mPhotoCommandBuffer.add("send_photo:" + groupName + ":" + userName + ":" + mediaFile.length());
             } else if (resultCode == RESULT_CANCELED) {
                 // User cancelled the image capture
@@ -660,6 +742,11 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         }
     }
 
+    /**
+     * Receive the image from other group members via server
+     * @param file The local directory for saved image
+     * @param name The user name who take the photo
+     */
     public static void setImage(File file, String name) {
         MarkerOptions markerOptions = new MarkerOptions();
         for (int i = 0; i < friendInfo.size(); i++) {
@@ -683,6 +770,9 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         }
     }
 
+    /**
+     * Show image
+     */
     public class ImageShowTask extends AsyncTask<File, Integer, MarkerOptions> {
 
         @Override
@@ -714,7 +804,11 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         }
     }
 
-    public static void markerBounce(final Marker marker) {
+    /**
+     * The animation for marker bounce
+     * @param marker
+     */
+    public static void bounceMarker(final Marker marker) {
         final Handler handler = new Handler();
         final long startTime = SystemClock.uptimeMillis();
         final long duration = 2000;
@@ -743,6 +837,10 @@ public class MapChat extends FragmentActivity implements GoogleApiClient.Connect
         });
     }
 
+    /**
+     * Remover a group member
+     * @param usrName
+     */
     public static void removeUser(String usrName) {
         for (int i = 0; i < MapChat.friendInfo.size(); i++) {
             if (MapChat.friendInfo.get(i).getName().equals(usrName)) {

@@ -1,3 +1,13 @@
+/**
+ * The login activity
+ * Opening three ports connection to the server
+ *
+ * @author Dongyang Yao
+ *         Hua Deng
+ *         Xi Zhang
+ *         Lulu Zhao
+ */
+
 package com.example.dyyao.mapchat;
 
 import android.content.Intent;
@@ -5,7 +15,6 @@ import android.graphics.PixelFormat;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.Animation;
@@ -22,15 +31,28 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class Login extends AppCompatActivity implements View.OnClickListener {
-    Button bLogin;
-    EditText etUsername, etPassword;
-    TextView tvRegisterLink;
+    private Button bLogin;
+    public EditText etUsername, etPassword;
+    private TextView tvRegisterLink;
+
+    // The server's local ip
     public static String serverIpAddress;
+
+    // The port for request-response connection
     public static final int SERVER_PORT_WR = 4444;
+
+    // The port for receiving command from other clients via server
     public static final int SERVER_PORT_R = 5555;
+
+    // The port for large file (e.g., image) transfer
     public static final int SERVER_PORT_PHOTO = 6666;
+
+    // The request command buffer for SERVER_PORT_WR
     public static Queue<String> mLogCommandBuffer;
+
+    // The request command buffer for SERVER_PORT_PHOTO
     public static Queue<String> mPhotoCommandBuffer;
+
     public static String UserID;
     private static final String TAG = "Login";
 
@@ -39,8 +61,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         Window window = getWindow();
         window.setFormat(PixelFormat.RGBA_8888);
     }
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,17 +77,23 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         mLogCommandBuffer = new LinkedList<>();
         mPhotoCommandBuffer = new LinkedList<>();
 
+        // Start a background thread for request-response connection
         ClientTaskWR mClientTaskWR = new ClientTaskWR(mLogCommandBuffer, this);
         mClientTaskWR.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+        // Start a background thread for receiving commands from other clients via server
         ClientTaskR mClientTaskR = new ClientTaskR();
         mClientTaskR.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+        // Start a background thread for large file transfer
         ClientTaskWRPhoto mClientTaskWRPhoto = new ClientTaskWRPhoto(mPhotoCommandBuffer, this);
         mClientTaskWRPhoto.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        Log.d(TAG, "WR connected");
-
     }
 
 
+    /**
+     * Start an animation
+     */
     private void StartAnimations() {
         Animation anim = AnimationUtils.loadAnimation(this, R.anim.alpha);
         anim.reset();
@@ -81,19 +107,21 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
         iv.clearAnimation();
         iv.startAnimation(anim);
-
-
     }
 
+    /**
+     * Login or register
+     * @param view
+     */
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.b_Login:
-                Log.d(TAG, "at login");
                 UserID = etUsername.getText().toString();
                 if (ClientTaskWR.mSocket != null && ClientTaskWR.mSocket.isConnected() && ClientTaskR.mSocket.isConnected()){
+
+                    // Send login request
                     mLogCommandBuffer.add("login:" + etUsername.getText().toString() + ":" + etPassword.getText().toString());
-                    Log.d(TAG, "buffer size " + String.valueOf(mLogCommandBuffer.size()));
                 } else {
                     Toast.makeText(this, "No Connection to Server",Toast.LENGTH_SHORT).show();
                 }
@@ -110,9 +138,11 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         }
     }
 
+    /**
+     * Close sockets
+     */
     @Override
     protected void onDestroy(){
-        Log.d(TAG, "Login onDestroy");
         super.onDestroy();
         try {
             if (ClientTaskWR.mSocket != null && ClientTaskWR.mSocket.isConnected() && ClientTaskR.mSocket.isConnected() ) {

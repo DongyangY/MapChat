@@ -1,9 +1,19 @@
+/**
+ * A Background thread for sending the request to server
+ * Receiving the response from server
+ * Update the UI thread as necessary
+ *
+ * @author Dongyang Yao
+ *         Hua Deng
+ *         Xi Zhang
+ *         Lulu Zhao
+ */
+
 package com.example.dyyao.mapchat;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -25,58 +35,60 @@ public class ClientTaskWR extends AsyncTask<Void, String, Void> {
     private String serverResponse = "";
     private PrintWriter mPrintWriterOut;
     private Login login;
-    public static AddFriend addFriend;
-    public static friendList friendlist;
+    public static FriendInvitation friendInvitation;
+    public static FriendList friendlist;
     public static Register register;
-    //Queue<String> sResponseBuffer = new LinkedList<>();
     private static final String TAG = "ClientTaskWR";
 
+    /**
+     * Constructor
+     *
+     * @param c
+     * @param l
+     */
     public ClientTaskWR(Queue<String> c, Login l) {
         mCommandBuffer = c;
         login = l;
     }
 
-    protected Void doInBackground(Void... arg0){
+    /**
+     * Sending the command to server from buffer in the background
+     *
+     * @param arg0
+     * @return
+     */
+    protected Void doInBackground(Void... arg0) {
         try {
             mSocket = new Socket(Login.serverIpAddress, Login.SERVER_PORT_WR);
         } catch (IOException e) {
             e.printStackTrace();
         }
         while (true) {
-            //Log.d(TAG, "before isEmpty()");
-            if (!mCommandBuffer.isEmpty()){
-                Log.d(TAG, "enter isEmpty()");
+
+            // Send if buffer has commands
+            if (!mCommandBuffer.isEmpty()) {
                 mCommand = mCommandBuffer.remove();
-                Log.d(TAG,"mCommand is: " + mCommand);
-                try{
+                try {
                     OutputStream mOutStream = mSocket.getOutputStream();
                     mPrintWriterOut = new PrintWriter(mOutStream, true);
                     InputStream mInputStream = mSocket.getInputStream();
                     BufferedReader mBufferedReader = new BufferedReader(new InputStreamReader(mInputStream));
 
-
-                    Log.d(TAG, mCommand);
+                    // Send the command
                     mPrintWriterOut.println(mCommand);
 
+                    // Parse the command
                     String[] c = mCommand.split(":");
-                    //if (c[0].equals("send_photo")) {
-                        //Log.d(TAG, "send_photo command");
-                        //serverResponse = mBufferedReader.readLine();
-                        //InputStream in = new FileInputStream(MapChat.mediaFile);
-                        //copy(in, mOutStream, MapChat.mediaFile.length());
-                        //in.close();
 
-                    //} else {
-                        Log.d(TAG, "execute line");
-                        serverResponse = mBufferedReader.readLine();
-                        Log.d(TAG, serverResponse);
-                        publishProgress(serverResponse);
-                    //}
+                    // Receive the response from server
+                    serverResponse = mBufferedReader.readLine();
 
-                } catch (UnknownHostException e){
+                    publishProgress(serverResponse);
+
+                } catch (UnknownHostException e) {
                     e.printStackTrace();
                     serverResponse = "UnknownHostException: " + e.toString();
-                } catch (IOException e){
+                } catch (IOException e) {
                     e.printStackTrace();
                     serverResponse = "IOException: " + e.toString();
                 }
@@ -84,6 +96,15 @@ public class ClientTaskWR extends AsyncTask<Void, String, Void> {
         }
     }
 
+    /**
+     * Copy the stream given number of bytes
+     * Used for image transfer
+     *
+     * @param in
+     * @param out
+     * @param length
+     * @throws IOException
+     */
     public static void copy(InputStream in, OutputStream out, long length) throws IOException {
         byte[] buf = new byte[8192];
         int len = 0;
@@ -91,100 +112,112 @@ public class ClientTaskWR extends AsyncTask<Void, String, Void> {
             len = in.read(buf);
             out.write(buf, 0, len);
             length -= len;
-            Log.i(TAG, String.valueOf(len));
         }
     }
 
-    protected void onPostExecute(Void result){
+    protected void onPostExecute(Void result) {
 
         super.onPostExecute(result);
     }
 
-    protected void onProgressUpdate(String... result){
+    /**
+     * Process response from server
+     * React in UI thread
+     *
+     * @param result
+     */
+    protected void onProgressUpdate(String... result) {
         super.onProgressUpdate(result);
-        Log.d(TAG,result[0]);
         String[] sResponses = result[0].split(":");
         String command = sResponses[0];
-        Log.d(TAG, "command is: " + command);
         String status = sResponses[1];
-        Log.d(TAG, "status is:" + status);
 
-        switch (command){
-            case "login":{
-                Log.d(TAG, "login response received");
-                if(status.equals("yes")){
-                    Log.d(TAG, "Login Succeed!");
-                    Intent loginIntent = new Intent(login, friendList.class);
+        switch (command) {
+
+            // Login request
+            case "login": {
+                if (status.equals("yes")) {
+
+                    // Succeed
+                    Intent loginIntent = new Intent(login, FriendList.class);
                     loginIntent.putExtra("friendNames", sResponses);
                     login.startActivity(loginIntent);
                 } else {
-                    Log.d(TAG, "Login Failed");
-                    Toast.makeText(login, "Login Failed!",Toast.LENGTH_SHORT).show();
+
+                    // Fail
+                    Toast.makeText(login, "Login Failed!", Toast.LENGTH_SHORT).show();
                     login.etUsername.setText("");
                     login.etPassword.setText("");
                 }
                 break;
             }
-            case "register":{
-                Log.d(TAG, "register response received");
-                if (status.equals("yes")){
-                    Log.d(TAG, "Register Succeed!");
-                    Intent registerIntent = new Intent(register, friendList.class);
+
+            // Register request
+            case "register": {
+                if (status.equals("yes")) {
+
+                    // Succeed
+                    Intent registerIntent = new Intent(register, FriendList.class);
                     registerIntent.putExtra("friendNames", sResponses);
                     register.startActivity(registerIntent);
                 } else {
-                    Log.d(TAG, "Register Failed!");
-                    Toast.makeText(register,"Register Failed!", Toast.LENGTH_SHORT).show();
+
+                    // Fail
+                    Toast.makeText(register, "Register Failed!", Toast.LENGTH_SHORT).show();
                 }
                 break;
             }
-            case "add_friend":{
-                Log.d(TAG, "add_friend response received");
-                if(status.equals("yes")){
-                    Log.d(TAG, "Add Friend Succeed");
+
+            // Add friend request
+            case "add_friend": {
+
+                if (status.equals("yes")) {
+
+                    // Succeed
                     String[] fNames = Arrays.copyOfRange(sResponses, 2, sResponses.length);
                     Intent returnIntent = new Intent();
                     returnIntent.putExtra("result", fNames);
-                    addFriend.setResult(Activity.RESULT_OK, returnIntent);
-                    addFriend.finish();
+                    friendInvitation.setResult(Activity.RESULT_OK, returnIntent);
+                    friendInvitation.finish();
                 } else {
-                    Log.d(TAG, "Add_Friend Failed!");
-                    Toast.makeText(addFriend, "Add Friend Failed!", Toast.LENGTH_SHORT).show();
+
+                    // Fail
+                    Toast.makeText(friendInvitation, "Add Friend Failed!", Toast.LENGTH_SHORT).show();
                 }
                 break;
             }
-            case "create_group":{
-                Log.d(TAG, "create_group response received");
-                if (status.equals("yes")){
-                    Log.d(TAG, "Create Group Succeed");
+
+            // Create group request with selected friends
+            case "create_group": {
+                if (status.equals("yes")) {
+
+                    // Succeed
                     Intent friendlistIntent = new Intent(friendlist, MapChat.class);
                     friendlistIntent.putExtra("friendNames", sResponses);
                     friendlist.startActivity(friendlistIntent);
-                }else{
-                    Log.d(TAG, "Create Group Failed");
+                } else {
+
+                    // Fail
                     Toast.makeText(friendlist, "Create Group Failed!", Toast.LENGTH_SHORT).show();
                 }
                 break;
             }
-            case  "update_location":{
-                Log.d(TAG, "update_location response received");
-                break;
-            }
-            case "change_pin":{
-                Log.d(TAG,"change pin response received");
-                break;
-            }
-            case "send_message":{
-                Log.d(TAG,"send message response received");
-                break;
-            }
-            //case "send_photo":{
-            //    Log.d(TAG,"SEND PHOTO RES GOT !!!!");
-            //    break;
-            //}
 
+            // Update self location in group members' local
+            case "update_location": {
+                break;
+            }
+
+            // Update self pin location in group members' local
+            case "change_pin": {
+                break;
+            }
+
+            // Send message to group members' local
+            case "send_message": {
+                break;
+            }
         }
 
-        //Log.d(TAG, result[0]);
     }
 }

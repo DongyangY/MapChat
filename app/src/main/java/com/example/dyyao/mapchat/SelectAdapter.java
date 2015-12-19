@@ -1,3 +1,12 @@
+/**
+ * Select Adapter class
+ *
+ * @author Dongyang Yao
+ *         Hua Deng
+ *         Xi Zhang
+ *         Lulu Zhao
+ */
+
 package com.example.dyyao.mapchat;
 
 import android.app.Activity;
@@ -10,20 +19,33 @@ import android.widget.TextView;
 
 import java.util.List;
 
-public class SelectAdapter extends ArrayAdapter<myFriend> {
-    private final List<myFriend> list;
+public class SelectAdapter extends ArrayAdapter<Friend> {
+    private final List<Friend> list;
     private final Activity context;
 
-    public SelectAdapter(Activity context, List<myFriend> list){
+    /**
+     * Constructor
+     * @param context
+     * @param list
+     */
+    public SelectAdapter(Activity context, List<Friend> list){
         super(context, R.layout.list_preview_row, list);
         this.context = context;
         this.list = list;
     }
+
     static class ViewHolder {
         protected TextView text;
         protected RadioButton select;
     }
 
+    /**
+     * Override the getView method
+     * @param position
+     * @param convertView
+     * @param parent
+     * @return
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         final View view ;

@@ -1,9 +1,17 @@
+/**
+ * Register page
+ *
+ * @author Dongyang Yao
+ *         Hua Deng
+ *         Xi Zhang
+ *         Lulu Zhao
+ */
+
 package com.example.dyyao.mapchat;
 
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.Animation;
@@ -17,9 +25,8 @@ import android.widget.Toast;
 public class Register extends AppCompatActivity implements View.OnClickListener {
 
     private final String TAG = "Register";
-    Button bRegister;
-    EditText etUsername, etPassword, etCPassword;
-
+    private Button bRegister;
+    public EditText etUsername, etPassword, etCPassword;
 
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -33,7 +40,6 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
         setContentView(R.layout.activity_register);
         StartAnimations();
         ClientTaskWR.register = this;
-        Log.d(TAG, "Enter Register");
         etUsername = (EditText) findViewById(R.id.et_username);
         etPassword = (EditText) findViewById(R.id.et_password);
         etCPassword = (EditText) findViewById(R.id.et_cpassword);
@@ -41,7 +47,9 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
         bRegister.setOnClickListener(this);
     }
 
-
+    /**
+     * Start an animation
+     */
     private void StartAnimations() {
         Animation anim = AnimationUtils.loadAnimation(this, R.anim.alpha);
         anim.reset();
@@ -55,19 +63,22 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
 
         iv.clearAnimation();
         iv.startAnimation(anim);
-
-
     }
 
+    /**
+     * Register process
+     * @param view
+     */
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_register:
-                Log.d(TAG, "at register");
-                /*Check password consistency*/
+
+                // Check password consistency
                 if(etPassword.getText().toString().equals(etCPassword.getText().toString())){
+
+                    // Send register request to server
                     Login.mLogCommandBuffer.add("register:" + etUsername.getText().toString() + ":" + etPassword.getText().toString());
-                    Log.d(TAG, "buffer size " + String.valueOf(Login.mLogCommandBuffer.size()));
                 }else{
                     etPassword.setText("");
                     etCPassword.setText("");

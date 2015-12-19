@@ -1,3 +1,12 @@
+/**
+ * A Background thread for especially sending the image
+ *
+ * @author Dongyang Yao
+ *         Hua Deng
+ *         Xi Zhang
+ *         Lulu Zhao
+ */
+
 package com.example.dyyao.mapchat;
 
 import android.os.AsyncTask;
@@ -21,17 +30,23 @@ public class ClientTaskWRPhoto extends AsyncTask <Void, String, Void>{
     private String serverResponse = "";
     private PrintWriter mPrintWriterOut;
     private Login login;
-    //public static AddFriend addFriend;
-    //public static friendList friendlist;
-    //public static Register register;
-    //Queue<String> sResponseBuffer = new LinkedList<>();
     private static final String TAG = "ClientTaskWRPhoto";
 
+    /**
+     * Constructor
+     * @param c
+     * @param l
+     */
     public ClientTaskWRPhoto(Queue<String> c, Login l) {
         mCommandBuffer = c;
         login = l;
     }
 
+    /**
+     * Sending the image to server in background
+     * @param arg0
+     * @return
+     */
     protected Void doInBackground(Void... arg0){
         try {
             mSocketPhoto = new Socket(Login.serverIpAddress, Login.SERVER_PORT_PHOTO);
@@ -39,24 +54,21 @@ public class ClientTaskWRPhoto extends AsyncTask <Void, String, Void>{
             e.printStackTrace();
         }
         while (true) {
-            //Log.d(TAG, "before isEmpty()");
             if (!mCommandBuffer.isEmpty()){
-                Log.d(TAG, "enter isEmpty()");
                 mCommand = mCommandBuffer.remove();
-                Log.d(TAG,"mCommand is: " + mCommand);
                 try{
                     OutputStream mOutStream = mSocketPhoto.getOutputStream();
                     mPrintWriterOut = new PrintWriter(mOutStream, true);
                     InputStream mInputStream = mSocketPhoto.getInputStream();
                     BufferedReader mBufferedReader = new BufferedReader(new InputStreamReader(mInputStream));
 
-
-                    Log.d(TAG, mCommand);
+                    // Send the image transfer request
                     mPrintWriterOut.println(mCommand);
 
-                    Log.d(TAG, "send_photo command");
                     serverResponse = mBufferedReader.readLine();
                     InputStream in = new FileInputStream(MapChat.mediaFile);
+
+                    // Send the image bytes
                     copy(in, mOutStream, MapChat.mediaFile.length());
                     in.close();
 
@@ -71,6 +83,13 @@ public class ClientTaskWRPhoto extends AsyncTask <Void, String, Void>{
         }
     }
 
+    /**
+     * The method for coping the image's bytes
+     * @param in
+     * @param out
+     * @param length
+     * @throws IOException
+     */
     public static void copy(InputStream in, OutputStream out, long length) throws IOException {
         byte[] buf = new byte[8192];
         int len = 0;
@@ -87,23 +106,21 @@ public class ClientTaskWRPhoto extends AsyncTask <Void, String, Void>{
         super.onPostExecute(result);
     }
 
+    /**
+     * Response from server
+     * @param result
+     */
     protected void onProgressUpdate(String... result){
         super.onProgressUpdate(result);
-        Log.d(TAG,result[0]);
         String[] sResponses = result[0].split(":");
         String command = sResponses[0];
-        Log.d(TAG, "command is: " + command);
         String status = sResponses[1];
-        Log.d(TAG, "status is:" + status);
 
         switch (command){
             case "send_photo":{
-                Log.d(TAG,"SEND PHOTO RES GOT !!!!");
                 break;
             }
 
         }
-
-        //Log.d(TAG, result[0]);
     }
 }
