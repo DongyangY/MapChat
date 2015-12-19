@@ -18,7 +18,6 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 
 public class ClientTaskR extends AsyncTask<Void, String, Void>{
@@ -39,7 +38,7 @@ public class ClientTaskR extends AsyncTask<Void, String, Void>{
     @Override
     protected Void doInBackground(Void... arg0){
         try{
-            mSocket = new Socket(Login.SERVER_IP_ADDRESS, Login.SERVER_PORT_R);
+            mSocket = new Socket(Login.serverIpAddress, Login.SERVER_PORT_R);
             InputStream mInputStream = mSocket.getInputStream();
             BufferedReader mBufferedReader = new BufferedReader(new InputStreamReader(mInputStream));
 

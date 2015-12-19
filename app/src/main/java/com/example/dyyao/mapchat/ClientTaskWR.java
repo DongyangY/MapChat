@@ -7,13 +7,11 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Arrays;
@@ -40,7 +38,7 @@ public class ClientTaskWR extends AsyncTask<Void, String, Void> {
 
     protected Void doInBackground(Void... arg0){
         try {
-            mSocket = new Socket(Login.SERVER_IP_ADDRESS, Login.SERVER_PORT_WR);
+            mSocket = new Socket(Login.serverIpAddress, Login.SERVER_PORT_WR);
         } catch (IOException e) {
             e.printStackTrace();
         }

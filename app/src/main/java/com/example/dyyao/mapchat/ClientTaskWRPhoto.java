@@ -1,10 +1,7 @@
 package com.example.dyyao.mapchat;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -15,7 +12,6 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.Arrays;
 import java.util.Queue;
 
 public class ClientTaskWRPhoto extends AsyncTask <Void, String, Void>{
@@ -38,7 +34,7 @@ public class ClientTaskWRPhoto extends AsyncTask <Void, String, Void>{
 
     protected Void doInBackground(Void... arg0){
         try {
-            mSocketPhoto = new Socket(Login.SERVER_IP_ADDRESS, Login.SERVER_PORT_PHOTO);
+            mSocketPhoto = new Socket(Login.serverIpAddress, Login.SERVER_PORT_PHOTO);
         } catch (IOException e) {
             e.printStackTrace();
         }

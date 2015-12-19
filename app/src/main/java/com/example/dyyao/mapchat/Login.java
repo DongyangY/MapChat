@@ -25,7 +25,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     Button bLogin;
     EditText etUsername, etPassword;
     TextView tvRegisterLink;
-    public static String SERVER_IP_ADDRESS;
+    public static String serverIpAddress;
     public static final int SERVER_PORT_WR = 4444;
     public static final int SERVER_PORT_R = 5555;
     public static final int SERVER_PORT_PHOTO = 6666;
