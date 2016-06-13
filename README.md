@@ -1,5 +1,5 @@
 # MapChat
-An Android & TCP server based multiple real-time geographical (Google Map) group chatting system. 
+A multiple real-time geographical (Google Map) group chatting Android application.
 
 ## Featrue
 * Location based chat on [Google Map](https://www.google.com/maps) with alternative traditional chat history.
