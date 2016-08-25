@@ -11,38 +11,52 @@ import java.net.*;
 
 public class MapChatServer {
 
-    // The port number for receiving request from clients
+    // The port number for receiving request from clients and responsing to clients
     public static final int PORT_REQUEST = 4444;
 
-    // The port number for relaying a request from a client to another or several other clients 
+    // The port number for relaying a request from a client to another or serveral other clients 
     public static final int PORT_PUSH = 5555;
 
     // The port number for transfering large file, e.g., image
     public static final int PORT_TRANSFER = 6666;
 
-    // Database
+    // Database name
     public static final String DATABASE_NAME = "MapChat";
 
+    // Database user name
     public static final String USER_NAME = "root";
 
+    // Database user password
     public static final String PASSWORD = "easy";
 
+    // JDBC connection
     public static final String URL = "jdbc:mysql://localhost:3306/";
 
+    // JDBC driver
     public static final String DRIVER = "com.mysql.jdbc.Driver";
 
-    // Chatting group table
-    public static Hashtable<String, Group> groupTable;
+    // Chatting group list
+    public static ArrayList<Group> groups;
 
-    // Client connection table
-    public static Hashtable<String, Link> linkTable;
+    // Client connection links
+    public static ArrayList<Link> links;
 
     // Client threads in push port
     public static ArrayList<ClientThread_push> pushes_threads;
 
+    // Client threads in request port
+    public static ArrayList<ClientThread_request> request_threads;
+
+    // Client threads in transfer port
+    public static ArrayList<ClientThread_transfer> transfer_threads;
+
+    // Three server threads for accepting clients
+    public static ArrayList<ServerThread> server_threads;
+
+    
     public static void main(String[] args) {
-        groupTable = new Hashtable<String, Group>();
-	linkTable = new Hashtable<String, Link>();
+        groups = new ArrayList<Group>();
+        links = new ArrayList<Link>();
         pushes_threads = new ArrayList<ClientThread_push>();
 
 	// Start request port server thread
@@ -72,6 +86,78 @@ public class MapChatServer {
             out.write(buf, 0, len);
             length -= len;
         }
+    }
+
+    /**
+     * Get link reference by client's user name
+     * @param name user name
+     * @return link reference; null if not exists
+     */
+    public static Link findLinkByName(String name) {
+        for (Link l : MapChatServer.links) {
+            if (l.name.equals(name)) {
+                return l;
+            }
+        }
+
+        return null;
+    }
+
+    /**                                                                                                                                              
+     * Add a new link by client' user name                                                                                                           
+     * @param name client' user name                                                                                                                 
+     * @param client the Socket reference                                                                                                            
+     * @return if it is in link                                                                                                                      
+     */
+    public static boolean addLinkByName(String name, Socket client) {
+	boolean isInLink = false;
+
+	// Check if the client name is already in links
+	for (Link l : links) {
+	    if (l.name.equals(name)) {
+		l.client = client;
+		isInLink = true;
+	    }
+	}
+
+	if (!isInLink) {
+	    links.add(new Link(name, client));
+	}
+
+	return isInLink;
+    }
+
+    /**
+     * Remove a link in list by name
+     * @param name client's user name
+     */
+    public static void removeLinkByName(String name) {
+	Link logout = null;
+	
+	for (Link l : links) {
+	    if (l.name.equals(name)) {
+		logout = l;
+	    }
+	}
+
+	if (logout != null) {
+	    links.remove(logout);
+	} 
+    }
+
+    /**
+     * Get the group reference by group's name
+     * @param group name
+     * @return group reference; null if not exists
+     */
+    public static Group findGroupByName(String name) {
+        for (Group g : MapChatServer.groups) {
+            if (g.groupName.equals(name)) {
+                return g;
+            }
+        }
+
+        return null;
     }
 
     /**

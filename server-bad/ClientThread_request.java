@@ -58,6 +58,9 @@ public class ClientThread_request implements Runnable {
 		// For close the connection
                 boolean breakout = false;
 
+		// If the client is in link
+                boolean isInLink = false;
+
                 System.out.println("wait for command");
 
 		// Blocked if no request in buffer
@@ -90,8 +93,8 @@ public class ClientThread_request implements Runnable {
 		    // Set identification as client user name
 		    identification = name;
 		    
-		    // Add Link
-		    MapChatServer.linkTable.put(name, new Link(name, client));
+		    // Check if the client is already in links
+		    isInLink = MapChatServer.addLinkByName(name, client);
 		    
 		    break;
 
@@ -133,7 +136,7 @@ public class ClientThread_request implements Runnable {
 			
 			identification = name;
 			
-			MapChatServer.linkTable.put(name, new Link(name, client));
+			isInLink = MapChatServer.addLinkByName(name, client);
 			
 			// Fail
 		    } else {
@@ -151,7 +154,7 @@ public class ClientThread_request implements Runnable {
 		    System.out.println("exit group");
 
 		    // Get the group reference by name
-		    group = MapChatServer.groupTable.get(cmds[1]);
+		    group = MapChatServer.findGroupByName(cmds[1]);
 
 		    // Send exit notification to other group members
 		    Link delete = MapChatServer.sendToAllGroupMembers(group, identification, cmds[0] + ":" + cmds[1] + ":" + cmds[2]);
@@ -168,7 +171,7 @@ public class ClientThread_request implements Runnable {
 		case "logout":
 		    System.out.println("logout");
 
-		    MapChatServer.linkTable.remove(cmds[1]);
+		    MapChatServer.removeLinkByName(cmds[1]);
 		    
 		    out.println("logout:yes");
                     
@@ -210,7 +213,7 @@ public class ClientThread_request implements Runnable {
 			out.println(sb.toString());
 		    }
 	
-		    Link friend = MapChatServer.linkTable.get(cmds[1]);
+		    Link friend = MapChatServer.findLinkByName(cmds[1]);
 		
 		    if (friend != null) {
 			String[] ip = friend.client.getRemoteSocketAddress().toString().split(":");
@@ -231,13 +234,13 @@ public class ClientThread_request implements Runnable {
 		    System.out.println("create group");
 		    String groupName = cmds[1];
 		    group = new Group(groupName);
-		    MapChatServer.groupTable.put(groupName, group);
+		    MapChatServer.groups.add(group);
 
 		    sb = new StringBuilder();
 		    sb.append("create_group:yes:" + groupName + ":" + identification);
 
 		    for (int i = 2; i < cmds.length; i++) {
-			Link link = MapChatServer.linkTable.get(cmds[i]);
+			Link link = MapChatServer.findLinkByName(cmds[i]);
 			
 			if (link != null) {
 			    sb.append(":" + cmds[i]);
@@ -245,11 +248,11 @@ public class ClientThread_request implements Runnable {
 		    }
 
 		    // Add the group owner to group links
-		    group.addLink(MapChatServer.linkTable.get(identification));
+		    group.addLink(MapChatServer.findLinkByName(identification));
 
 		    for (int i = 2; i < cmds.length; i++) {
 
-			Link link = MapChatServer.linkTable.get(cmds[i]);
+			Link link = MapChatServer.findLinkByName(cmds[i]);
 			
 			if (link != null) {
 			    
@@ -276,7 +279,7 @@ public class ClientThread_request implements Runnable {
 
 		    // Update requesting client's location to other group members
 		case "update_location":
-		    group = MapChatServer.groupTable.get(cmds[1]);
+		    group = MapChatServer.findGroupByName(cmds[1]);
 
 		    // Send the location to other group members
 		    MapChatServer.sendToAllGroupMembers(group, identification, "update_location:" + cmds[1] + ":" + cmds[2] + ":" + cmds[3] + ":" + cmds[4]);
@@ -291,7 +294,7 @@ public class ClientThread_request implements Runnable {
 		    
 		    System.out.println("send message");
 		    
-		    group = MapChatServer.groupTable.get(cmds[1]);
+		    group = MapChatServer.findGroupByName(cmds[1]);
 
 		    // Get the selected members
 		    ArrayList<String> notifications = new ArrayList<String>();
@@ -323,7 +326,7 @@ public class ClientThread_request implements Runnable {
 		    
 		    System.out.println("change pin");
 		    
-		    group = MapChatServer.groupTable.get(cmds[1]);
+		    group = MapChatServer.findGroupByName(cmds[1]);
 
 		    MapChatServer.sendToAllGroupMembers(group, identification, "change_pin:" + cmds[1] + ":" + cmds[2] + ":" + cmds[3] + ":" + cmds[4]);
 
