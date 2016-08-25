@@ -56,7 +56,7 @@ public class ClientThread_transfer implements Runnable {
 		    
 		    System.out.println("SAVED PHOTO!!");
 		    
-		    Group group = MapChatServer.findGroupByName(cmds[1]);
+		    Group group = MapChatServer.groupTable.get(cmds[1]);
 
 		    // Push the sending photo command to group members' push thread buffers
 		    MapChatServer.sendToAllGroupMembers(group, identification, "send_photo:" + fileName + ":" + cmds[3] + ":" + identification);

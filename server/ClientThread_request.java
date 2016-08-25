@@ -154,7 +154,7 @@ public class ClientThread_request implements Runnable {
 		    System.out.println("exit group");
 
 		    // Get the group reference by name
-		    group = MapChatServer.findGroupByName(cmds[1]);
+		    group = MapChatServer.groupTable.get(cmds[1]);
 
 		    // Send exit notification to other group members
 		    Link delete = MapChatServer.sendToAllGroupMembers(group, identification, cmds[0] + ":" + cmds[1] + ":" + cmds[2]);
@@ -234,7 +234,7 @@ public class ClientThread_request implements Runnable {
 		    System.out.println("create group");
 		    String groupName = cmds[1];
 		    group = new Group(groupName);
-		    MapChatServer.groups.add(group);
+		    MapChatServer.groupTable.put(groupName, group);
 
 		    sb = new StringBuilder();
 		    sb.append("create_group:yes:" + groupName + ":" + identification);
@@ -279,7 +279,7 @@ public class ClientThread_request implements Runnable {
 
 		    // Update requesting client's location to other group members
 		case "update_location":
-		    group = MapChatServer.findGroupByName(cmds[1]);
+		    group = MapChatServer.groupTable.get(cmds[1]);
 
 		    // Send the location to other group members
 		    MapChatServer.sendToAllGroupMembers(group, identification, "update_location:" + cmds[1] + ":" + cmds[2] + ":" + cmds[3] + ":" + cmds[4]);
@@ -294,7 +294,7 @@ public class ClientThread_request implements Runnable {
 		    
 		    System.out.println("send message");
 		    
-		    group = MapChatServer.findGroupByName(cmds[1]);
+		    group = MapChatServer.groupTable.get(cmds[1]);
 
 		    // Get the selected members
 		    ArrayList<String> notifications = new ArrayList<String>();
@@ -326,7 +326,7 @@ public class ClientThread_request implements Runnable {
 		    
 		    System.out.println("change pin");
 		    
-		    group = MapChatServer.findGroupByName(cmds[1]);
+		    group = MapChatServer.groupTable.get(cmds[1]);
 
 		    MapChatServer.sendToAllGroupMembers(group, identification, "change_pin:" + cmds[1] + ":" + cmds[2] + ":" + cmds[3] + ":" + cmds[4]);
 

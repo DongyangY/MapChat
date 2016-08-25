@@ -11,32 +11,28 @@ import java.net.*;
 
 public class MapChatServer {
 
-    // The port number for receiving request from clients and responsing to clients
+    // The port number for receiving request from clients
     public static final int PORT_REQUEST = 4444;
 
-    // The port number for relaying a request from a client to another or serveral other clients 
+    // The port number for relaying a request from a client to another or several other clients 
     public static final int PORT_PUSH = 5555;
 
     // The port number for transfering large file, e.g., image
     public static final int PORT_TRANSFER = 6666;
 
-    // Database name
+    // Database
     public static final String DATABASE_NAME = "MapChat";
 
-    // Database user name
     public static final String USER_NAME = "root";
 
-    // Database user password
     public static final String PASSWORD = "easy";
 
-    // JDBC connection
     public static final String URL = "jdbc:mysql://localhost:3306/";
 
-    // JDBC driver
     public static final String DRIVER = "com.mysql.jdbc.Driver";
 
-    // Chatting group list
-    public static ArrayList<Group> groups;
+    // Chatting group table
+    public static Hashtable<String, Group> groupTable;
 
     // Client connection links
     public static ArrayList<Link> links;
@@ -52,10 +48,9 @@ public class MapChatServer {
 
     // Three server threads for accepting clients
     public static ArrayList<ServerThread> server_threads;
-
     
     public static void main(String[] args) {
-        groups = new ArrayList<Group>();
+        groupTable = new Hashtable<String, Group>();
         links = new ArrayList<Link>();
         pushes_threads = new ArrayList<ClientThread_push>();
 
@@ -143,21 +138,6 @@ public class MapChatServer {
 	if (logout != null) {
 	    links.remove(logout);
 	} 
-    }
-
-    /**
-     * Get the group reference by group's name
-     * @param group name
-     * @return group reference; null if not exists
-     */
-    public static Group findGroupByName(String name) {
-        for (Group g : MapChatServer.groups) {
-            if (g.groupName.equals(name)) {
-                return g;
-            }
-        }
-
-        return null;
     }
 
     /**
