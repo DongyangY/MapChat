@@ -220,7 +220,7 @@ public class ClientThread_request implements Runnable {
 			if (push != null) {
 
 			    // Send the friend invitation notification to the invited client
-			    push.pushes.add("add_friend:" + identification);
+			    push.enqueue("add_friend:" + identification);
 			}
 		    }
 
@@ -265,7 +265,7 @@ public class ClientThread_request implements Runnable {
 			    if (push != null) {
 
 				// Send the group invitation to online selected friends
-				push.pushes.add(sb.toString());
+				push.enqueue(sb.toString());
 			    }
 			}
 		    }
@@ -309,7 +309,7 @@ public class ClientThread_request implements Runnable {
 			    
 			    if (push != null) {
 				String notify = notifications.contains(member_name) ? "yes" : "no";
-				push.pushes.add(cmds[0] + ":" + cmds[1] + ":" + cmds[2] + ":" + cmds[3] + ":" + notify);
+				push.enqueue(cmds[0] + ":" + cmds[1] + ":" + cmds[2] + ":" + cmds[3] + ":" + notify);
 			    }
 			}
 		    }

@@ -95,7 +95,7 @@ public class MapChatServer {
 		ClientThread_push push = pushTable.get(ip[0]);
 
 		if (push != null) {
-		    push.pushes.add(command);
+		    push.enqueue(command);
 		}
 
 	    } else {

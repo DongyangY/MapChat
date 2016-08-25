@@ -5,16 +5,9 @@
  * @author Dongyang Yao (dongyang.yao@rutgers.edu)
  */
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.net.Socket;
-import java.util.ArrayList;
+import java.io.*;
+import java.net.*;
+import java.util.*;
 
 public class ClientThread_push implements Runnable {
 
@@ -25,10 +18,7 @@ public class ClientThread_push implements Runnable {
     public String ip;
 
     // The client's server-to-client command buffer
-    public ArrayList<String> pushes;
-
-    // The structed command buffer
-    public ArrayList<Push> pushes_origin;
+    public Queue<String> pushQueue;
 
     /**
      * Constructor
@@ -36,9 +26,21 @@ public class ClientThread_push implements Runnable {
      * @param i ip address
      */
     public ClientThread_push(Socket c, String i) {
-        pushes = new ArrayList<String>();
+        pushQueue = new LinkedList<String>();
         client = c;
         ip = i;
+    }
+
+    public synchronized void enqueue(String cmd) {
+	pushQueue.add(cmd);
+    }
+
+    public synchronized String dequeue() {
+	return pushQueue.remove();
+    }
+
+    public synchronized boolean isEmpty() {
+	return pushQueue.isEmpty();
     }
 
     @Override
@@ -48,15 +50,14 @@ public class ClientThread_push implements Runnable {
 	    // The writer to the client
             PrintWriter out = new PrintWriter(new OutputStreamWriter(client.getOutputStream()), true);
 
+	    // This is a polling method and needs to be fixed later
             while (true) {
-                boolean flag = pushes.isEmpty();
-
 		// There is no process if no command in buffer
-                if (!flag) {
+                if (!isEmpty()) {
 
                     System.out.println("get the push from buffer");
 
-                    String push = pushes.get(0);
+                    String push = dequeue();
 
 		    // Relay
                     out.println(push);
@@ -73,8 +74,6 @@ public class ClientThread_push implements Runnable {
                         MapChatServer.copy(inS, outS, Long.valueOf(c[2]));
                         inS.close();
                     }
-
-                    pushes.remove(0);
                 }
 
             }
