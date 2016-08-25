@@ -1,6 +1,10 @@
 # MapChat
 A multiple real-time geographical (Google Map) group chatting Android application.
 
+## What Need To Be Fixed Later!!
+* Using HashTable instead of List on server for online clients' sockets to improve effeciency and eliminate race condition.
+* Using one port instead of two ports for each client. On server, one thread per client to read. On client, two threads for write and read separately. Using event trigger instead of polling from buffer... Thus, no response from server for each command!
+
 ## Featrue
 * Location based chat on [Google Map](https://www.google.com/maps) with alternative traditional chat history.
 * Vibrative message to selected group members.
