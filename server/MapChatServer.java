@@ -38,12 +38,12 @@ public class MapChatServer {
     public static Hashtable<String, Link> linkTable;
 
     // Client threads in push port
-    public static ArrayList<ClientThread_push> pushes_threads;
+    public static Hashtable<String, ClientThread_push> pushTable;
 
     public static void main(String[] args) {
         groupTable = new Hashtable<String, Group>();
 	linkTable = new Hashtable<String, Link>();
-        pushes_threads = new ArrayList<ClientThread_push>();
+        pushTable = new Hashtable<String, ClientThread_push>();
 
 	// Start request port server thread
         ServerThread serverThread_request = new ServerThread(PORT_REQUEST);
@@ -75,46 +75,6 @@ public class MapChatServer {
     }
 
     /**
-     * Add a new push thread by IP
-     * @param ip the ip address sequence
-     * @param clientThread the ClientThread_push reference
-     * @return if it is in push threads
-     */
-    public static boolean addPushThreadByIP(String[] ip, ClientThread_push clientThread) {
-	boolean isInThreads = false;
-
-	// Check if the ip is already in the push threads
-	for (int i = 0; i < pushes_threads.size(); i++) {
-	    if (pushes_threads.get(i).ip.equals(ip[0])) {
-		System.out.println("already in push threads");
-		pushes_threads.set(i, clientThread);
-		isInThreads = true;
-	    }
-	}
-
-	if (!isInThreads) {
-	    pushes_threads.add(clientThread);
-	}
-	
-	return isInThreads;
-    }
-
-    /**
-     * Get the push thread reference by IP
-     * @param ip the ip address of client
-     * @return null if not exists
-     */
-    public static ClientThread_push findPushThreadByIP(String[] ip) {
-	ClientThread_push push = null;
-	for (ClientThread_push p : pushes_threads) {
-	    if (p.ip.equals(ip[0])) {
-		push = p;
-	    }
-	}
-	return push;
-    }
-
-    /**
      * Send a command to all other group members
      * By pushing the command to their push thread buffers
      * @param group the group reference
@@ -132,7 +92,7 @@ public class MapChatServer {
 
 		String[] ip = l.client.getRemoteSocketAddress().toString().split(":");
 
-		ClientThread_push push = findPushThreadByIP(ip);
+		ClientThread_push push = pushTable.get(ip[0]);
 
 		if (push != null) {
 		    push.pushes.add(command);

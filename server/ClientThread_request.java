@@ -215,7 +215,7 @@ public class ClientThread_request implements Runnable {
 		    if (friend != null) {
 			String[] ip = friend.client.getRemoteSocketAddress().toString().split(":");
 
-			ClientThread_push push = MapChatServer.findPushThreadByIP(ip);
+			ClientThread_push push = MapChatServer.pushTable.get(ip[0]);
 
 			if (push != null) {
 
@@ -260,7 +260,7 @@ public class ClientThread_request implements Runnable {
 
 			    String[] ip = link.client.getRemoteSocketAddress().toString().split(":");
 
-			    ClientThread_push push = MapChatServer.findPushThreadByIP(ip);
+			    ClientThread_push push = MapChatServer.pushTable.get(ip[0]);
 
 			    if (push != null) {
 
@@ -305,7 +305,7 @@ public class ClientThread_request implements Runnable {
 
 			    String[] ip = l.client.getRemoteSocketAddress().toString().split(":");
 			    
-			    ClientThread_push push = MapChatServer.findPushThreadByIP(ip);
+			    ClientThread_push push = MapChatServer.pushTable.get(ip[0]);
 			    
 			    if (push != null) {
 				String notify = notifications.contains(member_name) ? "yes" : "no";

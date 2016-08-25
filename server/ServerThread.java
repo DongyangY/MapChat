@@ -51,7 +51,7 @@ public class ServerThread implements Runnable {
                     ClientThread_push clientThread = new ClientThread_push(client, ip[0]);
 
 		    // Check if it is already connected
-                    boolean isInThreads = MapChatServer.addPushThreadByIP(ip, clientThread);
+                    MapChatServer.pushTable.put(ip[0], clientThread);
 
                     (new Thread(clientThread)).start();
                 }
