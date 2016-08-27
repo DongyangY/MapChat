@@ -31,16 +31,22 @@ public class ClientThread_push implements Runnable {
         ip = i;
     }
 
-    public synchronized void enqueue(String cmd) {
-	pushQueue.add(cmd);
+    public void enqueue(String cmd) {
+	synchronized (pushQueue) {
+	    pushQueue.add(cmd);
+	}
     }
 
-    public synchronized String dequeue() {
-	return pushQueue.remove();
+    public String dequeue() {
+	synchronized (pushQueue) {
+	    return pushQueue.remove();
+	}
     }
 
-    public synchronized boolean isEmpty() {
-	return pushQueue.isEmpty();
+    public boolean isEmpty() {
+	synchronized (pushQueue) {
+	    return pushQueue.isEmpty();
+	}
     }
 
     @Override
