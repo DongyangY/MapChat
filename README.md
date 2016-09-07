@@ -2,9 +2,8 @@
 A multiple real-time geographical (Google Map) group chatting Android application.
 
 ## What Need To Be Fixed Later!!
-* Using one port instead of two ports for each client. On server, one thread per client to read. On client, two threads for write and read separately. Using event trigger instead of polling from buffer!! Thus, no response from server for each command!!
-* MapChatServer should apply Singleton pattern.
-* Note: server-bad is the original bad code, the code in server is not tested yet.
+* Use only one port for the whole application. On the server side, start one thread per client to blockedly read the client's request and could write command to other clients' sockets. On the client side, start one thread to blockedly read other clients' command. Write command in the action call back. No polling from buffer and no response from server anymore!!
+* Singleton Pattern, Observer Pattern.
 
 ## Featrue
 * Location based chat on [Google Map](https://www.google.com/maps) with alternative traditional chat history.
